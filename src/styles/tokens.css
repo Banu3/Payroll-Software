@@ -36,6 +36,13 @@
   --status-danger: #B91C1C;
   --status-info: #2563EB;
 
+  --color-emerald-600: #0F766E;
+  --color-emerald-700: #115E59;
+  --color-rose-600: #E11D48;
+  --color-rose-300: #FDA4AF;
+  --color-amber-600: #D97706;
+  --color-blue-600: #2563EB;
+
   /* Typography */
   --font-sans: 'Inter', 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;

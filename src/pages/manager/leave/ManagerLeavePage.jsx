@@ -7,12 +7,7 @@ import { Check, X, Calendar, Clock } from 'lucide-react';
 import { api } from '../../../services/api';
 
 export const ManagerLeavePage = () => {
-  const [requests, setRequests] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetchTeamRequests();
-  }, []);
+  const STORAGE_KEY = 'payroll_team_leave_requests';
 
   const DEFAULT_TEAM_LEAVE_REQUESTS = [
     {
@@ -37,20 +32,40 @@ export const ManagerLeavePage = () => {
     }
   ];
 
+  const getInitialRequests = () => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.warn('Failed to parse saved leave requests:', e);
+    }
+    return DEFAULT_TEAM_LEAVE_REQUESTS;
+  };
+
+  const [requests, setRequests] = useState(getInitialRequests);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    fetchTeamRequests();
+  }, []);
+
   const fetchTeamRequests = async () => {
-    setIsLoading(true);
     try {
       const res = await api.get('/leave/requests');
       if (res && res.success && res.data && res.data.length > 0) {
-        setRequests(res.data);
-        setIsLoading(false);
+        const saved = localStorage.getItem(STORAGE_KEY);
+        const savedList = saved ? JSON.parse(saved) : [];
+        const merged = res.data.map(item => {
+          const s = savedList.find(x => x.id === item.id);
+          return s ? { ...item, status: s.status } : item;
+        });
+        setRequests(merged);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
         return;
       }
     } catch (err) {
-      console.warn('Team leave requests API unavailable, using fallback list:', err.message);
+      console.warn('Team leave requests API fallback to local persistence:', err.message);
     }
-    setRequests(DEFAULT_TEAM_LEAVE_REQUESTS);
-    setIsLoading(false);
   };
 
   const handleApprove = async (id) => {
@@ -59,7 +74,11 @@ export const ManagerLeavePage = () => {
     } catch (err) {
       console.warn('Approve leave API fallback:', err.message);
     }
-    setRequests(prev => prev.map(r => r.id === id ? { ...r, status: 'APPROVED' } : r));
+    setRequests(prev => {
+      const updated = prev.map(r => r.id === id ? { ...r, status: 'APPROVED' } : r);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const handleReject = async (id) => {
@@ -70,7 +89,11 @@ export const ManagerLeavePage = () => {
     } catch (err) {
       console.warn('Reject leave API fallback:', err.message);
     }
-    setRequests(prev => prev.map(r => r.id === id ? { ...r, status: 'REJECTED' } : r));
+    setRequests(prev => {
+      const updated = prev.map(r => r.id === id ? { ...r, status: 'REJECTED' } : r);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   return (
@@ -113,26 +136,37 @@ export const ManagerLeavePage = () => {
                     </Badge>
                   </td>
                   <td style={{ padding: '0.75rem 1rem' }}>
-                    {r.status === 'PENDING' && (
-                      <div style={{ display: 'flex', gap: '0.375rem' }}>
-                        <Button
-                          size="sm"
-                          variant="primary"
-                          style={{ background: 'var(--color-emerald-600)', borderColor: 'var(--color-emerald-600)' }}
-                          onClick={() => handleApprove(r.id)}
-                        >
-                          <Check size={14} style={{ marginRight: '0.25rem' }} /> Approve
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          style={{ color: 'var(--color-rose-600)', borderColor: 'var(--color-rose-300)' }}
-                          onClick={() => handleReject(r.id)}
-                        >
-                          <X size={14} style={{ marginRight: '0.25rem' }} /> Reject
-                        </Button>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleApprove(r.id)}
+                        style={{ color: '#0F172A', backgroundColor: r.status === 'APPROVED' ? '#0F766E' : '#E6F4F1', borderColor: '#0F766E' }}
+                        className={`h-8 px-3 rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 transition-all cursor-pointer border ${
+                          r.status === 'APPROVED'
+                            ? 'bg-[#0F766E] text-white border-[#0F766E]'
+                            : 'bg-[#E6F4F1] border-[#0F766E] hover:bg-[#D1ECE7] text-[#0F172A]'
+                        }`}
+                      >
+                        <Check className={`w-3.5 h-3.5 shrink-0 ${r.status === 'APPROVED' ? 'text-white' : 'text-[#0F766E]'}`} />
+                        <span style={{ color: r.status === 'APPROVED' ? '#FFFFFF' : '#0F172A', fontWeight: 700 }}>
+                          {r.status === 'APPROVED' ? 'Approved' : 'Approve'}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => handleReject(r.id)}
+                        style={{ color: '#0F172A', backgroundColor: r.status === 'REJECTED' ? '#E11D48' : '#FFF1F2', borderColor: '#F43F5E' }}
+                        className={`h-8 px-3 rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 transition-all cursor-pointer border ${
+                          r.status === 'REJECTED'
+                            ? 'bg-rose-600 text-white border-rose-700'
+                            : 'bg-rose-50 border-rose-300 hover:bg-rose-100 text-[#0F172A]'
+                        }`}
+                      >
+                        <X className={`w-3.5 h-3.5 shrink-0 ${r.status === 'REJECTED' ? 'text-white' : 'text-rose-600'}`} />
+                        <span style={{ color: r.status === 'REJECTED' ? '#FFFFFF' : '#0F172A', fontWeight: 700 }}>
+                          {r.status === 'REJECTED' ? 'Rejected' : 'Reject'}
+                        </span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

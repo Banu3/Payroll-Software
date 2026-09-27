@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ProfileDropdown } from './ProfileDropdown';
-import { Shield, Search, Bell, Check, ArrowRight } from 'lucide-react';
+import { Shield, Search, Bell, Check, ArrowRight, Maximize2, Minimize2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export const Header = () => {
@@ -9,6 +9,7 @@ export const Header = () => {
   const navigate = useNavigate();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [hasUnread, setHasUnread] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const popoverRef = useRef(null);
 
   const notifications = [
@@ -41,9 +42,37 @@ export const Header = () => {
         setIsNotificationsOpen(false);
       }
     };
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
   }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().then(() => {
+          setIsFullscreen(true);
+        }).catch((err) => {
+          console.warn('Fullscreen request error:', err);
+        });
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().then(() => {
+          setIsFullscreen(false);
+        }).catch((err) => {
+          console.warn('Exit fullscreen error:', err);
+        });
+      }
+    }
+  };
 
   const handleMarkAllRead = () => {
     setHasUnread(false);
@@ -72,7 +101,26 @@ export const Header = () => {
         </button>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 md:gap-4">
+        {/* Fullscreen Mode Toggle Button */}
+        <button
+          onClick={toggleFullscreen}
+          className="p-2 rounded-xl text-[#334155] hover:text-[#0F172A] hover:bg-slate-100 transition-all border border-[#64748B] hover:border-[#0F766E] shadow-2xs cursor-pointer flex items-center gap-1.5 text-xs font-semibold bg-white"
+          title={isFullscreen ? 'Exit Full Screen' : 'Toggle Full Screen'}
+        >
+          {isFullscreen ? (
+            <>
+              <Minimize2 className="w-4 h-4 text-[#0F766E]" />
+              <span className="hidden sm:inline-block text-[11px] font-bold text-[#0F172A]">Exit Fullscreen</span>
+            </>
+          ) : (
+            <>
+              <Maximize2 className="w-4 h-4 text-[#0F766E]" />
+              <span className="hidden sm:inline-block text-[11px] font-bold text-[#0F172A]">Full Screen</span>
+            </>
+          )}
+        </button>
+
         {/* Tenant isolated badge */}
         <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5F6F3] border border-[#64748B] text-[11px] text-[#1E293B] font-semibold">
           <Shield className="w-3.5 h-3.5 text-[#0F766E]" />

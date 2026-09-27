@@ -96,9 +96,9 @@ export const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-64 bg-[#111827] border-r border-[#1F2937] flex flex-col shrink-0 h-screen sticky top-0 text-[#CBD5E1] select-none">
+    <aside className="w-64 bg-[#111827] border-r border-[#1F2937] flex flex-col shrink-0 h-full text-[#CBD5E1] select-none z-30">
       {/* Brand Header */}
-      <div className="p-4 border-b border-[#1F2937] flex items-center gap-3">
+      <div className="p-4 border-b border-[#1F2937] flex items-center gap-3 shrink-0">
         <div className="w-8 h-8 rounded-lg bg-[#0F766E] flex items-center justify-center font-bold text-white shadow-xs text-xs tracking-wider">
           EP
         </div>
@@ -149,7 +149,7 @@ export const Sidebar = () => {
       </nav>
 
       {/* Footer info */}
-      <div className="p-3 border-t border-[#1F2937] bg-[#0B0F19] text-[11px] text-[#64748B] flex items-center justify-between">
+      <div className="p-3 border-t border-[#1F2937] bg-[#0B0F19] text-[11px] text-[#64748B] flex items-center justify-between shrink-0">
         <span>v2.4.0 Pro</span>
         <span className="inline-flex items-center gap-1.5 text-[#15803D]">
           <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" /> SOC2 Certified

@@ -3,20 +3,20 @@ import clsx from 'clsx';
 
 export const Badge = ({ children, variant = 'default', className }) => {
   const variants = {
-    default: 'bg-[#F1F5F9] text-[#475569] border-[#E2E8F0]',
-    secondary: 'bg-[#F1F5F9] text-[#475569] border-[#E2E8F0]',
-    primary: 'bg-[#E6F4F1] text-[#0F766E] border-[#CCECF0]',
-    success: 'bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]',
-    warning: 'bg-[#FEF3C7] text-[#92400E] border-[#FDE68A]',
-    danger: 'bg-[#FEE2E2] text-[#991B1B] border-[#FCA5A5]',
-    info: 'bg-[#E0F2FE] text-[#075985] border-[#BAE6FD]',
-    purple: 'bg-[#F3E8FF] text-[#6B21A8] border-[#E9D5FF]',
+    default: 'bg-slate-100 text-slate-900 border-slate-400 font-bold',
+    secondary: 'bg-slate-100 text-slate-800 border-slate-300 font-semibold',
+    primary: 'bg-teal-100 text-teal-900 border-teal-400 font-bold',
+    success: 'bg-emerald-100 text-emerald-900 border-emerald-400 font-bold',
+    warning: 'bg-amber-100 text-amber-950 border-amber-400 font-bold',
+    danger: 'bg-rose-100 text-rose-950 border-rose-400 font-bold',
+    info: 'bg-blue-100 text-blue-900 border-blue-400 font-bold',
+    purple: 'bg-purple-100 text-purple-900 border-purple-400 font-bold',
   };
 
   return (
     <span
       className={clsx(
-        "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border tracking-wide",
+        "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold border tracking-wider uppercase shadow-2xs",
         variants[variant],
         className
       )}

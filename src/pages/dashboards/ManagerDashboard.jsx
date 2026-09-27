@@ -9,21 +9,35 @@ import { Users, Clock, Calendar, Check, X, Shield } from 'lucide-react';
 
 export const ManagerDashboard = () => {
   const { user } = useAuth();
-  const [leaveRequests, setLeaveRequests] = useState([
-    { id: 'lr-1', employee: 'Sarah Jenkins', type: 'Annual Leave', dates: 'Oct 05 - Oct 08, 2026', days: 4, status: 'PENDING' },
-    { id: 'lr-2', employee: 'David Miller', type: 'Sick Leave', dates: 'Oct 12, 2026', days: 1, status: 'PENDING' },
-  ]);
+  const STORAGE_KEY = 'payroll_manager_dashboard_leave';
+
+  const [leaveRequests, setLeaveRequests] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.warn('Failed to parse manager dashboard leave requests:', e);
+    }
+    return [
+      { id: 'lr-1', employee: 'Sarah Jenkins', type: 'Annual Leave', dates: 'Oct 05 - Oct 08, 2026', days: 4, status: 'PENDING' },
+      { id: 'lr-2', employee: 'David Miller', type: 'Sick Leave', dates: 'Oct 12, 2026', days: 1, status: 'PENDING' },
+    ];
+  });
 
   const handleApprove = (id) => {
-    setLeaveRequests((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status: 'APPROVED' } : r))
-    );
+    setLeaveRequests((prev) => {
+      const updated = prev.map((r) => (r.id === id ? { ...r, status: 'APPROVED' } : r));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const handleReject = (id) => {
-    setLeaveRequests((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status: 'REJECTED' } : r))
-    );
+    setLeaveRequests((prev) => {
+      const updated = prev.map((r) => (r.id === id ? { ...r, status: 'REJECTED' } : r));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const teamMembers = [
@@ -88,19 +102,39 @@ export const ManagerDashboard = () => {
               {
                 header: 'Action',
                 accessor: 'actions',
-                render: (r) =>
-                  r.status === 'PENDING' ? (
-                    <div className="flex items-center gap-1.5">
-                      <Button variant="primary" size="sm" icon={Check} onClick={() => handleApprove(r.id)}>
-                        Approve
-                      </Button>
-                      <Button variant="outline" size="sm" icon={X} onClick={() => handleReject(r.id)}>
-                        Reject
-                      </Button>
-                    </div>
-                  ) : (
-                    <span className="text-[11px] text-slate-500 italic">Action Taken</span>
-                  ),
+                render: (r) => (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleApprove(r.id)}
+                      style={{ color: '#0F172A', backgroundColor: r.status === 'APPROVED' ? '#0F766E' : '#E6F4F1', borderColor: '#0F766E' }}
+                      className={`h-8 px-3 rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 transition-all cursor-pointer border ${
+                        r.status === 'APPROVED'
+                          ? 'bg-[#0F766E] text-white border-[#0F766E]'
+                          : 'bg-[#E6F4F1] border-[#0F766E] hover:bg-[#D1ECE7] text-[#0F172A]'
+                      }`}
+                    >
+                      <Check className={`w-3.5 h-3.5 shrink-0 ${r.status === 'APPROVED' ? 'text-white' : 'text-[#0F766E]'}`} />
+                      <span style={{ color: r.status === 'APPROVED' ? '#FFFFFF' : '#0F172A', fontWeight: 700 }}>
+                        {r.status === 'APPROVED' ? 'Approved' : 'Approve'}
+                      </span>
+                    </button>
+
+                    <button
+                      onClick={() => handleReject(r.id)}
+                      style={{ color: '#0F172A', backgroundColor: r.status === 'REJECTED' ? '#E11D48' : '#FFF1F2', borderColor: '#F43F5E' }}
+                      className={`h-8 px-3 rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 transition-all cursor-pointer border ${
+                        r.status === 'REJECTED'
+                          ? 'bg-rose-600 text-white border-rose-700'
+                          : 'bg-rose-50 border-rose-300 hover:bg-rose-100 text-[#0F172A]'
+                      }`}
+                    >
+                      <X className={`w-3.5 h-3.5 shrink-0 ${r.status === 'REJECTED' ? 'text-white' : 'text-rose-600'}`} />
+                      <span style={{ color: r.status === 'REJECTED' ? '#FFFFFF' : '#0F172A', fontWeight: 700 }}>
+                        {r.status === 'REJECTED' ? 'Rejected' : 'Reject'}
+                      </span>
+                    </button>
+                  </div>
+                ),
               },
             ]}
             data={leaveRequests}

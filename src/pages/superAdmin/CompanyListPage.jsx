@@ -314,8 +314,8 @@ export const CompanyListPage = () => {
       {/* FILTER BAR */}
       <Card>
         <CardBody className="p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-teal-700" />
+          <div className="relative w-full md:w-80 shrink-0">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#0F766E]" />
             <input
               type="text"
               placeholder="Search Company Name, Code, Admin Email..."
@@ -324,14 +324,15 @@ export const CompanyListPage = () => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="w-full bg-white border border-[#64748B] rounded-lg pl-9 pr-3 py-2 text-xs text-slate-900 placeholder-[#334155] focus:outline-none focus:border-teal-600 font-semibold"
+              className="w-full bg-white border border-[#64748B] hover:border-[#0F766E] rounded-xl pl-9 pr-3 py-2 text-xs text-[#0F172A] placeholder-slate-400 focus:outline-none focus:border-[#0F766E] focus:ring-1 focus:ring-[#0F766E] font-semibold transition-all shadow-xs"
             />
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto md:ml-auto">
             <Select
               label=""
               value={statusFilter}
+              containerClassName="w-40"
               onChange={(e) => {
                 setStatusFilter(e.target.value);
                 setSearchParams({ status: e.target.value });
@@ -344,12 +345,13 @@ export const CompanyListPage = () => {
                 { value: 'SUSPENDED', label: 'Suspended Only' },
                 { value: 'INACTIVE', label: 'Inactive Only' },
               ]}
-              className="py-1.5 text-xs w-40"
+              className="py-1.5 text-xs"
             />
 
             <Select
               label=""
               value={industryFilter}
+              containerClassName="w-44"
               onChange={(e) => {
                 setIndustryFilter(e.target.value);
                 setPage(1);
@@ -361,12 +363,13 @@ export const CompanyListPage = () => {
                 { value: 'Finance', label: 'Finance' },
                 { value: 'Healthcare', label: 'Healthcare' },
               ]}
-              className="py-1.5 text-xs w-40"
+              className="py-1.5 text-xs"
             />
 
             <Select
               label=""
               value={limit}
+              containerClassName="w-32"
               onChange={(e) => {
                 setLimit(Number(e.target.value));
                 setPage(1);
@@ -377,7 +380,7 @@ export const CompanyListPage = () => {
                 { value: 50, label: '50 per page' },
                 { value: 100, label: '100 per page' },
               ]}
-              className="py-1.5 text-xs w-32"
+              className="py-1.5 text-xs"
             />
           </div>
         </CardBody>

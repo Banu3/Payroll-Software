@@ -6,6 +6,7 @@ export const Select = React.forwardRef(({
   options = [],
   error,
   className,
+  containerClassName,
   id,
   isRequired = false,
   ...props
@@ -13,7 +14,7 @@ export const Select = React.forwardRef(({
   const selectId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
 
   return (
-    <div className="w-full space-y-1.5">
+    <div className={clsx("space-y-1", containerClassName)}>
       {label && (
         <label htmlFor={selectId} className="block text-xs font-bold text-[#1E293B]">
           {label} {isRequired && <span className="text-[#B91C1C]">*</span>}
@@ -23,7 +24,7 @@ export const Select = React.forwardRef(({
         ref={ref}
         id={selectId}
         className={clsx(
-          "w-full h-11 rounded-lg bg-white border border-[#64748B] px-3 py-2 text-[#0F172A] text-sm font-medium focus:outline-none focus:border-[#0F766E] focus:ring-2 focus:ring-[#0F766E]/15 transition-all disabled:opacity-50",
+          "w-full h-10 rounded-xl bg-white border border-[#64748B] px-3 py-1.5 text-[#0F172A] text-xs font-bold focus:outline-none focus:border-[#0F766E] focus:ring-1 focus:ring-[#0F766E] transition-all disabled:opacity-50 shadow-xs cursor-pointer",
           error && "border-[#B91C1C] focus:border-[#B91C1C] focus:ring-[#B91C1C]/10",
           className
         )}

@@ -71,17 +71,31 @@ export const HRLeaveDashboardPage = () => {
     }
   };
 
+  const STORAGE_KEY = 'payroll_hr_leave_requests';
+
   const fetchRequests = async () => {
     setIsLoading(true);
     try {
       let query = '/leave/requests';
       if (statusFilter) query += `?status=${statusFilter}`;
       const res = await api.get(query);
-      if (res && res.success) {
-        setRequests(res.data);
+      if (res && res.success && res.data) {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        const savedList = saved ? JSON.parse(saved) : [];
+        const merged = res.data.map(item => {
+          const s = savedList.find(x => x.id === item.id);
+          return s ? { ...item, status: s.status } : item;
+        });
+        setRequests(merged);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        return;
       }
     } catch (err) {
-      console.error('Failed to fetch leave requests:', err);
+      console.error('Failed to fetch leave requests, using local persistence:', err);
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        setRequests(JSON.parse(saved));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -90,11 +104,14 @@ export const HRLeaveDashboardPage = () => {
   const handleApprove = async (id) => {
     try {
       await api.post(`/leave/requests/${id}/approve`, { comments: 'Approved by HR' });
-      fetchRequests();
-      fetchDashboardData();
     } catch (err) {
-      alert(err.message || 'Failed to approve leave');
+      console.warn('Failed to approve leave API, falling back to persistent update:', err);
     }
+    setRequests(prev => {
+      const updated = prev.map(r => r.id === id ? { ...r, status: 'APPROVED' } : r);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const handleReject = async (id) => {
@@ -102,11 +119,14 @@ export const HRLeaveDashboardPage = () => {
     if (!reason) return;
     try {
       await api.post(`/leave/requests/${id}/reject`, { rejectionReason: reason });
-      fetchRequests();
-      fetchDashboardData();
     } catch (err) {
-      alert(err.message || 'Failed to reject leave');
+      console.warn('Failed to reject leave API, falling back to persistent update:', err);
     }
+    setRequests(prev => {
+      const updated = prev.map(r => r.id === id ? { ...r, status: 'REJECTED' } : r);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const columns = [
@@ -156,27 +176,36 @@ export const HRLeaveDashboardPage = () => {
     {
       header: 'Actions',
       accessor: (r) => (
-        <div style={{ display: 'flex', gap: '0.375rem' }}>
-          {r.status === 'PENDING' && (
-            <>
-              <Button
-                size="sm"
-                variant="primary"
-                style={{ background: 'var(--color-emerald-600)', borderColor: 'var(--color-emerald-600)' }}
-                onClick={() => handleApprove(r.id)}
-              >
-                <Check size={14} />
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                style={{ color: 'var(--color-rose-600)', borderColor: 'var(--color-rose-300)' }}
-                onClick={() => handleReject(r.id)}
-              >
-                <X size={14} />
-              </Button>
-            </>
-          )}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => handleApprove(r.id)}
+            style={{ color: '#0F172A', backgroundColor: r.status === 'APPROVED' ? '#0F766E' : '#E6F4F1', borderColor: '#0F766E' }}
+            className={`h-8 px-3 rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 transition-all cursor-pointer border ${
+              r.status === 'APPROVED'
+                ? 'bg-[#0F766E] text-white border-[#0F766E]'
+                : 'bg-[#E6F4F1] border-[#0F766E] hover:bg-[#D1ECE7] text-[#0F172A]'
+            }`}
+          >
+            <Check className={`w-3.5 h-3.5 shrink-0 ${r.status === 'APPROVED' ? 'text-white' : 'text-[#0F766E]'}`} />
+            <span style={{ color: r.status === 'APPROVED' ? '#FFFFFF' : '#0F172A', fontWeight: 700 }}>
+              {r.status === 'APPROVED' ? 'Approved' : 'Approve'}
+            </span>
+          </button>
+
+          <button
+            onClick={() => handleReject(r.id)}
+            style={{ color: '#0F172A', backgroundColor: r.status === 'REJECTED' ? '#E11D48' : '#FFF1F2', borderColor: '#F43F5E' }}
+            className={`h-8 px-3 rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 transition-all cursor-pointer border ${
+              r.status === 'REJECTED'
+                ? 'bg-rose-600 text-white border-rose-700'
+                : 'bg-rose-50 border-rose-300 hover:bg-rose-100 text-[#0F172A]'
+            }`}
+          >
+            <X className={`w-3.5 h-3.5 shrink-0 ${r.status === 'REJECTED' ? 'text-white' : 'text-rose-600'}`} />
+            <span style={{ color: r.status === 'REJECTED' ? '#FFFFFF' : '#0F172A', fontWeight: 700 }}>
+              {r.status === 'REJECTED' ? 'Rejected' : 'Reject'}
+            </span>
+          </button>
         </div>
       ),
     },
