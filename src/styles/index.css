@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+/* Base Layout & Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #F5F6F3;
+  color: #111827;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F5F6F3;
+}
+::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
+
+/* Utility Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+/* Clean Enterprise Cards & Panels */
+.card-enterprise {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+input, select, textarea, button {
+  font-family: inherit;
+}
+
+/* Global Light Surface & High-Contrast Dark Text System for Main Content Area */
+main {
+  color: #111827;
+}
+
+main .bg-slate-900,
+main .bg-slate-950,
+main .bg-slate-800 {
+  background-color: #FFFFFF !important;
+}
+
+main .border-slate-800,
+main .border-slate-700,
+main .border-slate-900,
+main .border-slate-800\/60,
+main .border-slate-800\/80 {
+  border-color: #E5E7EB !important;
+}
+
+main .text-slate-100,
+main .text-slate-200,
+main .text-slate-50 {
+  color: #111827 !important;
+}
+
+main .text-slate-300,
+main .text-slate-400 {
+  color: #374151 !important;
+}
+
+main .text-slate-500 {
+  color: #4B5563 !important;
+}
+
+main input,
+main select,
+main textarea {
+  background-color: #FFFFFF !important;
+  color: #111827 !important;
+  border-color: #D1D5DB !important;
+}
+
+main input::placeholder,
+main textarea::placeholder {
+  color: #9CA3AF !important;
+}
