@@ -196,9 +196,9 @@ export const EmployeeProfilePage = () => {
       </div>
 
       {notice && (
-        <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs flex items-center justify-between">
-          <span>{notice}</span>
-          <button onClick={() => setNotice(null)} className="text-slate-400 hover:text-slate-200">Dismiss</button>
+        <div className="p-4 rounded-xl bg-blue-100/90 border border-blue-500 text-blue-950 font-bold text-xs flex items-center justify-between shadow-2xs">
+          <span className="text-blue-950 font-bold">{notice}</span>
+          <button onClick={() => setNotice(null)} className="text-blue-900 hover:text-blue-950 font-bold underline text-xs">Dismiss</button>
         </div>
       )}
 

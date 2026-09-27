@@ -309,17 +309,17 @@ export default function CreatePayrollRunWizardPage() {
               <div className="space-y-4">
                 {/* Summary badges */}
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="p-3 bg-red-950/20 border border-red-800/40 rounded-lg flex items-center justify-between">
-                    <span className="text-xs text-red-300 font-semibold">Blocking Errors</span>
-                    <span className="text-lg font-bold text-red-400">{validationResults.summary?.blockingErrorsCount || 0}</span>
+                  <div className="p-3 bg-rose-50 border border-rose-400 rounded-lg flex items-center justify-between">
+                    <span className="text-xs text-rose-950 font-bold">Blocking Errors</span>
+                    <span className="text-lg font-bold text-rose-700">{validationResults.summary?.blockingErrorsCount || 0}</span>
                   </div>
-                  <div className="p-3 bg-amber-950/20 border border-amber-800/40 rounded-lg flex items-center justify-between">
-                    <span className="text-xs text-amber-300 font-semibold">Warnings</span>
-                    <span className="text-lg font-bold text-amber-400">{validationResults.summary?.warningsCount || 0}</span>
+                  <div className="p-3 bg-amber-50 border border-amber-400 rounded-lg flex items-center justify-between">
+                    <span className="text-xs text-amber-950 font-bold">Warnings</span>
+                    <span className="text-lg font-bold text-amber-700">{validationResults.summary?.warningsCount || 0}</span>
                   </div>
-                  <div className="p-3 bg-emerald-950/20 border border-emerald-800/40 rounded-lg flex items-center justify-between">
-                    <span className="text-xs text-emerald-300 font-semibold">Passed Checks</span>
-                    <span className="text-lg font-bold text-emerald-400">{validationResults.summary?.passedCount || 0}</span>
+                  <div className="p-3 bg-emerald-50 border border-emerald-400 rounded-lg flex items-center justify-between">
+                    <span className="text-xs text-emerald-950 font-bold">Passed Checks</span>
+                    <span className="text-lg font-bold text-emerald-700">{validationResults.summary?.passedCount || 0}</span>
                   </div>
                 </div>
 

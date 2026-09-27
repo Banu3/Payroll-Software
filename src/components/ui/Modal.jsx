@@ -37,21 +37,21 @@ export const Modal = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111827]/60 backdrop-blur-xs animate-fade-in">
       <div
         className={clsx(
-          "w-full bg-white border border-[#E5E7EB] rounded-xl shadow-xl overflow-hidden text-[#111827] transform transition-all",
+          "w-full bg-white border border-[#475569] rounded-[14px] shadow-xl overflow-hidden text-[#0F172A] transform transition-all",
           maxWidth
         )}
         onClick={(e) => e.stopPropagation()}
       >
         {(title || showCloseButton) && (
-          <div className="px-6 py-4 border-b border-[#E5E7EB] flex items-center justify-between bg-[#F5F6F3]">
+          <div className="px-6 py-4 border-b border-[#94A3B8] flex items-center justify-between bg-[#F8FAFC]">
             <div>
-              {title && <h2 className="text-lg font-bold text-[#111827]">{title}</h2>}
-              {description && <p className="text-xs text-[#374151] mt-0.5">{description}</p>}
+              {title && <h2 className="text-lg font-bold text-[#0F172A]">{title}</h2>}
+              {description && <p className="text-xs text-[#334155] font-medium mt-0.5">{description}</p>}
             </div>
             {showCloseButton && onClose && (
               <button
                 onClick={onClose}
-                className="text-[#6B7280] hover:text-[#111827] transition-colors p-1 rounded-lg hover:bg-[#E5E7EB]"
+                className="text-[#334155] hover:text-[#0F172A] transition-colors p-1 rounded-lg hover:bg-[#E2E8F0]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -66,22 +66,21 @@ export const Modal = ({
 };
 
 export const ModalHeader = ({ title, description, children }) => (
-  <div className="pb-3 mb-3 border-b border-[#E5E7EB]">
-    {title && <h3 className="text-base font-bold text-slate-900">{title}</h3>}
-    {description && <p className="text-xs text-slate-600 mt-0.5">{description}</p>}
+  <div className="pb-3 mb-3 border-b border-[#94A3B8]">
+    {title && <h3 className="text-base font-bold text-[#0F172A]">{title}</h3>}
+    {description && <p className="text-xs text-[#334155] font-medium mt-0.5">{description}</p>}
     {children}
   </div>
 );
 
 export const ModalBody = ({ children, className }) => (
-  <div className={clsx("space-y-4", className)}>{children}</div>
+  <div className={clsx("space-y-4 text-[#0F172A]", className)}>{children}</div>
 );
 
 export const ModalFooter = ({ children, className }) => (
-  <div className={clsx("pt-4 mt-4 border-t border-[#E5E7EB] flex items-center justify-end gap-3", className)}>
+  <div className={clsx("pt-4 mt-4 border-t border-[#94A3B8] flex items-center justify-end gap-3", className)}>
     {children}
   </div>
 );
 
 export default Modal;
-

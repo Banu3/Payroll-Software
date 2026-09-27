@@ -168,14 +168,14 @@ export default function HRAIAssistantPage() {
         </div>
 
         {/* Input Bar */}
-        <div className="flex items-center gap-3 pt-4 border-t border-slate-800">
+        <div className="flex items-center gap-3 pt-4 border-t border-[#94A3B8]">
           <input
             type="text"
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Ask a question (e.g. How many active employees are there?)..."
-            className="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-purple-500"
+            className="flex-1 bg-white border border-[#64748B] rounded-lg px-4 py-2.5 text-xs text-[#0F172A] placeholder-[#334155] font-semibold focus:outline-none focus:border-purple-600"
           />
           <button
             onClick={() => handleSend()}

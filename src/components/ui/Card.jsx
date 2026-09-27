@@ -4,7 +4,7 @@ import clsx from 'clsx';
 export const Card = ({ children, className, ...props }) => (
   <div
     className={clsx(
-      "bg-white border border-[#E5E7EB] rounded-xl shadow-xs transition-all",
+      "bg-white border border-[#64748B] rounded-xl shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-all overflow-hidden",
       className
     )}
     {...props}
@@ -14,11 +14,11 @@ export const Card = ({ children, className, ...props }) => (
 );
 
 export const CardHeader = ({ children, className, title, description, action }) => (
-  <div className={clsx("p-5 border-b border-[#E5E7EB] flex items-center justify-between gap-4", className)}>
+  <div className={clsx("px-5 py-4 border-b border-[#94A3B8] bg-white flex items-center justify-between gap-4", className)}>
     {title ? (
       <div>
-        <h3 className="text-base font-semibold text-[#111827]">{title}</h3>
-        {description && <p className="text-xs text-[#374151] mt-0.5">{description}</p>}
+        <h3 className="text-base font-bold text-[#0F172A] tracking-tight">{title}</h3>
+        {description && <p className="text-xs text-[#334155] font-medium mt-0.5">{description}</p>}
       </div>
     ) : (
       children
@@ -28,11 +28,11 @@ export const CardHeader = ({ children, className, title, description, action }) 
 );
 
 export const CardBody = ({ children, className }) => (
-  <div className={clsx("p-5 space-y-4", className)}>{children}</div>
+  <div className={clsx("p-5 space-y-4 text-[#0F172A]", className)}>{children}</div>
 );
 
 export const CardFooter = ({ children, className }) => (
-  <div className={clsx("px-5 py-3.5 border-t border-[#E5E5EB] bg-[#F5F6F3] rounded-b-xl flex items-center justify-between", className)}>
+  <div className={clsx("px-5 py-3.5 border-t border-[#94A3B8] bg-[#F8FAFC] rounded-b-xl flex items-center justify-between text-[#1E293B]", className)}>
     {children}
   </div>
 );

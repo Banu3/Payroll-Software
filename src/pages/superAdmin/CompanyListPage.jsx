@@ -315,7 +315,7 @@ export const CompanyListPage = () => {
       <Card>
         <CardBody className="p-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-teal-700" />
             <input
               type="text"
               placeholder="Search Company Name, Code, Admin Email..."
@@ -324,7 +324,7 @@ export const CompanyListPage = () => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="w-full bg-white border border-[#E5E7EB] rounded-lg pl-9 pr-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-teal-600 font-medium"
+              className="w-full bg-white border border-[#64748B] rounded-lg pl-9 pr-3 py-2 text-xs text-slate-900 placeholder-[#334155] focus:outline-none focus:border-teal-600 font-semibold"
             />
           </div>
 

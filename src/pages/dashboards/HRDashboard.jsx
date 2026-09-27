@@ -97,9 +97,9 @@ export const HRDashboard = () => {
       />
 
       {statusMessage && (
-        <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
-          <span>{statusMessage}</span>
+        <div className="p-4 rounded-xl bg-blue-100/90 border border-blue-500 text-blue-950 font-bold text-xs flex items-center gap-2 shadow-2xs">
+          <CheckCircle2 className="w-4 h-4 text-blue-800 shrink-0 font-bold" />
+          <span className="text-blue-950 font-bold">{statusMessage}</span>
         </div>
       )}
 

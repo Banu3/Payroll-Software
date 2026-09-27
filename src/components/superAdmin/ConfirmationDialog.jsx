@@ -34,9 +34,9 @@ export const ConfirmationDialog = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-md" title={title}>
       <form onSubmit={handleConfirmSubmit} className="space-y-4">
-        <div className="flex items-start gap-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-300 text-xs">
-          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-          <div className="leading-relaxed">{description}</div>
+        <div className="flex items-start gap-3 p-3 bg-amber-100/90 border border-amber-500 rounded-xl text-amber-950 font-semibold text-xs shadow-2xs">
+          <AlertTriangle className="w-5 h-5 text-amber-800 shrink-0 mt-0.5 font-bold" />
+          <div className="leading-relaxed text-amber-950 font-semibold">{description}</div>
         </div>
 
         {confirmName && (

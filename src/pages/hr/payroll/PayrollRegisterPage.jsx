@@ -175,13 +175,13 @@ export default function PayrollRegisterPage() {
 
         {/* Search */}
         <div className="relative w-64">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+          <Search className="w-3.5 h-3.5 text-teal-700 absolute left-3 top-2.5" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search employee..."
-            className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500"
+            className="w-full bg-white border border-[#64748B] rounded-lg pl-8 pr-3 py-1.5 text-xs text-[#0F172A] placeholder-[#334155] font-semibold focus:outline-none focus:border-teal-600"
           />
         </div>
       </div>

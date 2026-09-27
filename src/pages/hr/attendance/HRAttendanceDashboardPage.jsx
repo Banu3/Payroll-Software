@@ -451,7 +451,7 @@ export const HRAttendanceDashboardPage = () => {
         <CardHeader style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flex: 1, minWidth: '280px' }}>
             <div style={{ position: 'relative', width: '100%', maxWidth: '320px' }}>
-              <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#0F766E' }} />
               <input
                 type="text"
                 placeholder="Search employee, ID, email..."

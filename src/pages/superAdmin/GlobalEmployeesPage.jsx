@@ -134,13 +134,13 @@ export const GlobalEmployeesPage = () => {
       <Card className="p-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-teal-700" />
             <input
               type="text"
               placeholder="Search by employee name, email, department..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-white border border-[#E5E7EB] rounded-lg text-xs text-slate-900 focus:outline-none focus:border-teal-600"
+              className="w-full pl-9 pr-4 py-2 bg-white border border-[#64748B] rounded-lg text-xs text-slate-900 placeholder-[#334155] font-semibold focus:outline-none focus:border-teal-600"
             />
           </div>
 

@@ -136,7 +136,7 @@ export const SecuritySettingsPage = () => {
       />
 
       {/* SECTION 1: PASSWORD CHANGE */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-white border-[#64748B]">
         <CardHeader
           title="Change Password"
           description="Ensure your account uses a strong, enterprise-compliant password."
@@ -144,14 +144,14 @@ export const SecuritySettingsPage = () => {
         <form onSubmit={handlePasswordChange}>
           <CardBody className="space-y-4 max-w-xl">
             {passwordMessage && (
-              <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
+              <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-semibold flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span>{passwordMessage}</span>
               </div>
             )}
 
             {passwordError && (
-              <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
+              <div className="p-3 rounded-lg bg-rose-50 border border-rose-300 text-rose-800 text-xs font-semibold flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{passwordError}</span>
               </div>
@@ -194,27 +194,27 @@ export const SecuritySettingsPage = () => {
       </Card>
 
       {/* SECTION 2: TWO-FACTOR AUTHENTICATION */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-white border-[#64748B]">
         <CardHeader
           title="Two-Factor Authentication (2FA)"
           description="Add an extra layer of security to your corporate identity."
         />
         <CardBody className="space-y-4">
           {twoFactorMessage && (
-            <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs flex items-center gap-2">
+            <div className="p-3 rounded-lg bg-blue-50 border border-blue-300 text-blue-800 text-xs font-semibold flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{twoFactorMessage}</span>
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-950 border border-slate-800 rounded-xl gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-[#F8FAFC] border border-[#64748B] rounded-xl gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-500/30 text-blue-400 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-300 text-teal-700 flex items-center justify-center">
                 <Smartphone className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-slate-100">Authenticator App (TOTP)</h4>
-                <p className="text-xs text-slate-400">Use apps like Google Authenticator or 1Password to generate time-based codes.</p>
+                <h4 className="text-sm font-bold text-[#0F172A]">Authenticator App (TOTP)</h4>
+                <p className="text-xs text-[#334155] font-medium">Use apps like Google Authenticator or 1Password to generate time-based codes.</p>
               </div>
             </div>
 
@@ -231,22 +231,22 @@ export const SecuritySettingsPage = () => {
       </Card>
 
       {/* SECTION 3: ACTIVE SESSIONS */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-white border-[#64748B]">
         <CardHeader
           title="Active Login Sessions"
           description="Manage and revoke active session tokens across devices."
         />
         <CardBody className="space-y-3">
           {sessions.map((sess) => (
-            <div key={sess.id} className="p-4 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between text-xs">
+            <div key={sess.id} className="p-4 bg-[#F8FAFC] border border-[#64748B] rounded-xl flex items-center justify-between text-xs">
               <div className="flex items-center gap-3">
-                <Laptop className="w-5 h-5 text-slate-400" />
+                <Laptop className="w-5 h-5 text-teal-700" />
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-slate-100">{sess.device}</span>
+                    <span className="font-bold text-[#0F172A]">{sess.device}</span>
                     {sess.isCurrent && <Badge variant="success">CURRENT</Badge>}
                   </div>
-                  <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+                  <div className="text-[11px] text-[#334155] font-mono font-medium mt-0.5">
                     IP: {sess.ip} &bull; {sess.location} &bull; {sess.lastActive}
                   </div>
                 </div>
@@ -268,7 +268,7 @@ export const SecuritySettingsPage = () => {
       </Card>
 
       {/* SECTION 4: LOGIN HISTORY */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-white border-[#64748B]">
         <CardHeader
           title="Security Activity & Login History"
           description="Supabase audit events recorded for your user account"
@@ -276,12 +276,12 @@ export const SecuritySettingsPage = () => {
         <CardBody className="p-0">
           <DataTable
             columns={[
-              { header: 'Event Type', accessor: 'event_type', render: (l) => <span className="font-mono text-blue-400 font-semibold uppercase">{l.event_type}</span> },
-              { header: 'IP Address', accessor: 'ip_address', render: (l) => <span className="font-mono text-slate-300">{l.ip_address}</span> },
-              { header: 'Browser / Device', accessor: 'browser', render: (l) => <span className="text-slate-300">{l.browser}</span> },
-              { header: 'Location', accessor: 'location', render: (l) => <span className="text-slate-400">{l.location || 'Local System'}</span> },
+              { header: 'Event Type', accessor: 'event_type', render: (l) => <span className="font-mono text-teal-700 font-bold uppercase">{l.event_type}</span> },
+              { header: 'IP Address', accessor: 'ip_address', render: (l) => <span className="font-mono text-[#0F172A] font-semibold">{l.ip_address}</span> },
+              { header: 'Browser / Device', accessor: 'browser', render: (l) => <span className="text-[#0F172A] font-medium">{l.browser}</span> },
+              { header: 'Location', accessor: 'location', render: (l) => <span className="text-[#334155] font-medium">{l.location || 'Local System'}</span> },
               { header: 'Status', accessor: 'status', render: (l) => <Badge variant={l.status === 'SUCCESS' ? 'success' : 'danger'}>{l.status}</Badge> },
-              { header: 'Timestamp', accessor: 'created_at', render: (l) => <span className="text-slate-400 text-[11px] font-mono">{new Date(l.created_at).toLocaleString()}</span> },
+              { header: 'Timestamp', accessor: 'created_at', render: (l) => <span className="text-[#334155] text-[11px] font-mono font-medium">{new Date(l.created_at).toLocaleString()}</span> },
             ]}
             data={loginHistory}
           />

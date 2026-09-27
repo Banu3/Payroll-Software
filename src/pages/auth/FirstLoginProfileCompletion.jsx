@@ -309,9 +309,9 @@ export const FirstLoginProfileCompletion = () => {
             {currentStep === 3 && (
               <div className="space-y-4">
                 {!canEditSalary && (
-                  <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs flex items-center gap-2">
-                    <Shield className="w-4 h-4 text-blue-400 shrink-0" />
-                    <span>Payroll Sensitive Notice: Bank details will require HR Admin verification after submission.</span>
+                  <div className="p-3 rounded-lg bg-blue-100/90 border border-blue-500 text-blue-950 font-bold text-xs flex items-center gap-2 shadow-2xs">
+                    <Shield className="w-4 h-4 text-blue-800 shrink-0 font-bold" />
+                    <span className="text-blue-950 font-bold">Payroll Sensitive Notice: Bank details will require HR Admin verification after submission.</span>
                   </div>
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

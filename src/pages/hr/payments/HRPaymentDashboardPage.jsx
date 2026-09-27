@@ -150,21 +150,21 @@ export default function HRPaymentDashboardPage() {
       </div>
 
       {/* Batches Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+      <div className="bg-white border border-[#64748B] rounded-xl p-5 space-y-4 shadow-xs">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-            <Clock className="w-4 h-4 text-blue-400" /> Recent Payment Batches
+          <h2 className="text-sm font-bold text-[#0F172A] uppercase tracking-wider flex items-center gap-2">
+            <Clock className="w-4 h-4 text-teal-700" /> Recent Payment Batches
           </h2>
         </div>
 
         {!batches || batches.length === 0 ? (
-          <div className="p-8 text-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-lg">
+          <div className="p-8 text-center text-[#475569] text-xs border border-dashed border-[#94A3B8] rounded-lg">
             No payment batches created yet. Click "Create Payment Batch" to initialize salary payment instruction.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold tracking-wider border-b border-slate-800">
+          <div className="overflow-x-auto rounded-lg border border-[#94A3B8]">
+            <table className="w-full text-left text-xs text-[#0F172A]">
+              <thead className="bg-[#F1F5F9] text-[#1E293B] uppercase text-[10px] font-bold tracking-wider border-b border-[#94A3B8]">
                 <tr>
                   <th className="p-3">Batch ID</th>
                   <th className="p-3">Company Bank</th>
@@ -176,32 +176,32 @@ export default function HRPaymentDashboardPage() {
                   <th className="p-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
+              <tbody className="divide-y divide-[#94A3B8] font-mono">
                 {batches.map((batch) => (
-                  <tr key={batch.id} className="hover:bg-slate-800/40 transition">
-                    <td className="p-3 font-bold text-slate-100">{batch.batch_number}</td>
-                    <td className="p-3 font-sans text-slate-400">{batch.company_bank_accounts?.bank_name || 'Default Bank'}</td>
-                    <td className="p-3 font-sans text-slate-300">{batch.total_employees} staff</td>
+                  <tr key={batch.id} className="hover:bg-[#F8FAFC] transition">
+                    <td className="p-3 font-bold text-[#0F172A]">{batch.batch_number}</td>
+                    <td className="p-3 font-sans text-[#334155] font-medium">{batch.company_bank_accounts?.bank_name || 'Default Bank'}</td>
+                    <td className="p-3 font-sans text-[#334155] font-medium">{batch.total_employees} staff</td>
                     <td className="p-3 font-sans">
-                      <span className="text-emerald-400">{batch.valid_bank_count} Valid</span> / <span className="text-red-400">{batch.invalid_bank_count} Missing</span>
+                      <span className="text-emerald-700 font-bold">{batch.valid_bank_count} Valid</span> / <span className="text-rose-700 font-bold">{batch.invalid_bank_count} Missing</span>
                     </td>
-                    <td className="p-3 text-emerald-400 font-bold">₹{Number(batch.total_net_amount || 0).toLocaleString()}</td>
+                    <td className="p-3 text-emerald-700 font-bold">₹{Number(batch.total_net_amount || 0).toLocaleString()}</td>
                     <td className="p-3 font-sans">
-                      <span className={`px-2.5 py-0.5 rounded text-[10px] font-semibold border ${
+                      <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold border ${
                         batch.status === 'RECONCILED' || batch.status === 'COMPLETED'
-                          ? 'bg-emerald-950 text-emerald-400 border-emerald-800'
+                          ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
                           : batch.status === 'SUBMITTED'
-                          ? 'bg-blue-950 text-blue-400 border-blue-800'
-                          : 'bg-amber-950 text-amber-400 border-amber-800'
+                          ? 'bg-blue-50 text-blue-800 border-blue-300'
+                          : 'bg-amber-50 text-amber-800 border-amber-300'
                       }`}>
                         {batch.status}
                       </span>
                     </td>
-                    <td className="p-3 text-slate-500 font-sans text-[11px]">{new Date(batch.created_at).toLocaleDateString()}</td>
+                    <td className="p-3 text-[#334155] font-sans text-[11px] font-medium">{new Date(batch.created_at).toLocaleDateString()}</td>
                     <td className="p-3 text-right font-sans">
                       <button
                         onClick={() => navigate(`/hr/payments/batches/${batch.id}`)}
-                        className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-semibold rounded"
+                        className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 border border-[#64748B] text-[#0F172A] text-[11px] font-bold rounded transition-colors"
                       >
                         Details
                       </button>

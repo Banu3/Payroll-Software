@@ -171,9 +171,9 @@ export default function PaymentBatchDetailsPage() {
 
       {/* Notice Banner */}
       {downloadNotice && (
-        <div className="p-4 bg-blue-950/40 border border-blue-800/60 rounded-xl text-xs text-blue-300 flex items-center gap-3">
-          <CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0" />
-          <span>{downloadNotice}</span>
+        <div className="p-4 bg-blue-100/90 border border-blue-500 rounded-xl text-xs text-blue-950 font-bold flex items-center gap-3 shadow-2xs">
+          <CheckCircle2 className="w-5 h-5 text-blue-800 shrink-0 font-bold" />
+          <span className="text-blue-950 font-bold">{downloadNotice}</span>
         </div>
       )}
 
@@ -198,13 +198,13 @@ export default function PaymentBatchDetailsPage() {
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider">Employee Bank Instructions</h2>
           <div className="relative w-64">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+            <Search className="w-3.5 h-3.5 text-teal-700 absolute left-3 top-2.5" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search employee..."
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-100 focus:outline-none"
+              className="w-full bg-white border border-[#64748B] rounded-lg pl-8 pr-3 py-1.5 text-xs text-[#0F172A] placeholder-[#334155] font-semibold focus:outline-none focus:border-teal-600"
             />
           </div>
         </div>

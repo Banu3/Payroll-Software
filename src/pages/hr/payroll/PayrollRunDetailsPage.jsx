@@ -470,20 +470,20 @@ export default function PayrollRunDetailsPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-4">
             <div className="relative flex-1 max-w-md">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <Search className="w-4 h-4 text-teal-700 absolute left-3 top-3" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search employee name or code..."
-                className="w-full bg-slate-900 border border-slate-800 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500"
+                className="w-full bg-white border border-[#64748B] rounded-lg pl-9 pr-4 py-2 text-sm text-[#0F172A] placeholder-[#334155] font-semibold focus:outline-none focus:border-teal-600"
               />
             </div>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold tracking-wider border-b border-slate-800">
+          <div className="bg-white border border-[#64748B] rounded-xl overflow-x-auto shadow-xs">
+            <table className="w-full text-left text-xs text-[#0F172A]">
+              <thead className="bg-[#F1F5F9] text-[#1E293B] uppercase text-[10px] font-bold tracking-wider border-b border-[#94A3B8]">
                 <tr>
                   <th className="p-3">Employee</th>
                   <th className="p-3">Department</th>

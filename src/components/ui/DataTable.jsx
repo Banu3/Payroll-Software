@@ -2,10 +2,10 @@ import React from 'react';
 
 export const DataTable = ({ columns = [], data = [], keyExtractor = (item, idx) => idx }) => {
   return (
-    <div className="w-full overflow-x-auto rounded-xl border border-[#E5E7EB] bg-white shadow-xs">
-      <table className="w-full text-left border-collapse text-xs text-[#111827]">
+    <div className="w-full overflow-x-auto rounded-xl border border-[#64748B] bg-white shadow-xs">
+      <table className="w-full text-left border-collapse text-xs text-[#0F172A]">
         <thead>
-          <tr className="border-b border-[#E5E7EB] bg-[#F8FAFC] text-[#374151] font-semibold tracking-wider uppercase">
+          <tr className="border-b border-[#94A3B8] bg-[#F1F5F9] text-[#1E293B] font-bold tracking-wider uppercase">
             {columns.map((col, i) => (
               <th key={i} className="px-4 py-3 text-left">
                 {col.header}
@@ -13,10 +13,10 @@ export const DataTable = ({ columns = [], data = [], keyExtractor = (item, idx) 
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#E5E7EB]">
+        <tbody className="divide-y divide-[#94A3B8]">
           {data.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} className="px-4 py-8 text-center text-[#6B7280] font-medium">
+              <td colSpan={columns.length} className="px-4 py-8 text-center text-[#475569] font-medium">
                 No records found.
               </td>
             </tr>

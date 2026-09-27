@@ -189,24 +189,24 @@ export const HRDashboardPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div
           onClick={() => navigate('/hr/employees?filter=missing-documents')}
-          className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between text-xs text-amber-300 cursor-pointer hover:bg-amber-500/15 transition-all"
+          className="p-3.5 rounded-xl bg-amber-100/90 border border-amber-500 shadow-2xs flex items-center justify-between text-xs text-amber-950 font-semibold cursor-pointer hover:bg-amber-200/90 hover:border-amber-600 transition-all"
         >
           <div className="flex items-center gap-2.5">
-            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-            <span><strong>3 Employees</strong> have missing verification documents (ID / Address Proof)</span>
+            <AlertTriangle className="w-4.5 h-4.5 text-amber-800 shrink-0 font-bold" />
+            <span className="text-amber-950"><strong className="text-amber-950 font-bold">3 Employees</strong> have missing verification documents (ID / Address Proof)</span>
           </div>
-          <ArrowUpRight className="w-4 h-4 text-amber-400 shrink-0" />
+          <ArrowUpRight className="w-4 h-4 text-amber-900 shrink-0 font-bold" />
         </div>
 
         <div
           onClick={() => navigate('/hr/requests')}
-          className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-between text-xs text-blue-300 cursor-pointer hover:bg-blue-500/15 transition-all"
+          className="p-3.5 rounded-xl bg-blue-100/90 border border-blue-500 shadow-2xs flex items-center justify-between text-xs text-blue-950 font-semibold cursor-pointer hover:bg-blue-200/90 hover:border-blue-600 transition-all"
         >
           <div className="flex items-center gap-2.5">
-            <FileCheck className="w-4 h-4 text-blue-400 shrink-0" />
-            <span><strong>2 Pending Requests</strong> (Bank Change & Address Profile Updates)</span>
+            <FileCheck className="w-4.5 h-4.5 text-blue-800 shrink-0 font-bold" />
+            <span className="text-blue-950"><strong className="text-blue-950 font-bold">2 Pending Requests</strong> (Bank Change & Address Profile Updates)</span>
           </div>
-          <ArrowUpRight className="w-4 h-4 text-blue-400 shrink-0" />
+          <ArrowUpRight className="w-4 h-4 text-blue-900 shrink-0 font-bold" />
         </div>
       </div>
 
@@ -216,17 +216,17 @@ export const HRDashboardPage = () => {
         {/* KPI 1: Total Employees */}
         <Card
           onClick={() => navigate('/hr/employees')}
-          className="p-4 bg-slate-900 border-slate-800 hover:border-blue-500/50 hover:bg-slate-800/60 transition-all cursor-pointer group"
+          className="p-4 bg-white border border-[#64748B] hover:border-[#0F766E] hover:bg-[#F8FAFC] transition-all cursor-pointer group"
         >
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span className="font-medium">Total Employees</span>
-            <Users className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
+          <div className="flex items-center justify-between text-xs text-[#334155]">
+            <span className="font-bold">Total Employees</span>
+            <Users className="w-4 h-4 text-teal-700 group-hover:scale-110 transition-transform" />
           </div>
           <div className="flex items-baseline justify-between mt-2">
-            <span className="text-3xl font-bold text-slate-100">{dashboardData?.totalEmployees || 48}</span>
-            <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors" />
+            <span className="text-3xl font-bold text-[#0F172A]">{dashboardData?.totalEmployees || 48}</span>
+            <ArrowUpRight className="w-4 h-4 text-[#64748B] group-hover:text-teal-700 transition-colors" />
           </div>
-          <div className="text-[11px] text-emerald-400 mt-1 font-mono">
+          <div className="text-[11px] text-emerald-700 mt-1 font-mono font-bold">
             {dashboardData?.activeEmployees || 45} Active &bull; {dashboardData?.newJoiners || 3} New Joiners
           </div>
         </Card>
@@ -234,51 +234,51 @@ export const HRDashboardPage = () => {
         {/* KPI 2: Pending Leave Requests */}
         <Card
           onClick={() => navigate('/hr/leave/requests')}
-          className="p-4 bg-slate-900 border-slate-800 hover:border-amber-500/50 hover:bg-slate-800/60 transition-all cursor-pointer group"
+          className="p-4 bg-white border border-[#64748B] hover:border-amber-600 hover:bg-[#F8FAFC] transition-all cursor-pointer group"
         >
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span className="font-medium">Pending Leave Approvals</span>
-            <Calendar className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+          <div className="flex items-center justify-between text-xs text-[#334155]">
+            <span className="font-bold">Pending Leave Approvals</span>
+            <Calendar className="w-4 h-4 text-amber-700 group-hover:scale-110 transition-transform" />
           </div>
           <div className="flex items-baseline justify-between mt-2">
-            <span className="text-3xl font-bold text-slate-100">{dashboardData?.pendingLeaveRequests || 4}</span>
-            <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition-colors" />
+            <span className="text-3xl font-bold text-[#0F172A]">{dashboardData?.pendingLeaveRequests || 4}</span>
+            <ArrowUpRight className="w-4 h-4 text-[#64748B] group-hover:text-amber-700 transition-colors" />
           </div>
-          <div className="text-[11px] text-amber-400 mt-1 font-mono">Requires HR Review</div>
+          <div className="text-[11px] text-amber-800 mt-1 font-mono font-bold">Requires HR Review</div>
         </Card>
 
         {/* KPI 3: Missing Documents */}
         <Card
           onClick={() => navigate('/hr/employees?filter=missing-documents')}
-          className="p-4 bg-slate-900 border-slate-800 hover:border-rose-500/50 hover:bg-slate-800/60 transition-all cursor-pointer group"
+          className="p-4 bg-white border border-[#64748B] hover:border-rose-600 hover:bg-[#F8FAFC] transition-all cursor-pointer group"
         >
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span className="font-medium">Missing Compliance Documents</span>
-            <FileCheck className="w-4 h-4 text-rose-400 group-hover:scale-110 transition-transform" />
+          <div className="flex items-center justify-between text-xs text-[#334155]">
+            <span className="font-bold">Missing Compliance Documents</span>
+            <FileCheck className="w-4 h-4 text-rose-700 group-hover:scale-110 transition-transform" />
           </div>
           <div className="flex items-baseline justify-between mt-2">
-            <span className="text-3xl font-bold text-slate-100">{dashboardData?.missingDocumentsCount || 3}</span>
-            <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-rose-400 transition-colors" />
+            <span className="text-3xl font-bold text-[#0F172A]">{dashboardData?.missingDocumentsCount || 3}</span>
+            <ArrowUpRight className="w-4 h-4 text-[#64748B] group-hover:text-rose-700 transition-colors" />
           </div>
-          <div className="text-[11px] text-rose-400 mt-1 font-mono">Action Needed</div>
+          <div className="text-[11px] text-rose-800 mt-1 font-mono font-bold">Action Needed</div>
         </Card>
 
         {/* KPI 4: Upcoming Milestones */}
         <Card
           onClick={() => navigate('/hr/employees')}
-          className="p-4 bg-slate-900 border-slate-800 hover:border-purple-500/50 hover:bg-slate-800/60 transition-all cursor-pointer group"
+          className="p-4 bg-white border border-[#64748B] hover:border-purple-600 hover:bg-[#F8FAFC] transition-all cursor-pointer group"
         >
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span className="font-medium">Upcoming Birthdays & Anniversaries</span>
-            <Cake className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" />
+          <div className="flex items-center justify-between text-xs text-[#334155]">
+            <span className="font-bold">Upcoming Birthdays & Anniversaries</span>
+            <Cake className="w-4 h-4 text-purple-700 group-hover:scale-110 transition-transform" />
           </div>
           <div className="flex items-baseline justify-between mt-2">
-            <span className="text-3xl font-bold text-slate-100">
+            <span className="text-3xl font-bold text-[#0F172A]">
               {(dashboardData?.upcomingBirthdaysCount || 2) + (dashboardData?.upcomingAnniversariesCount || 1)}
             </span>
-            <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-purple-400 transition-colors" />
+            <ArrowUpRight className="w-4 h-4 text-[#64748B] group-hover:text-purple-700 transition-colors" />
           </div>
-          <div className="text-[11px] text-purple-400 mt-1 font-mono">This Month</div>
+          <div className="text-[11px] text-purple-800 mt-1 font-mono font-bold">This Month</div>
         </Card>
 
       </div>
@@ -287,7 +287,7 @@ export const HRDashboardPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         {/* CHART 1: EMPLOYEE GROWTH */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-white border-[#64748B]">
           <CardHeader
             title="Workforce Growth Acceleration"
             description="Monthly headcount accumulation for company"
@@ -297,22 +297,22 @@ export const HRDashboardPage = () => {
               <AreaChart data={dashboardData?.analytics?.employeeGrowth || []}>
                 <defs>
                   <linearGradient id="hrGrowth" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#0F766E" stopOpacity={0.4}/>
+                    <stop offset="95%" stopColor="#0F766E" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.5} />
-                <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} />
-                <YAxis stroke="#94a3b8" fontSize={11} />
-                <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px', fontSize: '12px' }} />
-                <Area type="monotone" dataKey="count" name="Headcount" stroke="#3b82f6" fillOpacity={1} fill="url(#hrGrowth)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" opacity={0.7} />
+                <XAxis dataKey="month" stroke="#334155" fontSize={11} fontWeight={600} />
+                <YAxis stroke="#334155" fontSize={11} fontWeight={600} />
+                <Tooltip contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#64748B', borderRadius: '8px', fontSize: '12px', color: '#0F172A' }} />
+                <Area type="monotone" dataKey="count" name="Headcount" stroke="#0F766E" fillOpacity={1} fill="url(#hrGrowth)" />
               </AreaChart>
             </ResponsiveContainer>
           </CardBody>
         </Card>
 
         {/* CHART 2: DEPARTMENT DISTRIBUTION */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-white border-[#64748B]">
           <CardHeader
             title="Departmental Allocation"
             description="Headcount breakdown by corporate division"
@@ -320,11 +320,11 @@ export const HRDashboardPage = () => {
           <CardBody className="h-72 pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={dashboardData?.analytics?.departmentDistribution || []}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.5} />
-                <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} />
-                <YAxis stroke="#94a3b8" fontSize={11} />
-                <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px', fontSize: '12px' }} />
-                <Bar dataKey="count" name="Employees" fill="#9333ea" radius={[4, 4, 0, 0]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" opacity={0.7} />
+                <XAxis dataKey="name" stroke="#334155" fontSize={11} fontWeight={600} />
+                <YAxis stroke="#334155" fontSize={11} fontWeight={600} />
+                <Tooltip contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#64748B', borderRadius: '8px', fontSize: '12px', color: '#0F172A' }} />
+                <Bar dataKey="count" name="Employees" fill="#0F766E" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardBody>

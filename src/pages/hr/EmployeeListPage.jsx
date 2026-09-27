@@ -315,17 +315,17 @@ export const EmployeeListPage = () => {
       />
 
       {filterParam === 'missing-documents' && (
-        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center gap-2">
-          <Filter className="w-4 h-4 text-amber-400 shrink-0" />
-          <span>Showing employees with missing mandatory verification documents.</span>
+        <div className="p-4 rounded-xl bg-amber-100/90 border border-amber-500 text-amber-950 font-bold text-xs flex items-center gap-2 shadow-2xs">
+          <Filter className="w-4 h-4 text-amber-800 shrink-0 font-bold" />
+          <span className="text-amber-950 font-bold">Showing employees with missing mandatory verification documents.</span>
         </div>
       )}
 
       {/* FILTER BAR */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-white border-[#64748B]">
         <CardBody className="p-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-teal-700" />
             <input
               type="text"
               placeholder="Search Employee Name, EMP ID, Work Email, Phone..."
@@ -334,7 +334,7 @@ export const EmployeeListPage = () => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500"
+              className="w-full bg-white border border-[#64748B] rounded-lg pl-9 pr-3 py-2 text-xs text-[#0F172A] placeholder-[#334155] font-semibold focus:outline-none focus:border-teal-600"
             />
           </div>
 

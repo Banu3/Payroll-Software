@@ -2,19 +2,17 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { ROLE_DASHBOARDS } from '../../config/permissions';
-import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { PasswordInput } from '../../components/ui/PasswordInput';
 import {
-  ShieldCheck,
-  Lock,
   Mail,
   AlertCircle,
-  Building2,
   CheckCircle2,
   ArrowRight,
-  Globe,
-  KeyRound
+  KeyRound,
+  Check,
+  ShieldCheck,
+  Loader2
 } from 'lucide-react';
 
 export const LoginPage = () => {
@@ -42,7 +40,7 @@ export const LoginPage = () => {
     setEmailVerificationWarning(null);
 
     if (!email || !password) {
-      setError('Please fill in both email and password.');
+      setError('Please fill in both work email and password.');
       return;
     }
 
@@ -58,7 +56,7 @@ export const LoginPage = () => {
       if (err.code === 'EMAIL_NOT_VERIFIED') {
         setEmailVerificationWarning('Your email address has not been verified yet. Please check your inbox for the verification email.');
       } else {
-        setError(err.message || 'Authentication failed. Please verify your corporate credentials.');
+        setError(err.message || 'Authentication failed. Please verify your credentials.');
       }
     } finally {
       setIsLoading(false);
@@ -72,10 +70,8 @@ export const LoginPage = () => {
     { role: 'HR Admin', email: 'hradmin@company.com', key: 'hr_admin' },
     { role: 'Manager', email: 'manager@company.com', key: 'manager' },
     { role: 'Employee', email: 'employee@company.com', key: 'employee' },
-    { role: 'First Login', email: 'newemployee@company.com', key: 'first_login' },
   ];
 
-  // Quick Demo Account Selector — populates input fields only & waits for user to click "Sign In"
   const selectDemoAccount = (demoEmail, roleKey) => {
     setEmail(demoEmail);
     setPassword('Password123!');
@@ -85,98 +81,131 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F6F3] flex flex-col justify-center py-8 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-5xl w-full mx-auto bg-white border border-[#E5E7EB] rounded-2xl shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[620px]">
+    <div className="min-h-screen lg:h-screen lg:max-h-screen bg-[#F8FAFC] flex items-center justify-center p-3 sm:p-6 font-sans lg:overflow-hidden">
+      <div className="w-full max-w-4xl bg-white border border-[#B9C1CC] rounded-xl shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 lg:h-[580px]">
 
-        {/* LEFT SIDE — BRANDING & ABSTRACT WORKFORCE VISUAL */}
-        <div className="hidden lg:flex lg:col-span-5 bg-[#111827] p-10 flex-col justify-between border-r border-[#1F2937] relative text-white">
-          <div className="relative z-10 space-y-6">
+        {/* LEFT SIDE — BRAND & CONTENT PANEL (44% Width) */}
+        <div className="hidden lg:flex lg:col-span-5 bg-[#0B0F19] p-6 sm:p-7 flex-col justify-between border-r border-[#1F2937] text-white">
+          <div className="space-y-4">
+            {/* BRAND HEADER */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#0F766E] flex items-center justify-center font-bold text-white shadow-xs text-base">
-                EP
+              <div className="w-9 h-9 rounded-lg bg-[#0F766E] flex items-center justify-center font-bold text-white shadow-xs text-base tracking-wider">
+                P
               </div>
               <div className="flex flex-col">
-                <span className="text-base font-bold text-white tracking-tight">Enterprise Payroll</span>
-                <span className="text-[11px] text-[#9CA3AF] font-mono">V2.4 PLATFORM</span>
+                <span className="text-lg font-bold text-white tracking-wide">PAYVERA</span>
+                <span className="text-[10px] text-[#2DD4BF] font-mono font-semibold uppercase tracking-wider">HR & PAYROLL PLATFORM</span>
               </div>
             </div>
 
-            <div className="pt-8 space-y-3">
-              <h2 className="text-2xl font-bold text-white tracking-tight leading-snug">
-                Workforce Management & Global Payroll Security.
+            {/* MAIN HEADING & SUPPORTING CONTENT */}
+            <div className="pt-1 space-y-1.5">
+              <h2 className="text-xl font-bold text-white tracking-tight leading-tight">
+                Enterprise Payroll <br />
+                <span className="text-[#2DD4BF]">Management, simplified.</span>
               </h2>
-              <p className="text-xs text-[#CBD5E1] leading-relaxed">
-                Streamlined compliance, automated disbursements, and zero-trust tenant isolation for modern enterprise operations.
+              <p className="text-[11px] text-[#CBD5E1] leading-relaxed">
+                Run payroll, manage employees, track attendance, and stay compliant from one secure platform built for modern businesses.
               </p>
             </div>
 
-            {/* Abstract visual metric card */}
-            <div className="p-4 rounded-xl bg-[#1F2937] border border-[#374151] space-y-3">
-              <div className="flex items-center justify-between text-xs text-[#CBD5E1]">
-                <span className="font-medium flex items-center gap-2">
-                  <Globe className="w-3.5 h-3.5 text-[#2DD4BF]" /> Active Tenant Security
-                </span>
-                <span className="text-[#2DD4BF] font-mono text-[11px] font-semibold">100% ENCRYPTED</span>
+            {/* COMPACT FEATURE SECTION */}
+            <div className="space-y-2 pt-1">
+              <div className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider">
+                Everything your payroll team needs
               </div>
-              <div className="w-full bg-[#111827] h-1.5 rounded-full overflow-hidden">
-                <div className="bg-[#0F766E] h-full w-full" />
-              </div>
-              <div className="flex justify-between text-[10px] text-[#9CA3AF] font-mono">
-                <span>AES-256 GCM</span>
-                <span>JWT ACCESS CONTROL</span>
+
+              <div className="space-y-1.5 text-xs">
+                {/* Feature 1 */}
+                <div className="p-2 rounded-lg bg-[#1F2937]/50 border border-white/10 flex items-start gap-2">
+                  <Check className="w-3.5 h-3.5 text-[#2DD4BF] shrink-0 mt-0.5 font-bold" />
+                  <div>
+                    <strong className="text-white font-semibold text-[11px] block">Payroll Processing</strong>
+                    <span className="text-[#CBD5E1] text-[10px] block leading-tight">Accurate salary, deduction and contribution calculations.</span>
+                  </div>
+                </div>
+
+                {/* Feature 2 */}
+                <div className="p-2 rounded-lg bg-[#1F2937]/50 border border-white/10 flex items-start gap-2">
+                  <Check className="w-3.5 h-3.5 text-[#2DD4BF] shrink-0 mt-0.5 font-bold" />
+                  <div>
+                    <strong className="text-white font-semibold text-[11px] block">Workforce Management</strong>
+                    <span className="text-[#CBD5E1] text-[10px] block leading-tight">Manage employees, attendance and leave in one place.</span>
+                  </div>
+                </div>
+
+                {/* Feature 3 */}
+                <div className="p-2 rounded-lg bg-[#1F2937]/50 border border-white/10 flex items-start gap-2">
+                  <Check className="w-3.5 h-3.5 text-[#2DD4BF] shrink-0 mt-0.5 font-bold" />
+                  <div>
+                    <strong className="text-white font-semibold text-[11px] block">Compliance & Reporting</strong>
+                    <span className="text-[#CBD5E1] text-[10px] block leading-tight">Keep payroll records and statutory reports organized.</span>
+                  </div>
+                </div>
+
+                {/* Feature 4 */}
+                <div className="p-2 rounded-lg bg-[#1F2937]/50 border border-white/10 flex items-start gap-2">
+                  <Check className="w-3.5 h-3.5 text-[#2DD4BF] shrink-0 mt-0.5 font-bold" />
+                  <div>
+                    <strong className="text-white font-semibold text-[11px] block">Secure Payments</strong>
+                    <span className="text-[#CBD5E1] text-[10px] block leading-tight">Prepare controlled payroll payment files with complete tracking.</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Security & Trust Indicators */}
-          <div className="relative z-10 pt-6 border-t border-[#1F2937] space-y-2">
-            <div className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Security & Trust Assurance</div>
-            <div className="flex items-center justify-between text-xs text-[#CBD5E1]">
-              <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-[#15803D]" /> SOC2 Type II Certified</span>
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-[#2DD4BF]" /> ISO 27001</span>
+          {/* SECURITY / TRUST SECTION */}
+          <div className="pt-3 border-t border-[#1F2937] space-y-0.5">
+            <div className="text-[11px] font-bold text-white flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#2DD4BF]" />
+              <span>Enterprise-grade security</span>
             </div>
+            <p className="text-[10px] text-[#9CA3AF] font-medium leading-tight">
+              Role-based access &bull; Tenant isolation &bull; Audit-ready activity
+            </p>
           </div>
         </div>
 
-        {/* RIGHT SIDE — ENTERPRISE LOGIN CARD */}
-        <div className="col-span-1 lg:col-span-7 p-8 sm:p-12 flex flex-col justify-between bg-white text-[#111827]">
+        {/* RIGHT SIDE — LOGIN FORM PANEL (56% Width) */}
+        <div className="col-span-1 lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between bg-white text-[#0F172A] lg:overflow-y-auto">
           <div>
             {/* Header branding on mobile */}
-            <div className="flex lg:hidden items-center gap-2.5 mb-6">
+            <div className="flex lg:hidden items-center gap-2.5 mb-4">
               <div className="w-8 h-8 rounded-lg bg-[#0F766E] flex items-center justify-center font-bold text-white text-xs">
-                EP
+                P
               </div>
-              <span className="text-sm font-bold text-[#111827]">Enterprise Payroll</span>
+              <span className="text-base font-bold text-[#0F172A]">PAYVERA</span>
             </div>
 
-            <div className="space-y-1 mb-8">
-              <h1 className="text-2xl font-bold text-[#111827] tracking-tight">Sign in to your account</h1>
-              <p className="text-xs text-[#374151]">Enter your corporate credentials to access your payroll portal.</p>
+            <div className="space-y-0.5 mb-5">
+              <h1 className="text-xl font-bold text-[#0F172A] tracking-tight">Welcome back</h1>
+              <p className="text-xs text-[#475569]">Sign in securely to manage your workforce.</p>
             </div>
 
             {/* Error Alert Banner */}
             {error && (
-              <div className="mb-6 p-4 rounded-xl bg-[#FEE2E2] border border-[#FCA5A5] flex items-start gap-3 text-[#B91C1C] text-xs animate-fade-in">
-                <AlertCircle className="w-4 h-4 text-[#B91C1C] shrink-0 mt-0.5" />
+              <div className="mb-4 p-3 rounded-lg bg-rose-50 border border-rose-300 flex items-center gap-2.5 text-rose-800 text-xs font-semibold animate-fade-in">
+                <AlertCircle className="w-4 h-4 text-rose-700 shrink-0" />
                 <div className="flex-1 min-w-0">{error}</div>
               </div>
             )}
 
             {/* Email Verification Warning */}
             {emailVerificationWarning && (
-              <div className="mb-6 p-4 rounded-xl bg-[#FEF3C7] border border-[#FDE68A] flex items-start gap-3 text-[#B45309] text-xs animate-fade-in">
-                <AlertCircle className="w-4 h-4 text-[#B45309] shrink-0 mt-0.5" />
+              <div className="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-300 flex items-center gap-2.5 text-amber-800 text-xs font-semibold animate-fade-in">
+                <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
                 <div className="flex-1 min-w-0">{emailVerificationWarning}</div>
               </div>
             )}
 
-            {/* Login Form */}
-            <form onSubmit={handleLoginSubmit} className="space-y-5">
+            {/* LOGIN FORM */}
+            <form onSubmit={handleLoginSubmit} className="space-y-3.5">
               <Input
-                label="Corporate Email Address"
+                label="Work Email"
                 type="email"
                 icon={Mail}
-                placeholder="name@company.com"
+                placeholder="Enter your work email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 isRequired
@@ -185,46 +214,58 @@ export const LoginPage = () => {
 
               <PasswordInput
                 label="Password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 isRequired
                 autoComplete="current-password"
               />
 
-              <div className="flex items-center justify-between text-xs pt-1">
-                <label className="flex items-center gap-2 cursor-pointer text-[#374151] select-none">
+              <div className="flex items-center justify-between text-xs pt-0.5">
+                <label className="flex items-center gap-2 cursor-pointer text-[#334155] select-none font-semibold">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded border-[#D1D5DB] text-[#0F766E] focus:ring-[#0F766E]"
+                    className="w-4 h-4 rounded border-[#B9C1CC] text-[#0F766E] focus:ring-[#0F766E]"
                   />
-                  <span>Remember this session</span>
+                  <span>Keep me signed in</span>
                 </label>
-                <Link to="/forgot-password" className="text-[#0F766E] hover:text-[#115E59] font-medium hover:underline transition-colors">
+                <Link to="/forgot-password" className="text-[#0F766E] hover:text-[#115E59] font-bold hover:underline transition-colors">
                   Forgot password?
                 </Link>
               </div>
 
-              <Button
+              <button
                 type="submit"
-                variant="primary"
-                size="lg"
-                className="w-full mt-2"
-                isLoading={isLoading}
-                icon={ArrowRight}
+                disabled={isLoading}
+                className="w-full h-10 mt-1 bg-[#0F766E] hover:bg-[#115E59] active:bg-[#0D4F4A] disabled:opacity-50 text-white font-bold text-xs rounded-lg flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer"
               >
-                Sign In to Enterprise Portal
-              </Button>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Sign in</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
             </form>
 
-            {/* QUICK DEMO ACCOUNT SELECTOR */}
-            <div className="mt-8 p-4 rounded-xl bg-[#F5F6F3] border border-[#E5E7EB] space-y-2.5">
-              <div className="flex items-center justify-between text-xs font-semibold text-[#111827]">
-                <span className="flex items-center gap-1.5"><KeyRound className="w-3.5 h-3.5 text-[#0F766E]" /> Demo Role Accounts</span>
-                <span className="text-[10px] text-[#6B7280] font-mono">Password: Password123!</span>
+            {/* QUICK ACCESS DEMO ROLE SECTION */}
+            <div className="mt-5 p-3 rounded-lg bg-[#F8FAFC] border border-[#B9C1CC] space-y-2">
+              <div className="flex items-center justify-between text-xs font-bold text-[#0F172A]">
+                <div className="flex items-center gap-1.5">
+                  <KeyRound className="w-3.5 h-3.5 text-[#0F766E]" />
+                  <span>Quick access</span>
+                </div>
+                <span className="text-[11px] text-[#475569] font-medium">Explore the platform using a demo role.</span>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 text-[11px]">
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-xs">
                 {DEMO_ACCOUNTS.map((account) => {
                   const isSelected = activeDemoRole === account.key || email === account.email;
                   return (
@@ -232,10 +273,10 @@ export const LoginPage = () => {
                       key={account.key}
                       type="button"
                       onClick={() => selectDemoAccount(account.email, account.key)}
-                      className={`px-2 py-1.5 rounded border text-center font-medium transition-all shadow-xs flex items-center justify-center gap-1.5 ${
+                      className={`px-2.5 py-1.5 rounded-md border text-center font-bold text-[11px] transition-all flex items-center justify-center gap-1 cursor-pointer ${
                         isSelected
-                          ? 'bg-[#0F766E] border-[#0F766E] text-white font-semibold ring-2 ring-[#0F766E]/30'
-                          : 'bg-white border-[#E5E7EB] text-[#111827] hover:bg-[#E6F4F1] hover:border-[#CCECF0] hover:text-[#0F766E]'
+                          ? 'bg-[#0F766E] border-[#0F766E] text-white shadow-2xs'
+                          : 'bg-white border-[#B9C1CC] text-[#0F172A] hover:bg-[#E6F4F1] hover:border-[#0F766E] hover:text-[#0F766E]'
                       }`}
                     >
                       {isSelected && <CheckCircle2 className="w-3 h-3 text-white shrink-0" />}
@@ -248,8 +289,16 @@ export const LoginPage = () => {
 
           </div>
 
-          <div className="mt-8 text-center text-[11px] text-[#6B7280]">
-            Protected by Enterprise Security Policies & Privacy Standards. &copy; 2026 Enterprise Inc.
+          {/* FOOTER & LINKS */}
+          <div className="mt-4 pt-3 border-t border-[#D7DCE2] flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#475569] font-medium gap-1.5">
+            <span>&copy; 2026 Payvera. All rights reserved.</span>
+            <div className="flex items-center gap-2.5">
+              <a href="#" className="hover:text-[#0F172A] transition-colors">Privacy</a>
+              <span>&bull;</span>
+              <a href="#" className="hover:text-[#0F172A] transition-colors">Security</a>
+              <span>&bull;</span>
+              <a href="#" className="hover:text-[#0F172A] transition-colors">Terms</a>
+            </div>
           </div>
         </div>
 

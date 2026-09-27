@@ -48,21 +48,20 @@ export const PasswordInput = React.forwardRef(({
     <div className="w-full space-y-1.5">
       {label && (
         <div className="flex justify-between items-center">
-          <label htmlFor={inputId} className="block text-xs font-bold text-slate-900 tracking-tight">
-            {label} {isRequired && <span className="text-rose-600 font-bold">*</span>}
+          <label htmlFor={inputId} className="block text-xs font-bold text-[#1E293B] tracking-tight">
+            {label} {isRequired && <span className="text-[#B91C1C] font-bold">*</span>}
           </label>
           {showStrengthMeter && pwd && (
-            <span className="text-[11px] font-semibold text-slate-600">
-              Strength: <span className="text-slate-900 font-bold">{getStrengthLabel()}</span>
+            <span className="text-[11px] font-semibold text-[#475569]">
+              Strength: <span className="text-[#0F172A] font-bold">{getStrengthLabel()}</span>
             </span>
           )}
         </div>
       )}
 
-
-      <div className="relative rounded-lg shadow-sm">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-          <Lock className="w-4 h-4" />
+      <div className="relative rounded-lg shadow-xs">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#334155]">
+          <Lock className="w-4 h-4 text-[#0F766E]" />
         </div>
 
         <input
@@ -72,10 +71,8 @@ export const PasswordInput = React.forwardRef(({
           value={value}
           onChange={onChange}
           className={clsx(
-            "w-full rounded-lg bg-slate-900 border pl-9 pr-10 py-2 text-slate-100 text-sm placeholder-slate-500 transition-all focus:outline-none focus:ring-2",
-            error
-              ? "border-rose-500/80 focus:border-rose-500 focus:ring-rose-500/20"
-              : "border-slate-700/80 hover:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20",
+            "w-full h-11 rounded-lg bg-white border border-[#64748B] pl-9 pr-10 py-2 text-[#0F172A] text-sm placeholder-[#334155] font-medium transition-all focus:outline-none focus:border-[#0F766E] focus:ring-2 focus:ring-[#0F766E]/15 disabled:opacity-50 disabled:bg-[#F5F6F3]",
+            error && "border-[#B91C1C] focus:border-[#B91C1C] focus:ring-[#B91C1C]/10",
             className
           )}
           {...props}
@@ -85,13 +82,13 @@ export const PasswordInput = React.forwardRef(({
           type="button"
           tabIndex={-1}
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-200 transition-colors focus:outline-none"
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#334155] hover:text-[#0F172A] transition-colors focus:outline-none"
         >
-          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4 text-[#0F766E]" />}
         </button>
       </div>
 
-      {error && <p className="text-xs text-rose-400 font-medium">{error}</p>}
+      {error && <p className="text-xs text-[#B91C1C] font-semibold">{error}</p>}
 
       {showStrengthMeter && pwd.length > 0 && (
         <div className="space-y-2 pt-1">

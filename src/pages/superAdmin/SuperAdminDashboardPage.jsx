@@ -167,70 +167,77 @@ export const SuperAdminDashboardPage = () => {
     <div className="space-y-6 animate-fade-in text-slate-900">
 
       {/* TOP ENTERPRISE HEADER BANNER */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-xs flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">System Overview</h1>
-            <Badge variant="purple">MULTI-TENANT HQ</Badge>
+      <div className="bg-white border border-[#64748B] rounded-2xl p-6 shadow-xs flex flex-col gap-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-[#0F172A] tracking-tight">System Overview</h1>
+              <span className="px-2.5 py-0.5 rounded-md bg-teal-50 border border-teal-300 text-teal-800 text-[11px] font-mono font-bold uppercase tracking-wider">
+                MULTI-TENANT HQ
+              </span>
+            </div>
+            <p className="text-xs text-[#334155] font-semibold flex items-center gap-2">
+              <span>{currentDate}</span>
+              <span>&bull;</span>
+              <span className="text-[#0F172A] font-bold">Global Multi-Company Operations & Live Analytics</span>
+            </p>
           </div>
-          <p className="text-xs text-slate-500 font-medium">
-            {currentDate} &bull; <span className="text-slate-700">Global Multi-Company Operations & Live Analytics</span>
-          </p>
         </div>
 
         {/* TOOLBAR CONTROLS BAR */}
-        <div className="flex flex-wrap lg:flex-nowrap items-center gap-2.5">
-          {/* Quick Search Trigger */}
+        <div className="flex flex-wrap items-center gap-3 w-full pt-1">
+          {/* Quick Search Trigger (Left Aligned) */}
           <button
             onClick={() => setIsSearchOpen(true)}
-            className="flex items-center gap-2 bg-[#F8FAFC] border border-[#E2E8F0] hover:bg-white hover:border-[#CBD5E1] rounded-xl px-3.5 py-2 text-xs text-slate-600 hover:text-slate-900 transition-all font-medium shadow-2xs group"
+            className="h-10 flex items-center gap-2 bg-white border border-[#64748B] hover:border-[#0F766E] rounded-xl px-3.5 text-xs text-[#0F172A] font-semibold transition-all shadow-xs cursor-pointer group"
           >
-            <Search className="w-3.5 h-3.5 text-[#0F766E] group-hover:scale-110 transition-transform" />
-            <span className="font-medium">Search...</span>
-            <kbd className="px-1.5 py-0.5 rounded bg-white border border-[#E2E8F0] text-[10px] font-mono text-slate-500 font-semibold shadow-2xs">Ctrl+K</kbd>
+            <Search className="w-4 h-4 text-[#0F766E] group-hover:scale-110 transition-transform" />
+            <span className="font-semibold text-[#0F172A]">Search...</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-slate-100 border border-[#94A3B8] text-[10px] font-mono text-[#0F172A] font-bold">Ctrl+K</kbd>
           </button>
 
-          {/* Company Filter Dropdown */}
-          <div className="flex items-center gap-2 bg-[#F8FAFC] border border-[#E2E8F0] hover:bg-white hover:border-[#CBD5E1] rounded-xl px-3 py-2 text-xs text-slate-800 font-medium shadow-2xs transition-all">
-            <Filter className="w-3.5 h-3.5 text-[#0F766E] shrink-0" />
-            <select
-              value={companyFilter}
-              onChange={(e) => setCompanyFilter(e.target.value)}
-              className="bg-transparent text-slate-900 focus:outline-none cursor-pointer font-semibold text-xs pr-1"
-            >
-              <option value="ALL" className="bg-white text-slate-900">All Companies (12 Tenants)</option>
-              <option value="APEX" className="bg-white text-slate-900">Apex Global Enterprises</option>
-              <option value="ACME" className="bg-white text-slate-900">Acme Software Solutions</option>
-              <option value="VGND" className="bg-white text-slate-900">Vanguard Global Financial</option>
-            </select>
-          </div>
-
-          {/* Segmented Time Range Toggle */}
-          <div className="flex rounded-xl bg-[#F1F5F9] border border-[#E2E8F0] p-1 text-xs font-semibold shadow-2xs">
-            {['Monthly', 'Quarterly', 'Yearly'].map((range) => (
-              <button
-                key={range}
-                onClick={() => setTimeRange(range)}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  timeRange === range
-                    ? 'bg-[#0F766E] text-white shadow-xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
+          {/* Right Aligned Controls Group */}
+          <div className="flex flex-wrap items-center gap-3 sm:ml-auto">
+            {/* Company Filter Dropdown */}
+            <div className="h-10 flex items-center gap-2 bg-white border border-[#64748B] hover:border-[#0F766E] rounded-xl px-3 text-xs text-[#0F172A] font-semibold shadow-xs transition-all">
+              <Filter className="w-4 h-4 text-[#0F766E] shrink-0" />
+              <select
+                value={companyFilter}
+                onChange={(e) => setCompanyFilter(e.target.value)}
+                className="bg-transparent text-[#0F172A] focus:outline-none cursor-pointer font-bold text-xs pr-1"
               >
-                {range}
-              </button>
-            ))}
-          </div>
+                <option value="ALL" className="bg-white text-[#0F172A]">All Companies (12 Tenants)</option>
+                <option value="APEX" className="bg-white text-[#0F172A]">Apex Global Enterprises</option>
+                <option value="ACME" className="bg-white text-[#0F172A]">Acme Software Solutions</option>
+                <option value="VGND" className="bg-white text-[#0F172A]">Vanguard Global Financial</option>
+              </select>
+            </div>
 
-          {/* Add Company Action Button */}
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => navigate('/super-admin/companies/new')}
-            className="shrink-0 py-2 px-3.5 rounded-xl text-xs font-semibold"
-          >
-            + Add Company
-          </Button>
+            {/* Segmented Time Range Toggle */}
+            <div className="h-10 flex items-center rounded-xl bg-slate-100 border border-[#64748B] p-1 text-xs font-bold shadow-xs">
+              {['Monthly', 'Quarterly', 'Yearly'].map((range) => (
+                <button
+                  key={range}
+                  onClick={() => setTimeRange(range)}
+                  className={`px-3.5 py-1 rounded-lg transition-all cursor-pointer ${
+                    timeRange === range
+                      ? 'bg-[#0F766E] text-white shadow-xs font-bold'
+                      : 'text-[#334155] hover:text-[#0F172A] font-semibold'
+                  }`}
+                >
+                  {range}
+                </button>
+              ))}
+            </div>
+
+            {/* Add Company Action Button */}
+            <button
+              onClick={() => navigate('/super-admin/companies/new')}
+              className="h-10 px-4 rounded-xl bg-[#0F766E] hover:bg-[#115E59] active:bg-[#0D4F4A] text-white text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shrink-0"
+            >
+              <span>+ Add Company</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -245,72 +252,80 @@ export const SuperAdminDashboardPage = () => {
       {/* MAIN KPI AREA — CLICKABLE TILES */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1: Total Companies */}
-        <Card
+        <div
           onClick={() => navigate('/super-admin/companies')}
-          className="p-5 hover:border-teal-500 hover:shadow-sm transition-all cursor-pointer group"
+          className="p-5 bg-white border border-[#D1D5DB] rounded-xl shadow-[0_1px_2px_rgba(15,23,42,0.04)] cursor-pointer group hover:border-[#0F766E] transition-all"
         >
-          <div className="flex items-center justify-between text-xs text-slate-700 font-semibold">
+          <div className="flex items-center justify-between text-xs text-[#374151] font-bold uppercase tracking-wider">
             <span>Total Companies</span>
-            <Building2 className="w-4 h-4 text-teal-600 group-hover:scale-110 transition-transform" />
+            <div className="p-2 rounded-lg bg-[#F8FAFC] border border-[#E5E7EB] text-[#7C3AED]">
+              <Building2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            </div>
           </div>
           <div className="flex items-baseline justify-between mt-3">
-            <span className="text-3xl font-bold text-slate-900">{kpiData?.totalCompanies || 12}</span>
-            <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-teal-600 transition-colors" />
+            <span className="text-3xl font-bold text-[#111827]">{kpiData?.totalCompanies || 12}</span>
+            <ArrowUpRight className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#0F766E] transition-colors" />
           </div>
-          <div className="text-[11px] text-emerald-700 mt-2 font-mono font-semibold flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" /> Multi-Tenant Active
+          <div className="text-[11px] text-[#15803D] mt-2 font-mono font-bold flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" /> Multi-Tenant Active
           </div>
-        </Card>
+        </div>
 
         {/* KPI 2: Active Companies */}
-        <Card
+        <div
           onClick={() => navigate('/super-admin/companies?status=ACTIVE')}
-          className="p-5 hover:border-emerald-500 hover:shadow-sm transition-all cursor-pointer group"
+          className="p-5 bg-white border border-[#D1D5DB] rounded-xl shadow-[0_1px_2px_rgba(15,23,42,0.04)] cursor-pointer group hover:border-[#0F766E] transition-all"
         >
-          <div className="flex items-center justify-between text-xs text-slate-700 font-semibold">
+          <div className="flex items-center justify-between text-xs text-[#374151] font-bold uppercase tracking-wider">
             <span>Active Companies</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+            <div className="p-2 rounded-lg bg-[#F8FAFC] border border-[#E5E7EB] text-[#15803D]">
+              <CheckCircle2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            </div>
           </div>
           <div className="flex items-baseline justify-between mt-3">
-            <span className="text-3xl font-bold text-slate-900">{kpiData?.activeCompanies || 10}</span>
-            <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 transition-colors" />
+            <span className="text-3xl font-bold text-[#111827]">{kpiData?.activeCompanies || 10}</span>
+            <ArrowUpRight className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#0F766E] transition-colors" />
           </div>
-          <div className="text-[11px] text-slate-700 mt-2 font-mono font-semibold">2 Trial Accounts</div>
-        </Card>
+          <div className="text-[11px] text-[#6B7280] mt-2 font-mono font-semibold">2 Trial Accounts</div>
+        </div>
 
         {/* KPI 3: Total Employees */}
-        <Card
+        <div
           onClick={() => navigate('/super-admin/employees')}
-          className="p-5 hover:border-blue-500 hover:shadow-sm transition-all cursor-pointer group"
+          className="p-5 bg-white border border-[#D1D5DB] rounded-xl shadow-[0_1px_2px_rgba(15,23,42,0.04)] cursor-pointer group hover:border-[#0F766E] transition-all"
         >
-          <div className="flex items-center justify-between text-xs text-slate-700 font-semibold">
+          <div className="flex items-center justify-between text-xs text-[#374151] font-bold uppercase tracking-wider">
             <span>Total Employees</span>
-            <Users className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+            <div className="p-2 rounded-lg bg-[#F8FAFC] border border-[#E5E7EB] text-[#2563EB]">
+              <Users className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            </div>
           </div>
           <div className="flex items-baseline justify-between mt-3">
-            <span className="text-3xl font-bold text-slate-900">{(kpiData?.totalEmployees || 1480).toLocaleString()}</span>
-            <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+            <span className="text-3xl font-bold text-[#111827]">{(kpiData?.totalEmployees || 1480).toLocaleString()}</span>
+            <ArrowUpRight className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#0F766E] transition-colors" />
           </div>
-          <div className="text-[11px] text-emerald-700 mt-2 font-mono font-semibold">+{kpiData?.employeesThisMonth || 42} this month</div>
-        </Card>
+          <div className="text-[11px] text-[#15803D] mt-2 font-mono font-bold">+{kpiData?.employeesThisMonth || 42} this month</div>
+        </div>
 
         {/* KPI 4: Payroll Value */}
-        <Card
+        <div
           onClick={() => navigate('/super-admin/payroll')}
-          className="p-5 hover:border-amber-500 hover:shadow-sm transition-all cursor-pointer group"
+          className="p-5 bg-white border border-[#D1D5DB] rounded-xl shadow-[0_1px_2px_rgba(15,23,42,0.04)] cursor-pointer group hover:border-[#0F766E] transition-all"
         >
-          <div className="flex items-center justify-between text-xs text-slate-700 font-semibold">
+          <div className="flex items-center justify-between text-xs text-[#374151] font-bold uppercase tracking-wider">
             <span>Total Monthly Payroll</span>
-            <DollarSign className="w-4 h-4 text-amber-600 group-hover:scale-110 transition-transform" />
+            <div className="p-2 rounded-lg bg-[#F8FAFC] border border-[#E5E7EB] text-[#B45309]">
+              <DollarSign className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            </div>
           </div>
           <div className="flex items-baseline justify-between mt-3">
-            <span className="text-2xl font-bold text-slate-900">
+            <span className="text-2xl font-bold text-[#111827]">
               ${(kpiData?.totalPayrollValue || 1245000).toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </span>
-            <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-amber-600 transition-colors" />
+            <ArrowUpRight className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#0F766E] transition-colors" />
           </div>
-          <div className="text-[11px] text-slate-700 mt-2 font-mono font-semibold">{kpiData?.payrollRunsThisMonth || 18} Payroll Runs</div>
-        </Card>
+          <div className="text-[11px] text-[#6B7280] mt-2 font-mono font-semibold">{kpiData?.payrollRunsThisMonth || 18} Payroll Runs</div>
+        </div>
       </div>
 
       {/* RECHARTS ANALYTICS GRID */}

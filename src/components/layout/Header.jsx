@@ -56,24 +56,27 @@ export const Header = () => {
   };
 
   return (
-    <header className="h-16 border-b border-[#E5E7EB] bg-white px-6 flex items-center justify-between sticky top-0 z-40 shadow-xs">
+    <header className="h-16 border-b border-[#64748B] bg-white px-6 flex items-center justify-between sticky top-0 z-40 shadow-xs">
       <div className="flex items-center gap-4">
-        <div className="relative hidden md:block w-72">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
-          <input
-            type="text"
-            placeholder="Search employees, payroll, reports..."
-            onFocus={() => window.dispatchEvent(new CustomEvent('app:open-global-search'))}
-            className="w-full bg-[#F5F6F3] border border-[#E5E7EB] rounded-lg pl-9 pr-3 py-1.5 text-xs text-[#111827] placeholder-[#6B7280] focus:outline-none focus:border-[#0F766E] transition-all cursor-pointer"
-          />
-        </div>
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent('app:open-global-search'))}
+          className="relative hidden md:flex items-center justify-between w-80 bg-[#F8FAFC] border border-[#64748B] hover:border-[#0F766E] hover:bg-white rounded-xl px-3 py-2 text-xs transition-all cursor-pointer shadow-xs group"
+        >
+          <div className="flex items-center gap-2">
+            <Search className="w-4 h-4 text-[#0F766E] group-hover:scale-110 transition-transform" />
+            <span className="font-semibold text-[#334155]">Search companies, employees, payroll...</span>
+          </div>
+          <kbd className="px-1.5 py-0.5 rounded bg-slate-100 border border-[#64748B] text-[10px] font-mono text-[#1E293B] font-bold shadow-2xs group-hover:border-[#0F766E]">
+            Ctrl+K
+          </kbd>
+        </button>
       </div>
 
       <div className="flex items-center gap-4">
         {/* Tenant isolated badge */}
-        <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5F6F3] border border-[#E5E7EB] text-[11px] text-[#374151]">
+        <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5F6F3] border border-[#64748B] text-[11px] text-[#1E293B] font-semibold">
           <Shield className="w-3.5 h-3.5 text-[#0F766E]" />
-          <span>Tenant Isolated: <strong className="text-[#111827] font-mono font-bold">{company?.code || 'MAIN'}</strong></span>
+          <span>Tenant Isolated: <strong className="text-[#0F172A] font-mono font-bold">{company?.code || 'MAIN'}</strong></span>
         </div>
 
         {/* TOP NOTIFICATION BELL WITH WORKING POPOVER */}

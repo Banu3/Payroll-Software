@@ -4,6 +4,7 @@ import { Sidebar } from './Sidebar';
 import { SuperAdminSidebar } from '../superAdmin/SuperAdminSidebar';
 import { Header } from './Header';
 import { SessionExpiryModal } from './SessionExpiryModal';
+import { GlobalSearchModal } from '../superAdmin/GlobalSearchModal';
 
 export const AppLayout = ({ children }) => {
   const location = useLocation();
@@ -19,6 +20,7 @@ export const AppLayout = ({ children }) => {
         </main>
       </div>
       <SessionExpiryModal />
+      <GlobalSearchModal />
     </div>
   );
 };
