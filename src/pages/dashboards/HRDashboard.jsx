@@ -16,6 +16,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { api } from '../../services/api';
+import { formatCurrency } from '../../services/financialCalculationService';
 
 export const HRDashboard = () => {
   const { user, company, hasPermission } = useAuth();
@@ -120,7 +121,7 @@ export const HRDashboard = () => {
             <DollarSign className="w-4 h-4 text-emerald-600" />
           </div>
           <div className="text-2xl font-bold text-slate-900 mt-2">
-            ${(payrollData?.grossPayrollAmount || 245000).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            {formatCurrency(payrollData?.grossPayrollAmount || 875000)}
           </div>
           <div className="text-[11px] text-slate-700 mt-1 font-mono font-medium">Cycle: {payrollData?.currentCycle || 'Sept 2026'}</div>
         </Card>
@@ -131,7 +132,7 @@ export const HRDashboard = () => {
             <TrendingUp className="w-4 h-4 text-amber-600" />
           </div>
           <div className="text-2xl font-bold text-slate-900 mt-2">
-            ${((payrollData?.taxDeductions || 34300) + (payrollData?.benefitDeductions || 12450)).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            {formatCurrency((payrollData?.taxDeductions || 34300) + (payrollData?.benefitDeductions || 12450))}
           </div>
           <div className="text-[11px] text-amber-700 mt-1 font-mono font-semibold">Automated Withholding</div>
         </Card>
@@ -142,7 +143,7 @@ export const HRDashboard = () => {
             <CalendarCheck className="w-4 h-4 text-teal-600" />
           </div>
           <div className="text-2xl font-bold text-slate-900 mt-2">
-            ${(payrollData?.netDisbursementAmount || 198250).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            {formatCurrency(payrollData?.netDisbursementAmount || 828250)}
           </div>
           <div className="text-[11px] text-emerald-700 mt-1 font-mono font-semibold">Due: {payrollData?.paymentDueDate || '2026-09-30'}</div>
         </Card>

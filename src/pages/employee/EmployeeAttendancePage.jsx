@@ -258,7 +258,7 @@ export const EmployeeAttendancePage = () => {
       <Card style={{ borderTop: '4px solid var(--color-primary-600)' }}>
         <CardBody style={{ padding: '1.5rem', textAlign: 'center' }}>
           <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem', fontWeight: 500 }}>
-            {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            {new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
           <div style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0.5rem 0', fontFamily: 'monospace' }}>
             {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}

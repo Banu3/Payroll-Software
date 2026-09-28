@@ -23,6 +23,7 @@ import {
   Loader2
 } from 'lucide-react';
 import api from '../../../lib/axios';
+import { formatCurrency } from '../../../services/financialCalculationService';
 
 export default function PayrollRunDetailsPage() {
   const { runId } = useParams();
@@ -361,19 +362,19 @@ export default function PayrollRunDetailsPage() {
         </div>
         <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
           <div className="text-xs text-slate-400 font-semibold mb-1">Gross Payroll</div>
-          <div className="text-2xl font-bold text-emerald-400">₹{Number(run.total_gross || 0).toLocaleString()}</div>
+          <div className="text-2xl font-bold text-emerald-400">{formatCurrency(run.total_gross)}</div>
         </div>
         <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
           <div className="text-xs text-slate-400 font-semibold mb-1">Total Deductions</div>
-          <div className="text-2xl font-bold text-red-400">₹{Number(run.total_deductions || 0).toLocaleString()}</div>
+          <div className="text-2xl font-bold text-red-400">{formatCurrency(run.total_deductions)}</div>
         </div>
         <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
           <div className="text-xs text-slate-400 font-semibold mb-1">Employer Cost</div>
-          <div className="text-2xl font-bold text-purple-400">₹{Number(run.total_employer_cost || 0).toLocaleString()}</div>
+          <div className="text-2xl font-bold text-purple-400">{formatCurrency(run.total_employer_cost)}</div>
         </div>
         <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
           <div className="text-xs text-slate-400 font-semibold mb-1">Net Disbursement</div>
-          <div className="text-2xl font-bold text-blue-400">₹{Number(run.total_net || 0).toLocaleString()}</div>
+          <div className="text-2xl font-bold text-blue-400">{formatCurrency(run.total_net)}</div>
         </div>
       </div>
 
@@ -406,35 +407,35 @@ export default function PayrollRunDetailsPage() {
             <div className="space-y-3 text-xs">
               <div className="flex justify-between py-2 border-b border-slate-800">
                 <span className="text-slate-400">Total Gross Earnings</span>
-                <span className="font-mono text-emerald-400 font-bold">₹{Number(run.total_gross || 0).toLocaleString()}</span>
+                <span className="font-mono text-emerald-400 font-bold">{formatCurrency(run.total_gross)}</span>
               </div>
               <div className="flex justify-between py-2 border-b border-slate-800">
                 <span className="text-slate-400">Employee PF Deductions</span>
-                <span className="font-mono text-red-400 font-bold">₹{Number(run.total_pf || 0).toLocaleString()}</span>
+                <span className="font-mono text-red-400 font-bold">{formatCurrency(run.total_pf)}</span>
               </div>
               <div className="flex justify-between py-2 border-b border-slate-800">
                 <span className="text-slate-400">Employee ESI Deductions</span>
-                <span className="font-mono text-red-400 font-bold">₹{Number(run.total_esi || 0).toLocaleString()}</span>
+                <span className="font-mono text-red-400 font-bold">{formatCurrency(run.total_esi)}</span>
               </div>
               <div className="flex justify-between py-2 border-b border-slate-800">
                 <span className="text-slate-400">Professional Tax (PT)</span>
-                <span className="font-mono text-red-400 font-bold">₹{Number(run.total_pt || 0).toLocaleString()}</span>
+                <span className="font-mono text-red-400 font-bold">{formatCurrency(run.total_pt)}</span>
               </div>
               <div className="flex justify-between py-2 border-b border-slate-800">
                 <span className="text-slate-400">Income Tax (TDS)</span>
-                <span className="font-mono text-red-400 font-bold">₹{Number(run.total_tds || 0).toLocaleString()}</span>
+                <span className="font-mono text-red-400 font-bold">{formatCurrency(run.total_tds)}</span>
               </div>
               <div className="flex justify-between py-2 border-b border-slate-800">
                 <span className="text-slate-400">Overtime Disbursement</span>
-                <span className="font-mono text-amber-400 font-bold">₹{Number(run.total_overtime || 0).toLocaleString()}</span>
+                <span className="font-mono text-amber-400 font-bold">{formatCurrency(run.total_overtime)}</span>
               </div>
               <div className="flex justify-between py-2 border-b border-slate-800">
                 <span className="text-slate-400">LOP Salary Deductions</span>
-                <span className="font-mono text-slate-300 font-bold">₹{Number(run.total_lop || 0).toLocaleString()}</span>
+                <span className="font-mono text-slate-300 font-bold">{formatCurrency(run.total_lop)}</span>
               </div>
               <div className="flex justify-between py-2 pt-3 font-bold text-sm">
                 <span className="text-slate-100">Net Payable Amount</span>
-                <span className="font-mono text-blue-400">₹{Number(run.total_net || 0).toLocaleString()}</span>
+                <span className="font-mono text-blue-400">{formatCurrency(run.total_net)}</span>
               </div>
             </div>
           </div>
@@ -509,13 +510,13 @@ export default function PayrollRunDetailsPage() {
                     <td className="p-3 text-slate-300">
                       {emp.paid_days} / <span className="text-red-400">{emp.lop_days} LOP</span>
                     </td>
-                    <td className="p-3 text-emerald-400 font-bold">₹{Number(emp.gross_earnings || 0).toLocaleString()}</td>
-                    <td className="p-3 text-slate-400">₹{Number(emp.pf_employee || 0).toLocaleString()}</td>
-                    <td className="p-3 text-slate-400">₹{Number(emp.esi_employee || 0).toLocaleString()}</td>
-                    <td className="p-3 text-slate-400">₹{Number(emp.pt_amount || 0).toLocaleString()}</td>
-                    <td className="p-3 text-slate-400">₹{Number(emp.tds_amount || 0).toLocaleString()}</td>
-                    <td className="p-3 text-red-400">₹{Number(emp.total_deductions || 0).toLocaleString()}</td>
-                    <td className="p-3 text-blue-400 font-bold text-sm">₹{Number(emp.net_salary || 0).toLocaleString()}</td>
+                    <td className="p-3 text-emerald-400 font-bold">{formatCurrency(emp.gross_earnings)}</td>
+                    <td className="p-3 text-slate-400">{formatCurrency(emp.pf_employee)}</td>
+                    <td className="p-3 text-slate-400">{formatCurrency(emp.esi_employee)}</td>
+                    <td className="p-3 text-slate-400">{formatCurrency(emp.pt_amount)}</td>
+                    <td className="p-3 text-slate-400">{formatCurrency(emp.tds_amount)}</td>
+                    <td className="p-3 text-red-400">{formatCurrency(emp.total_deductions)}</td>
+                    <td className="p-3 text-blue-400 font-bold text-sm">{formatCurrency(emp.net_salary)}</td>
                     <td className="p-3 text-right font-sans">
                       <button
                         onClick={() => setSelectedEmployee(emp)}
@@ -594,46 +595,46 @@ export default function PayrollRunDetailsPage() {
               <div className="bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-2 text-xs font-mono">
                 <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="font-sans text-slate-300">Basic Salary</span>
-                  <span className="text-emerald-400 font-bold">₹{Number(selectedEmployee.basic_amount || 0).toLocaleString()}</span>
+                  <span className="text-emerald-400 font-bold">{formatCurrency(selectedEmployee.basic_amount)}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="font-sans text-slate-300">House Rent Allowance (HRA)</span>
-                  <span className="text-emerald-400 font-bold">₹{Number(selectedEmployee.hra_amount || 0).toLocaleString()}</span>
+                  <span className="text-emerald-400 font-bold">{formatCurrency(selectedEmployee.hra_amount)}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="font-sans text-slate-300">Special & Other Allowances</span>
-                  <span className="text-emerald-400 font-bold">₹{Number(selectedEmployee.allowances_amount || 0).toLocaleString()}</span>
+                  <span className="text-emerald-400 font-bold">{formatCurrency(selectedEmployee.allowances_amount)}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="font-sans text-slate-300">Overtime Earning</span>
-                  <span className="text-emerald-400 font-bold">₹{Number(selectedEmployee.overtime_amount || 0).toLocaleString()}</span>
+                  <span className="text-emerald-400 font-bold">{formatCurrency(selectedEmployee.overtime_amount)}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-800 font-sans text-emerald-400 font-bold">
                   <span>Gross Earnings</span>
-                  <span>₹{Number(selectedEmployee.gross_earnings || 0).toLocaleString()}</span>
+                  <span>{formatCurrency(selectedEmployee.gross_earnings)}</span>
                 </div>
               </div>
 
               <div className="bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-2 text-xs font-mono">
                 <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="font-sans text-slate-300">Employee PF</span>
-                  <span className="text-red-400">₹{Number(selectedEmployee.pf_employee || 0).toLocaleString()}</span>
+                  <span className="text-red-400">{formatCurrency(selectedEmployee.pf_employee)}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="font-sans text-slate-300">Employee ESI</span>
-                  <span className="text-red-400">₹{Number(selectedEmployee.esi_employee || 0).toLocaleString()}</span>
+                  <span className="text-red-400">{formatCurrency(selectedEmployee.esi_employee)}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="font-sans text-slate-300">Professional Tax (PT)</span>
-                  <span className="text-red-400">₹{Number(selectedEmployee.pt_amount || 0).toLocaleString()}</span>
+                  <span className="text-red-400">{formatCurrency(selectedEmployee.pt_amount)}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="font-sans text-slate-300">Income Tax (TDS)</span>
-                  <span className="text-red-400">₹{Number(selectedEmployee.tds_amount || 0).toLocaleString()}</span>
+                  <span className="text-red-400">{formatCurrency(selectedEmployee.tds_amount)}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-800 font-sans text-red-400 font-bold">
                   <span>Total Deductions</span>
-                  <span>₹{Number(selectedEmployee.total_deductions || 0).toLocaleString()}</span>
+                  <span>{formatCurrency(selectedEmployee.total_deductions)}</span>
                 </div>
               </div>
 

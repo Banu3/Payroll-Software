@@ -1,20 +1,42 @@
-/**
- * Frontend Financial Calculation & Currency Helper Service
- */
+export const CURRENCY_CONFIG = {
+  currency: 'INR',
+  currencyCode: 'INR',
+  currencySymbol: '₹',
+  locale: 'en-IN',
+};
 
 /**
- * Formats a numeric value into INR / target currency format.
+ * Formats a numeric value into INR format using Indian numbering system.
+ * Example: 1250000 -> ₹12,50,000
  * @param {number|string} amount 
- * @param {string} currencySymbol 
+ * @param {Object|string} optionsOrSymbol 
  * @returns {string}
  */
-export const formatCurrency = (amount = 0, currencySymbol = '₹') => {
-  const num = Number(amount) || 0;
-  return `${currencySymbol}${num.toLocaleString('en-IN', {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
-  })}`;
+export const formatCurrency = (amount = 0, optionsOrSymbol = {}) => {
+  const num = Number(amount);
+  const safeNum = isNaN(num) ? 0 : num;
+
+  let options = {};
+  if (typeof optionsOrSymbol === 'string') {
+    options = { currencySymbol: optionsOrSymbol };
+  } else if (typeof optionsOrSymbol === 'object' && optionsOrSymbol !== null) {
+    options = optionsOrSymbol;
+  }
+
+  const {
+    maximumFractionDigits = 0,
+    minimumFractionDigits = 0,
+    currencySymbol = CURRENCY_CONFIG.currencySymbol,
+  } = options;
+
+  const formatted = safeNum.toLocaleString('en-IN', {
+    maximumFractionDigits,
+    minimumFractionDigits,
+  });
+
+  return `${currencySymbol}${formatted}`;
 };
+
 
 /**
  * Calculates Provident Fund (PF) contribution based on basic salary

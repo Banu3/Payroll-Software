@@ -12,6 +12,7 @@ import {
   Loader2
 } from 'lucide-react';
 import api from '../../../lib/axios';
+import { formatCurrency } from '../../../services/financialCalculationService';
 
 const REPORT_TYPES = [
   { id: 'REGISTER', name: 'Master Payroll Register', desc: 'Complete breakdown of all earnings, statutory deductions, and net pay' },
@@ -146,7 +147,7 @@ export default function PayrollReportsPage() {
                 <tr key={idx} className="hover:bg-slate-800/40 transition">
                   {Object.values(row).map((val, cIdx) => (
                     <td key={cIdx} className="p-3">
-                      {typeof val === 'number' ? `₹${val.toLocaleString()}` : String(val ?? '')}
+                      {typeof val === 'number' ? formatCurrency(val) : String(val ?? '')}
                     </td>
                   ))}
                 </tr>

@@ -38,6 +38,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { api } from '../../services/api';
+import { formatCurrency } from '../../services/financialCalculationService';
 
 export const SuperAdminDashboardPage = () => {
   const navigate = useNavigate();
@@ -152,7 +153,7 @@ export const SuperAdminDashboardPage = () => {
   };
 
 
-  const currentDate = new Date().toLocaleDateString('en-US', {
+  const currentDate = new Date().toLocaleDateString('en-IN', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -320,7 +321,7 @@ export const SuperAdminDashboardPage = () => {
           </div>
           <div className="flex items-baseline justify-between mt-3">
             <span className="text-2xl font-bold text-[#111827]">
-              ${(kpiData?.totalPayrollValue || 1245000).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              {formatCurrency(kpiData?.totalPayrollValue || 1245000)}
             </span>
             <ArrowUpRight className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#0F766E] transition-colors" />
           </div>
@@ -362,19 +363,19 @@ export const SuperAdminDashboardPage = () => {
         <Card>
           <CardHeader
             title="Payroll Processing Disbursements"
-            description="Monthly processed financial volume ($ USD)"
+            description="Monthly processed financial volume (₹ INR)"
           />
           <CardBody className="h-72 pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={analyticsData?.payrollActivity || []}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.8} />
                 <XAxis dataKey="month" stroke="#4B5563" fontSize={11} />
-                <YAxis stroke="#4B5563" fontSize={11} tickFormatter={(val) => `$${val / 1000}k`} />
+                <YAxis stroke="#4B5563" fontSize={11} tickFormatter={(val) => `₹${(val / 100000).toFixed(1)}L`} />
                 <Tooltip
-                  formatter={(val) => [`$${val.toLocaleString()}`, 'Processed Amount']}
+                  formatter={(val) => [formatCurrency(val), 'Processed Amount']}
                   contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E5E7EB', borderRadius: '8px', fontSize: '12px', color: '#111827' }}
                 />
-                <Bar dataKey="amount" name="Gross Amount ($)" fill="#0F766E" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="amount" name="Gross Amount (₹)" fill="#0F766E" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardBody>

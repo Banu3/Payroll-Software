@@ -53,8 +53,8 @@ export const CreateCompanyPage = () => {
     },
     payrollConfig: {
       payFrequency: 'Monthly',
-      currency: 'USD',
-      financialYearStart: 'January',
+      currency: 'INR',
+      financialYearStart: 'April',
       payrollDate: 30,
     },
     plan: {
@@ -126,7 +126,7 @@ export const CreateCompanyPage = () => {
             phone: formData.companyInfo.phone,
             code: compCode,
             pay_frequency: formData.payrollConfig.payFrequency || 'Monthly',
-            currency: formData.payrollConfig.currency || 'USD',
+            currency: formData.payrollConfig.currency || 'INR',
             financial_year_start: formData.payrollConfig.financialYearStart || 'January',
             payroll_date: formData.payrollConfig.payrollDate || 30,
             status: 'ACTIVE',
@@ -359,10 +359,10 @@ export const CreateCompanyPage = () => {
                 value={formData.payrollConfig.currency}
                 onChange={(e) => handleNestedChange('payrollConfig', 'currency', e.target.value)}
                 options={[
+                  { value: 'INR', label: 'INR (₹)' },
                   { value: 'USD', label: 'USD ($)' },
                   { value: 'EUR', label: 'EUR (€)' },
                   { value: 'GBP', label: 'GBP (£)' },
-                  { value: 'CAD', label: 'CAD ($)' },
                 ]}
               />
               <Select
@@ -392,10 +392,10 @@ export const CreateCompanyPage = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                  { code: 'STARTER', name: 'Starter', price: '$49/mo', limit: 25, desc: 'Basic payroll & leave' },
-                  { code: 'PROFESSIONAL', name: 'Professional', price: '$149/mo', limit: 250, desc: 'Multi-branch & analytics' },
-                  { code: 'BUSINESS', name: 'Business', price: '$299/mo', limit: 1000, desc: 'Advanced loans & approvals' },
-                  { code: 'ENTERPRISE', name: 'Enterprise Unlimited', price: '$599/mo', limit: 10000, desc: 'Custom scale & SLA' },
+                  { code: 'STARTER', name: 'Starter', price: '₹3,999/mo', limit: 25, desc: 'Basic payroll & leave' },
+                  { code: 'PROFESSIONAL', name: 'Professional', price: '₹11,999/mo', limit: 250, desc: 'Multi-branch & analytics' },
+                  { code: 'BUSINESS', name: 'Business', price: '₹23,999/mo', limit: 1000, desc: 'Advanced loans & approvals' },
+                  { code: 'ENTERPRISE', name: 'Enterprise Unlimited', price: '₹47,999/mo', limit: 10000, desc: 'Custom scale & SLA' },
                 ].map((p) => {
                   const isSelected = formData.plan.planCode === p.code;
                   return (

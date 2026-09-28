@@ -5,6 +5,7 @@ import { Card, CardHeader, CardBody } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { useAuth } from '../../context/AuthContext';
 import { Download, FileText, CalendarDays, DollarSign, Clock, ShieldCheck } from 'lucide-react';
+import { formatCurrency } from '../../services/financialCalculationService';
 
 export const EmployeeDashboard = () => {
   const { user, company } = useAuth();
@@ -30,7 +31,7 @@ export const EmployeeDashboard = () => {
             <span>Current Net Pay</span>
             <DollarSign className="w-4 h-4 text-emerald-600" />
           </div>
-          <div className="text-2xl font-bold text-slate-900 mt-2">$4,850.00</div>
+          <div className="text-2xl font-bold text-slate-900 mt-2">{formatCurrency(48500)}</div>
           <div className="text-[11px] text-emerald-700 mt-1 font-mono font-semibold">Disbursed Aug 31, 2026</div>
         </Card>
 
@@ -62,9 +63,9 @@ export const EmployeeDashboard = () => {
           />
           <CardBody className="space-y-3">
             {[
-              { period: 'August 2026', amount: '$4,850.00', date: '2026-08-31', status: 'PAID' },
-              { period: 'July 2026', amount: '$4,850.00', date: '2026-07-31', status: 'PAID' },
-              { period: 'June 2026', amount: '$4,850.00', date: '2026-06-30', status: 'PAID' },
+              { period: 'August 2026', amount: formatCurrency(48500), date: '2026-08-31', status: 'PAID' },
+              { period: 'July 2026', amount: formatCurrency(48500), date: '2026-07-31', status: 'PAID' },
+              { period: 'June 2026', amount: formatCurrency(48500), date: '2026-06-30', status: 'PAID' },
             ].map((ps, i) => (
               <div key={i} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2.5">

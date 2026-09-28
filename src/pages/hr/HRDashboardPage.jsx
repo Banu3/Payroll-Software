@@ -120,7 +120,7 @@ export const HRDashboardPage = () => {
   };
 
 
-  const currentDate = new Date().toLocaleDateString('en-US', {
+  const currentDate = new Date().toLocaleDateString('en-IN', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',

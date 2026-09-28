@@ -11,6 +11,7 @@ import {
   Loader2
 } from 'lucide-react';
 import api from '../../lib/axios';
+import { formatCurrency } from '../../services/financialCalculationService';
 
 const DATA_SOURCES = [
   { id: 'EMPLOYEES', name: 'Employees Directory', fields: ['first_name', 'last_name', 'employee_code', 'email', 'status', 'joining_date'] },
@@ -206,7 +207,7 @@ export default function ReportBuilderPage() {
                     <tr key={idx} className="hover:bg-slate-800/40 transition">
                       {Object.values(row).slice(0, 8).map((val, cIdx) => (
                         <td key={cIdx} className="p-3">
-                          {typeof val === 'number' ? `₹${val.toLocaleString()}` : String(val ?? '')}
+                          {typeof val === 'number' ? formatCurrency(val) : String(val ?? '')}
                         </td>
                       ))}
                     </tr>

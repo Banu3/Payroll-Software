@@ -17,6 +17,7 @@ import {
   Filter
 } from 'lucide-react';
 import { api } from '../../services/api';
+import { formatCurrency } from '../../services/financialCalculationService';
 
 const MOCK_TENANT_PAYROLLS = [
   { id: 'pr_101', company: 'Apex Global Enterprises', companyId: 'c1', month: 'September 2026', grossSalary: 345000, netSalary: 285000, taxStatutory: 60000, employeesCount: 320, status: 'COMPLETED', runDate: '2026-09-25' },
@@ -78,7 +79,7 @@ export const GlobalPayrollOverviewPage = () => {
             <DollarSign className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-2xl font-bold text-slate-900">$1,245,000.00</div>
+            <div className="text-2xl font-bold text-slate-900">{formatCurrency(1245000)}</div>
             <div className="text-xs text-slate-700 font-medium">Monthly Processed Volume</div>
           </div>
         </Card>
@@ -108,7 +109,7 @@ export const GlobalPayrollOverviewPage = () => {
             <FileCheck className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-2xl font-bold text-slate-900">$218,000.00</div>
+            <div className="text-2xl font-bold text-slate-900">{formatCurrency(218000)}</div>
             <div className="text-xs text-slate-700 font-medium">Statutory Tax Withholdings</div>
           </div>
         </Card>
@@ -162,9 +163,9 @@ export const GlobalPayrollOverviewPage = () => {
                   </td>
                   <td className="p-4 text-slate-700 font-mono">{pr.month}</td>
                   <td className="p-4 text-slate-800 font-medium">{pr.employeesCount} Employees</td>
-                  <td className="p-4 font-bold text-slate-900">${pr.grossSalary.toLocaleString()}</td>
-                  <td className="p-4 text-slate-700 font-mono">${pr.taxStatutory.toLocaleString()}</td>
-                  <td className="p-4 font-bold text-emerald-800">${pr.netSalary.toLocaleString()}</td>
+                  <td className="p-4 font-bold text-slate-900">{formatCurrency(pr.grossSalary)}</td>
+                  <td className="p-4 text-slate-700 font-mono">{formatCurrency(pr.taxStatutory)}</td>
+                  <td className="p-4 font-bold text-emerald-800">{formatCurrency(pr.netSalary)}</td>
                   <td className="p-4">
                     {pr.status === 'COMPLETED' && <Badge variant="success">Completed</Badge>}
                     {pr.status === 'PROCESSING' && <Badge variant="info">Processing</Badge>}

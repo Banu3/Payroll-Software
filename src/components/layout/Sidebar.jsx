@@ -68,6 +68,8 @@ export const Sidebar = () => {
       title: 'FINANCE',
       items: [
         { label: 'Bank Payments', to: role === 'SUPER_ADMIN' || role === 'HR_ADMIN' ? '/hr/payments' : '/employee/payments', icon: DollarSign, show: true },
+        { label: 'Loans & Advances', to: role === 'SUPER_ADMIN' || role === 'HR_ADMIN' ? '/hr/loans-advances' : '/employee/loans-advances', icon: DollarSign, show: true },
+        { label: 'Reimbursements', to: role === 'SUPER_ADMIN' || role === 'HR_ADMIN' ? '/hr/reimbursements' : '/employee/reimbursements', icon: FileSpreadsheet, show: true },
         { label: 'Statutory Compliance', to: '/hr/statutory', icon: ShieldCheck, show: hasPermission('statutory.view') || role === 'SUPER_ADMIN' || role === 'HR_ADMIN' },
       ]
     },

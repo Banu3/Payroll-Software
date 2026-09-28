@@ -131,7 +131,7 @@ export const GlobalSearchModal = ({ isOpen: externalIsOpen, onClose: externalOnC
       id: 'sr-6',
       name: 'September 2026 Payroll Run',
       type: 'PAYROLL',
-      subtitle: 'Disbursement Volume: $1,245,000 • 18 Runs Processed',
+      subtitle: 'Disbursement Volume: ₹12,45,000 • 18 Runs Processed',
       badge: 'Completed',
       badgeColor: 'teal',
       link: '/super-admin/payroll',

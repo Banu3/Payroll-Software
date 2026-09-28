@@ -13,6 +13,7 @@ import {
   Play,
   FileCheck
 } from 'lucide-react';
+import { formatCurrency } from '../../../services/financialCalculationService';
 
 const MOCK_STATUTORY_REPORTS = [
   { id: 'rep-pf-1', report_type: 'EPFO PF ECR Return', month_year: 'September 2026', version: 1, total_employees_covered: 48, total_amount: 28800, status: 'GENERATED', created_at: '2026-09-27' },
@@ -210,7 +211,7 @@ export const HRStatutoryDashboardPage = () => {
                     <td className="p-4 text-slate-800 font-medium">{rep.month_year}</td>
                     <td className="p-4 font-mono font-bold text-teal-800">v{rep.version}</td>
                     <td className="p-4 text-slate-800">{rep.total_employees_covered} Staff</td>
-                    <td className="p-4 font-bold text-slate-900">${rep.total_amount.toLocaleString()}</td>
+                    <td className="p-4 font-bold text-slate-900">{formatCurrency(rep.total_amount)}</td>
                     <td className="p-4">
                       {rep.status === 'FILED' ? (
                         <Badge variant="success">FILED</Badge>

@@ -396,26 +396,26 @@ export const CreateEmployeePage = () => {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
-                  label="Annual CTC ($ USD)"
+                  label="Annual CTC (₹ INR)"
                   type="number"
                   value={formData.salaryInfo.annualCtc}
                   onChange={(e) => handleNestedChange('salaryInfo', 'annualCtc', Number(e.target.value))}
                   isRequired
                 />
                 <Input
-                  label="Basic Pay ($)"
+                  label="Basic Pay (₹)"
                   type="number"
                   value={formData.salaryInfo.basic}
                   onChange={(e) => handleNestedChange('salaryInfo', 'basic', Number(e.target.value))}
                 />
                 <Input
-                  label="HRA ($)"
+                  label="HRA (₹)"
                   type="number"
                   value={formData.salaryInfo.hra}
                   onChange={(e) => handleNestedChange('salaryInfo', 'hra', Number(e.target.value))}
                 />
                 <Input
-                  label="Special Allowance ($)"
+                  label="Special Allowance (₹)"
                   type="number"
                   value={formData.salaryInfo.specialAllowance}
                   onChange={(e) => handleNestedChange('salaryInfo', 'specialAllowance', Number(e.target.value))}

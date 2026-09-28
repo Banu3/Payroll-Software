@@ -26,8 +26,8 @@ export const createCompanySchema = z.object({
   }),
   payrollConfig: z.object({
     payFrequency: z.enum(['Monthly', 'Bi-weekly', 'Weekly']),
-    currency: z.string().default('USD'),
-    financialYearStart: z.string().default('January'),
+    currency: z.string().default('INR'),
+    financialYearStart: z.string().default('April'),
     payrollDate: z.number().min(1).max(31).default(30),
   }),
   plan: z.object({
@@ -55,7 +55,7 @@ export const branchSchema = z.object({
   state: z.string().optional(),
   country: z.string().optional(),
   postalCode: z.string().optional(),
-  timezone: z.string().default('UTC'),
+  timezone: z.string().default('Asia/Kolkata'),
   phone: z.string().optional(),
   managerId: z.string().nullable().optional(),
 });

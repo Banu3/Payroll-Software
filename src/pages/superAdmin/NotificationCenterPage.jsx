@@ -8,7 +8,7 @@ import { api } from '../../services/api';
 
 const MOCK_NOTIFICATIONS = [
   { id: 'notif_1', title: 'New Tenant Registration Pending Approval', message: 'Nexus Global Solutions has completed trial onboarding and submitted verification documents.', is_read: false, created_at: '2026-09-27T14:30:00Z', type: 'INFO' },
-  { id: 'notif_2', title: 'High-Volume Payroll Sign-off Required', message: 'Vanguard Financial has submitted $420,000 September payroll run for platform audit.', is_read: false, created_at: '2026-09-27T11:15:00Z', type: 'WARNING' },
+  { id: 'notif_2', title: 'High-Volume Payroll Sign-off Required', message: 'Vanguard Financial has submitted ₹35,00,000 September payroll run for platform audit.', is_read: false, created_at: '2026-09-27T11:15:00Z', type: 'WARNING' },
   { id: 'notif_3', title: 'Automated Nightly Backup Successful', message: 'All tenant PostgreSQL database snapshots verified and saved to S3 encrypted bucket.', is_read: true, created_at: '2026-09-27T00:00:00Z', type: 'SUCCESS' },
   { id: 'notif_4', title: 'Multiple Failed Login Attempts Triggered', message: '5 failed login attempts detected from IP 185.220.101.4 targeting TechFlow Labs portal.', is_read: false, created_at: '2026-09-26T22:10:00Z', type: 'ALERT' },
 ];

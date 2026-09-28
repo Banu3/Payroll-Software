@@ -33,7 +33,7 @@ export const CompanyOverviewPage = () => {
     phone: '+1 (555) 234-5678',
     website: 'https://acmeenterprise.com',
     address: '100 Technology Parkway, Suite 400, San Francisco, CA 94105',
-    currency: 'USD ($)',
+    currency: 'INR (₹)',
     payrollCycle: 'Monthly (Last Working Day)',
   });
 

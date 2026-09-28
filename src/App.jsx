@@ -94,6 +94,10 @@ import CreatePaymentBatchPage from './pages/hr/payments/CreatePaymentBatchPage';
 import PaymentBatchDetailsPage from './pages/hr/payments/PaymentBatchDetailsPage';
 import CompanyBankAccountsPage from './pages/hr/payments/CompanyBankAccountsPage';
 import HRStatutoryDashboardPage from './pages/hr/statutory/HRStatutoryDashboardPage';
+import HRLoansAdvancesPage from './pages/hr/financial/HRLoansAdvancesPage';
+import HRReimbursementsPage from './pages/hr/financial/HRReimbursementsPage';
+import EmployeeLoansAdvancesPage from './pages/employee/financial/EmployeeLoansAdvancesPage';
+import EmployeeReimbursementsPage from './pages/employee/financial/EmployeeReimbursementsPage';
 
 // Advanced Reports, Analytics & Management Dashboard (Part 10)
 import ExecutiveAnalyticsDashboardPage from './pages/analytics/ExecutiveAnalyticsDashboardPage';
@@ -921,6 +925,46 @@ export function App() {
                   <ProtectedRoute>
                     <AppLayout>
                       <EmployeePaymentsPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/hr/loans-advances"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <HRLoansAdvancesPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/hr/reimbursements"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <HRReimbursementsPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/employee/loans-advances"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <EmployeeLoansAdvancesPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/employee/reimbursements"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <EmployeeReimbursementsPage />
                     </AppLayout>
                   </ProtectedRoute>
                 }
