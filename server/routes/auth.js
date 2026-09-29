@@ -174,43 +174,9 @@ router.get('/login-history', authenticateToken, async (req, res) => {
       .order('created_at', { ascending: false })
       .limit(20);
 
-    // Fallback mock history if empty
-    const mockHistory = [
-      {
-        id: 'evt-1',
-        event_type: 'login_success',
-        ip_address: req.ip || '192.168.1.45',
-        browser: 'Chrome 128.0 (Windows)',
-        device_info: 'Desktop - Windows 11',
-        location: 'New York, US',
-        status: 'SUCCESS',
-        created_at: new Date().toISOString(),
-      },
-      {
-        id: 'evt-2',
-        event_type: 'login_success',
-        ip_address: '192.168.1.45',
-        browser: 'Chrome 128.0 (Windows)',
-        device_info: 'Desktop - Windows 11',
-        location: 'New York, US',
-        status: 'SUCCESS',
-        created_at: new Date(Date.now() - 86400000).toISOString(),
-      },
-      {
-        id: 'evt-3',
-        event_type: 'password_changed',
-        ip_address: '192.168.1.45',
-        browser: 'Chrome 128.0 (Windows)',
-        device_info: 'Desktop - Windows 11',
-        location: 'New York, US',
-        status: 'SUCCESS',
-        created_at: new Date(Date.now() - 172800000).toISOString(),
-      }
-    ];
-
     return res.status(200).json({
       success: true,
-      data: events && events.length > 0 ? events : mockHistory,
+      data: events || [],
       requestId: req.requestId,
     });
   } catch (error) {

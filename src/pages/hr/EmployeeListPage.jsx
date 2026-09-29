@@ -213,7 +213,7 @@ export const EmployeeListPage = () => {
     {
       header: 'Employee ID',
       accessor: 'employee_code',
-      render: (e) => <span className="font-mono font-bold text-blue-400">{e.employee_code}</span>,
+      render: (e) => <span className="font-mono font-bold text-[#167C63] bg-[#E5F4EE] px-2 py-0.5 rounded-[6px] border border-[#BCE3D4] inline-block text-xs">{e.employee_code}</span>,
     },
     {
       header: 'Employee Name & Email',
@@ -222,8 +222,8 @@ export const EmployeeListPage = () => {
         <div className="flex items-center gap-2.5">
           <Avatar src={e.profile_photo_url} name={`${e.first_name} ${e.last_name}`} size="sm" />
           <div>
-            <span className="font-semibold text-slate-100 block">{e.first_name} {e.last_name}</span>
-            <span className="text-[10px] text-slate-400 font-mono">{e.work_email}</span>
+            <span className="font-bold text-[#17221C] block text-xs">{e.first_name} {e.last_name}</span>
+            <span className="text-[11px] text-[#65736B] font-mono block font-medium">{e.work_email}</span>
           </div>
         </div>
       ),
@@ -231,28 +231,28 @@ export const EmployeeListPage = () => {
     {
       header: 'Department',
       accessor: 'departments',
-      render: (e) => <span className="text-slate-300 font-medium">{e.departments?.name || 'People Operations'}</span>,
+      render: (e) => <span className="text-[#17221C] font-semibold text-xs">{e.departments?.name || 'People Operations'}</span>,
     },
     {
       header: 'Designation',
       accessor: 'designations',
-      render: (e) => <span className="text-slate-300">{e.designations?.name || 'Staff Specialist'}</span>,
+      render: (e) => <span className="text-[#526158] font-medium text-xs">{e.designations?.name || 'Staff Specialist'}</span>,
     },
     {
       header: 'Branch',
       accessor: 'company_branches',
-      render: (e) => <span className="text-slate-400 text-xs">{e.company_branches?.branch_name || 'San Francisco HQ'}</span>,
+      render: (e) => <span className="text-[#526158] font-medium text-xs">{e.company_branches?.branch_name || 'San Francisco HQ'}</span>,
     },
     {
       header: 'Employment Type',
       accessor: 'employment_type',
-      render: (e) => <Badge variant="purple">{e.employment_type || 'Full Time'}</Badge>,
+      render: (e) => <Badge variant="primary">{e.employment_type || 'Full Time'}</Badge>,
     },
     {
       header: 'Reporting Manager',
       accessor: 'reporting_manager',
       render: (e) => (
-        <span className="text-slate-400 text-xs">
+        <span className="text-[#526158] font-medium text-xs">
           {e.reporting_manager ? `${e.reporting_manager.first_name} ${e.reporting_manager.last_name}` : 'Alexander Vance'}
         </span>
       ),
@@ -268,7 +268,7 @@ export const EmployeeListPage = () => {
       render: (e) => (
         <div className="flex items-center gap-1.5">
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             icon={Eye}
             onClick={() => navigate(`/hr/employees/${e.id}`)}
@@ -277,9 +277,9 @@ export const EmployeeListPage = () => {
           </Button>
 
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
-            className="text-rose-400 hover:text-rose-300"
+            className="text-[#C24141] hover:bg-[#FFF1F1] border-[#F7C6C6]"
             icon={UserX}
             onClick={() => handleDeactivate(e)}
           >
@@ -291,7 +291,7 @@ export const EmployeeListPage = () => {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in text-slate-100">
+    <div className="space-y-6 animate-fade-in text-[#17221C]">
       <PageHeader
         title="Employee Directory & Roster"
         description="Tenant Workforce Records, Organization Structure & Field-Level Access Control"
@@ -315,26 +315,26 @@ export const EmployeeListPage = () => {
       />
 
       {filterParam === 'missing-documents' && (
-        <div className="p-4 rounded-xl bg-amber-100/90 border border-amber-500 text-amber-950 font-bold text-xs flex items-center gap-2 shadow-2xs">
-          <Filter className="w-4 h-4 text-amber-800 shrink-0 font-bold" />
-          <span className="text-amber-950 font-bold">Showing employees with missing mandatory verification documents.</span>
+        <div className="p-4 rounded-[10px] bg-[#FFF7E5] border border-[#F7E5B5] text-[#9A6700] font-semibold text-xs flex items-center gap-2">
+          <Filter className="w-4 h-4 text-[#9A6700] shrink-0" />
+          <span>Showing employees with missing mandatory verification documents.</span>
         </div>
       )}
 
       {/* FILTER BAR */}
-      <Card className="bg-white border-[#64748B]">
+      <Card>
         <CardBody className="p-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-teal-700" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#167C63]" />
             <input
               type="text"
-              placeholder="Search Employee Name, EMP ID, Work Email, Phone..."
+              placeholder="Search Employee Name, EMP ID, Work Email..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="w-full bg-white border border-[#64748B] rounded-lg pl-9 pr-3 py-2 text-xs text-[#0F172A] placeholder-[#334155] font-semibold focus:outline-none focus:border-teal-600"
+              className="w-full bg-white border border-[#DCE5E0] rounded-[10px] pl-9 pr-3 py-2 text-xs text-[#17221C] placeholder-[#65736B] font-medium focus:outline-none focus:border-[#167C63] focus:ring-1 focus:ring-[#167C63]"
             />
           </div>
 
@@ -393,15 +393,15 @@ export const EmployeeListPage = () => {
       </Card>
 
       {/* DATA TABLE */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card>
         <CardBody className="p-0">
-          <DataTable columns={columns} data={employees} />
+          <DataTable columns={columns} data={employees} isLoading={isLoading} />
         </CardBody>
 
         {/* SERVER-SIDE PAGINATION FOOTER */}
-        <div className="p-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+        <div className="p-4 bg-[#F7F9F7] border-t border-[#DCE5E0] flex items-center justify-between text-xs text-[#526158] font-medium rounded-b-[14px]">
           <div>
-            Showing <strong className="text-slate-200">{(page - 1) * limit + 1}</strong> to <strong className="text-slate-200">{Math.min(page * limit, totalCount)}</strong> of <strong className="text-slate-200">{totalCount}</strong> employees
+            Showing <strong className="text-[#17221C] font-bold tabular-nums">{(page - 1) * limit + 1}</strong> to <strong className="text-[#17221C] font-bold tabular-nums">{Math.min(page * limit, totalCount)}</strong> of <strong className="text-[#17221C] font-bold tabular-nums">{totalCount}</strong> employees
           </div>
 
           <div className="flex items-center gap-2">
@@ -414,7 +414,7 @@ export const EmployeeListPage = () => {
             >
               Previous
             </Button>
-            <span className="font-mono px-2">Page {page} of {totalPages}</span>
+            <span className="font-semibold text-[#17221C] px-2 tabular-nums">Page {page} of {totalPages}</span>
             <Button
               variant="outline"
               size="sm"

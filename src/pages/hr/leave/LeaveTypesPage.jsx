@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import LeaveSubNav from '../../../components/layout/LeaveSubNav';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { Card, CardHeader, CardBody } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
@@ -76,6 +77,8 @@ export const LeaveTypesPage = () => {
           </Button>
         }
       />
+
+      <LeaveSubNav />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
         {types.map((t) => (

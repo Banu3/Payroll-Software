@@ -85,17 +85,17 @@ export const Header = () => {
   };
 
   return (
-    <header className="h-16 border-b border-[#64748B] bg-white px-6 flex items-center justify-between sticky top-0 z-40 shadow-xs">
+    <header className="h-16 border-b border-[#CBD8D1] bg-white px-6 flex items-center justify-between sticky top-0 z-40 shadow-[0_1px_4px_rgba(20,50,35,0.08)]">
       <div className="flex items-center gap-4">
         <button
           onClick={() => window.dispatchEvent(new CustomEvent('app:open-global-search'))}
-          className="relative hidden md:flex items-center justify-between w-80 bg-[#F8FAFC] border border-[#64748B] hover:border-[#0F766E] hover:bg-white rounded-xl px-3 py-2 text-xs transition-all cursor-pointer shadow-xs group"
+          className="relative hidden md:flex items-center justify-between w-80 h-10 bg-white border border-[#BCCBC3] hover:border-[#167C63] rounded-[10px] px-3 text-xs transition-all cursor-pointer group"
         >
           <div className="flex items-center gap-2">
-            <Search className="w-4 h-4 text-[#0F766E] group-hover:scale-110 transition-transform" />
-            <span className="font-semibold text-[#334155]">Search companies, employees, payroll...</span>
+            <Search className="w-4 h-4 text-[#5A6A61] group-hover:text-[#167C63] transition-colors" />
+            <span className="font-medium text-[#33413A]">Search employees, payroll, reports...</span>
           </div>
-          <kbd className="px-1.5 py-0.5 rounded bg-slate-100 border border-[#64748B] text-[10px] font-mono text-[#1E293B] font-bold shadow-2xs group-hover:border-[#0F766E]">
+          <kbd className="px-1.5 py-0.5 rounded-md bg-[#F3F7F5] border border-[#BCCBC3] text-[10px] font-mono text-[#12201A] font-semibold group-hover:border-[#167C63]">
             Ctrl+K
           </kbd>
         </button>
@@ -105,51 +105,51 @@ export const Header = () => {
         {/* Fullscreen Mode Toggle Button */}
         <button
           onClick={toggleFullscreen}
-          className="p-2 rounded-xl text-[#334155] hover:text-[#0F172A] hover:bg-slate-100 transition-all border border-[#64748B] hover:border-[#0F766E] shadow-2xs cursor-pointer flex items-center gap-1.5 text-xs font-semibold bg-white"
+          className="h-10 px-3 rounded-[9px] text-[#33413A] hover:text-[#12201A] hover:bg-[#F0F6F3] transition-all border border-[#BCCBC3] hover:border-[#167C63] cursor-pointer flex items-center gap-1.5 text-xs font-semibold bg-white"
           title={isFullscreen ? 'Exit Full Screen' : 'Toggle Full Screen'}
         >
           {isFullscreen ? (
             <>
-              <Minimize2 className="w-4 h-4 text-[#0F766E]" />
-              <span className="hidden sm:inline-block text-[11px] font-bold text-[#0F172A]">Exit Fullscreen</span>
+              <Minimize2 className="w-4 h-4 text-[#167C63]" />
+              <span className="hidden sm:inline-block text-xs font-bold text-[#12201A]">Exit Fullscreen</span>
             </>
           ) : (
             <>
-              <Maximize2 className="w-4 h-4 text-[#0F766E]" />
-              <span className="hidden sm:inline-block text-[11px] font-bold text-[#0F172A]">Full Screen</span>
+              <Maximize2 className="w-4 h-4 text-[#167C63]" />
+              <span className="hidden sm:inline-block text-xs font-bold text-[#12201A]">Full Screen</span>
             </>
           )}
         </button>
 
         {/* Tenant isolated badge */}
-        <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5F6F3] border border-[#64748B] text-[11px] text-[#1E293B] font-semibold">
-          <Shield className="w-3.5 h-3.5 text-[#0F766E]" />
-          <span>Tenant Isolated: <strong className="text-[#0F172A] font-mono font-bold">{company?.code || 'MAIN'}</strong></span>
+        <div className="hidden lg:flex items-center gap-1.5 px-3 h-10 rounded-[10px] bg-white border border-[#BCCBC3] text-xs text-[#33413A] font-medium">
+          <Shield className="w-4 h-4 text-[#167C63]" />
+          <span>Tenant Isolated: <strong className="text-[#12201A] font-mono font-bold">{company?.code || 'MAIN'}</strong></span>
         </div>
 
         {/* TOP NOTIFICATION BELL WITH WORKING POPOVER */}
         <div className="relative" ref={popoverRef}>
           <button
             onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-            className="relative p-2 rounded-lg text-[#374151] hover:text-[#111827] hover:bg-[#F5F6F3] transition-colors"
+            className="relative w-10 h-10 flex items-center justify-center rounded-[10px] text-[#33413A] hover:text-[#12201A] hover:bg-[#F0F6F3] border border-[#BCCBC3] transition-colors cursor-pointer bg-white"
             title="Notifications & Alerts"
           >
-            <Bell className="w-4 h-4" />
+            <Bell className="w-4 h-4 text-[#167C63]" />
             {hasUnread && (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#0F766E] animate-pulse" />
+              <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-[#C24141] ring-2 ring-white animate-pulse" />
             )}
           </button>
 
           {isNotificationsOpen && (
-            <div className="absolute right-0 mt-2 w-80 bg-white border border-[#E5E7EB] rounded-xl shadow-xl z-50 p-3 space-y-2 text-xs animate-fade-in">
-              <div className="flex items-center justify-between pb-2 border-b border-[#E5E7EB]">
-                <span className="font-bold text-[#111827]">System Notifications</span>
+            <div className="absolute right-0 mt-2 w-80 bg-white border border-[#CBD8D1] rounded-[16px] shadow-[0_12px_32px_rgba(20,50,35,0.14)] z-50 p-3.5 space-y-2.5 text-xs animate-fade-in">
+              <div className="flex items-center justify-between pb-2 border-b border-[#E1E9E4]">
+                <span className="font-bold text-[#12201A]">Notifications</span>
                 {hasUnread && (
                   <button
                     onClick={handleMarkAllRead}
-                    className="text-[10px] text-[#0F766E] hover:underline font-semibold flex items-center gap-1"
+                    className="text-[10px] text-[#167C63] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
                   >
-                    <Check className="w-3 h-3" /> Mark read
+                    <Check className="w-3 h-3" /> Mark all read
                   </button>
                 )}
               </div>
@@ -158,25 +158,25 @@ export const Header = () => {
                 {notifications.map((n) => (
                   <div
                     key={n.id}
-                    className={`p-2.5 rounded-lg border transition-colors ${
+                    className={`p-2.5 rounded-[10px] border transition-colors ${
                       n.unread && hasUnread
-                        ? 'bg-[#E6F4F1] border-[#CCECF0] text-[#0F766E]'
-                        : 'bg-[#F5F6F3] border-[#E5E7EB] text-[#374151]'
+                        ? 'bg-[#E5F4EE] border-[#CFE6DC] text-[#167C63]'
+                        : 'bg-[#F3F7F5] border-[#CBD8D1] text-[#33413A]'
                     }`}
                   >
-                    <div className="flex items-center justify-between font-semibold text-[#111827]">
+                    <div className="flex items-center justify-between font-semibold text-[#12201A]">
                       <span className="truncate">{n.title}</span>
-                      <span className="text-[10px] text-[#6B7280] font-mono shrink-0 ml-1">{n.time}</span>
+                      <span className="text-[10px] text-[#5A6A61] font-mono shrink-0 ml-1">{n.time}</span>
                     </div>
-                    <p className="text-[11px] text-[#4B5563] mt-0.5 leading-relaxed">{n.desc}</p>
+                    <p className="text-[11px] text-[#33413A] mt-0.5 leading-relaxed">{n.desc}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="pt-2 border-t border-[#E5E7EB] text-center">
+              <div className="pt-2 border-t border-[#E1E9E4] text-center">
                 <button
                   onClick={handleViewAll}
-                  className="w-full py-1.5 rounded-lg text-xs font-semibold text-[#0F766E] hover:bg-[#E6F4F1] transition-colors flex items-center justify-center gap-1"
+                  className="w-full py-1.5 rounded-[9px] text-xs font-semibold text-[#167C63] hover:bg-[#E5F4EE] transition-colors flex items-center justify-center gap-1 cursor-pointer"
                 >
                   <span>View All Notifications</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -186,7 +186,7 @@ export const Header = () => {
           )}
         </div>
 
-        <div className="h-5 w-px bg-[#E5E7EB]" />
+        <div className="h-6 w-px bg-[#CBD8D1]" />
 
         {/* User Profile Menu */}
         <ProfileDropdown />

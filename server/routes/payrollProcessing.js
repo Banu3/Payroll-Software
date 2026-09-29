@@ -165,6 +165,61 @@ router.post('/runs', requirePermission('payroll.create'), async (req, res, next)
 });
 
 /**
+ * GET /api/payroll/register
+ * Real data for Payroll Register report
+ */
+router.get('/register', async (req, res, next) => {
+  try {
+    const companyId = req.targetCompanyId;
+    const { year, month } = req.query;
+    if (!year || !month) return res.status(400).json({ success: false, message: 'Year and month required' });
+
+    const monthYear = `${year}-${String(month).padStart(2, '0')}`;
+
+    const { data: records, error } = await supabaseAdmin
+      .from('payroll_run_employees')
+      .select(`
+        *,
+        employee:employees!inner(
+          id, employee_code, first_name, last_name, department_id,
+          department:departments(name)
+        ),
+        run:payroll_runs!inner(period:payroll_periods!inner(month_year))
+      `)
+      .eq('company_id', companyId)
+      .eq('run.period.month_year', monthYear);
+
+    if (error) throw error;
+
+    return res.status(200).json({ success: true, data: records || [] });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * POST /api/payroll/validate
+ * Pre-validation for payroll run
+ */
+router.post('/validate', requirePermission('payroll.process'), async (req, res, next) => {
+  try {
+    const companyId = req.targetCompanyId;
+    const { year, month } = req.body;
+    const monthYear = `${year}-${String(month).padStart(2, '0')}`;
+    
+    // Call the validation service
+    const validation = await validatePrePayrollRun(companyId, monthYear);
+    
+    return res.status(200).json({
+      success: true,
+      data: validation
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
  * POST /api/payroll/runs/:id/process
  * Execute payroll calculation engine for all eligible employees in batch
  */

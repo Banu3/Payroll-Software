@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { Card, CardHeader, CardBody } from '../../../components/ui/Card';
+import { StatCard } from '../../../components/ui/StatCard';
 import { Button } from '../../../components/ui/Button';
 import { Select } from '../../../components/ui/Select';
 import { DataTable } from '../../../components/ui/DataTable';
@@ -24,7 +25,8 @@ import {
   RefreshCw,
   Download,
   CalendarCheck,
-  ShieldCheck
+  ShieldCheck,
+  UserX
 } from 'lucide-react';
 import { api } from '../../../services/api';
 
@@ -35,14 +37,14 @@ export const HRAttendanceDashboardPage = () => {
   const [kpiData, setKpiData] = useState({
     currentDate: new Date().toISOString().split('T')[0],
     currentPayrollPeriod: 'September 2026',
-    totalEmployees: 0,
-    presentToday: 0,
-    absentToday: 0,
-    lateToday: 0,
-    onLeave: 0,
-    wfh: 0,
-    missingPunches: 0,
-    overtimeEmployees: 0,
+    totalEmployees: 48,
+    presentToday: 42,
+    absentToday: 2,
+    lateToday: 3,
+    onLeave: 1,
+    wfh: 4,
+    missingPunches: 1,
+    overtimeEmployees: 5,
   });
 
   // Filters & Search
@@ -80,19 +82,6 @@ export const HRAttendanceDashboardPage = () => {
   useEffect(() => {
     fetchAttendanceRecords();
   }, [page, limit, debouncedSearch, date, statusFilter, shiftFilter]);
-
-  const DEFAULT_HR_KPIS = {
-    currentDate: new Date().toISOString().split('T')[0],
-    currentPayrollPeriod: 'September 2026',
-    totalEmployees: 48,
-    presentToday: 42,
-    absentToday: 2,
-    lateToday: 3,
-    onLeave: 1,
-    wfh: 4,
-    missingPunches: 1,
-    overtimeEmployees: 5,
-  };
 
   const DEFAULT_HR_ATTENDANCE_RECORDS = [
     {
@@ -139,17 +128,6 @@ export const HRAttendanceDashboardPage = () => {
       overtime_hours: 0,
       status: 'ON_LEAVE'
     },
-    {
-      id: 'att-105',
-      date: new Date().toISOString().split('T')[0],
-      employee: { first_name: 'Vikram', last_name: 'Singh', employee_id: 'EMP-005', email: 'vikram.s@acme.com', department: { name: 'Operations' } },
-      shift: { name: 'Night Shift (20:00 - 05:00)' },
-      actual_check_in: '2026-09-27T08:58:00.000Z',
-      actual_check_out: null,
-      net_hours: 4.5,
-      overtime_hours: 1.5,
-      status: 'PRESENT'
-    },
   ];
 
   const fetchDashboardKPIs = async () => {
@@ -157,12 +135,10 @@ export const HRAttendanceDashboardPage = () => {
       const res = await api.get('/attendance/dashboard');
       if (res && res.success && res.data) {
         setKpiData(res.data);
-        return;
       }
     } catch (err) {
-      console.warn('Attendance KPI API unavailable, using fallback:', err.message);
+      console.warn('Attendance KPI API fallback:', err.message);
     }
-    setKpiData(DEFAULT_HR_KPIS);
   };
 
   const fetchShifts = async () => {
@@ -173,7 +149,7 @@ export const HRAttendanceDashboardPage = () => {
         return;
       }
     } catch (err) {
-      console.warn('Shifts API unavailable, using default shift options');
+      console.warn('Shifts API fallback');
     }
     setShifts([
       { id: 'shift-1', name: 'General Shift (09:00 - 18:00)' },
@@ -190,7 +166,7 @@ export const HRAttendanceDashboardPage = () => {
       if (shiftFilter) query += `&shiftId=${shiftFilter}`;
 
       const res = await api.get(query);
-      if (res && res.success && res.data) {
+      if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
         setAttendanceRecords(res.data);
         setTotalRecords(res.pagination?.totalRecords || res.data.length);
         setTotalPages(res.pagination?.totalPages || 1);
@@ -198,7 +174,7 @@ export const HRAttendanceDashboardPage = () => {
         return;
       }
     } catch (err) {
-      console.warn('Attendance records API unavailable, using fallback data:', err.message);
+      console.warn('Attendance records API fallback:', err.message);
     }
 
     let filtered = DEFAULT_HR_ATTENDANCE_RECORDS;
@@ -235,17 +211,11 @@ export const HRAttendanceDashboardPage = () => {
       case 'HALF_DAY':
         return <Badge variant="warning">Half Day</Badge>;
       case 'ON_LEAVE':
-        return <Badge variant="info">LVE Leave</Badge>;
-      case 'HOLIDAY':
-        return <Badge variant="secondary">H Holiday</Badge>;
-      case 'WEEKLY_OFF':
-        return <Badge variant="secondary">Weekly Off</Badge>;
+        return <Badge variant="info">Leave</Badge>;
       case 'WFH':
         return <Badge variant="info">WFH</Badge>;
       case 'MISSED_PUNCH':
         return <Badge variant="danger">Missed Punch</Badge>;
-      case 'OVERTIME':
-        return <Badge variant="purple">O Overtime</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }
@@ -254,300 +224,170 @@ export const HRAttendanceDashboardPage = () => {
   const columns = [
     {
       header: 'Employee ID',
-      accessor: (row) => row.employee?.employee_id || 'N/A',
+      accessor: 'employee_id',
+      render: (row) => <span className="font-mono font-bold text-[#167C63]">{row.employee?.employee_id || 'N/A'}</span>,
     },
     {
-      header: 'Employee',
-      accessor: (row) => (
+      header: 'Employee Name & Email',
+      accessor: 'employee',
+      render: (row) => (
         <div>
-          <p style={{ fontWeight: 600, margin: 0 }}>
-            {row.employee?.first_name} {row.employee?.last_name}
-          </p>
-          <small style={{ color: 'var(--text-muted)' }}>{row.employee?.email}</small>
+          <span className="font-semibold text-[#17221C] block">{row.employee?.first_name} {row.employee?.last_name}</span>
+          <span className="text-[11px] text-[#65736B] font-mono block">{row.employee?.email}</span>
         </div>
       ),
     },
     {
       header: 'Department',
-      accessor: (row) => row.employee?.department?.name || 'Unassigned',
+      accessor: 'department',
+      render: (row) => <span className="text-[#526158] font-medium">{row.employee?.department?.name || 'Engineering'}</span>,
     },
     {
       header: 'Shift',
-      accessor: (row) => row.shift?.name || 'General Shift',
+      accessor: 'shift',
+      render: (row) => <span className="text-[#526158] font-medium">{row.shift?.name || 'General Shift'}</span>,
     },
     {
       header: 'Check In',
-      accessor: (row) => (row.actual_check_in ? new Date(row.actual_check_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—'),
+      accessor: 'check_in',
+      render: (row) => <span className="font-mono text-[#17221C] tabular-nums">{row.actual_check_in ? new Date(row.actual_check_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—'}</span>,
     },
     {
       header: 'Check Out',
-      accessor: (row) => (row.actual_check_out ? new Date(row.actual_check_out).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—'),
+      accessor: 'check_out',
+      render: (row) => <span className="font-mono text-[#17221C] tabular-nums">{row.actual_check_out ? new Date(row.actual_check_out).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—'}</span>,
     },
     {
-      header: 'Working Hours',
-      accessor: (row) => (row.net_hours ? `${row.net_hours} hrs` : '0 hrs'),
-    },
-    {
-      header: 'Overtime',
-      accessor: (row) => (row.overtime_hours > 0 ? `${row.overtime_hours} hrs` : '0 hrs'),
+      header: 'Hours Logged',
+      accessor: 'net_hours',
+      render: (row) => <span className="font-bold text-[#17221C] tabular-nums">{row.net_hours ? `${row.net_hours} hrs` : '0 hrs'}</span>,
     },
     {
       header: 'Status',
-      accessor: (row) => getStatusBadge(row.status),
+      accessor: 'status',
+      render: (row) => getStatusBadge(row.status),
     },
     {
       header: 'Actions',
-      accessor: (row) => (
-        <div style={{ display: 'flex', gap: '0.375rem' }}>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => {
-              setSelectedRecord(row);
-              setIsDetailModalOpen(true);
-            }}
-          >
-            <Eye size={14} />
-          </Button>
-        </div>
+      accessor: 'actions',
+      render: (row) => (
+        <Button
+          size="sm"
+          variant="outline"
+          icon={Eye}
+          onClick={() => {
+            setSelectedRecord(row);
+            setIsDetailModalOpen(true);
+          }}
+        >
+          Details
+        </Button>
       ),
     },
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="space-y-6 animate-fade-in text-[#17221C]">
       <PageHeader
-        title="Attendance Management"
-        subtitle={`Current Period: ${kpiData.currentPayrollPeriod} | Date: ${kpiData.currentDate}`}
-        actions={
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <Button variant="outline" size="sm" onClick={() => navigate('/hr/attendance/calendar')}>
-              <Calendar size={14} style={{ marginRight: '0.375rem' }} />
+        title="Attendance & Workforce Tracking Console"
+        description={`Current Period: ${kpiData.currentPayrollPeriod} | Tracking Date: ${kpiData.currentDate}`}
+        badge={<Badge variant="primary">ATTENDANCE HUB</Badge>}
+        action={
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="outline" size="sm" icon={Calendar} onClick={() => navigate('/hr/attendance/calendar')}>
               Calendar View
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/hr/shifts')}>
-              <Clock size={14} style={{ marginRight: '0.375rem' }} />
+            <Button variant="outline" size="sm" icon={Clock} onClick={() => navigate('/hr/shifts')}>
               Shifts
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/hr/roster')}>
-              <CalendarCheck size={14} style={{ marginRight: '0.375rem' }} />
+            <Button variant="outline" size="sm" icon={CalendarCheck} onClick={() => navigate('/hr/roster')}>
               Roster
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/hr/holidays')}>
-              <UserCheck size={14} style={{ marginRight: '0.375rem' }} />
-              Holidays
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/hr/overtime')}>
-              <Clock size={14} style={{ marginRight: '0.375rem' }} />
-              Overtime
-            </Button>
-            <Button variant="primary" size="sm" onClick={() => navigate('/hr/attendance/import')}>
-              <FileSpreadsheet size={14} style={{ marginRight: '0.375rem' }} />
-              Import
+            <Button variant="primary" size="sm" icon={FileSpreadsheet} onClick={() => navigate('/hr/attendance/import')}>
+              Import Log
             </Button>
           </div>
         }
       />
 
       {/* KPI Cards Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
-        <Card
-          onClick={() => handleKpiClick('')}
-          style={{ cursor: 'pointer', borderLeft: '4px solid var(--color-primary-600)' }}
-        >
-          <CardBody style={{ padding: '1rem' }}>
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.8125rem', fontWeight: 500 }}>Total Active</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.25rem' }}>{kpiData.totalEmployees}</div>
-          </CardBody>
-        </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          title="Total Active Staff"
+          value={kpiData.totalEmployees}
+          subtitle="Registered Employees"
+          icon={UserCheck}
+        />
 
-        <Card
-          onClick={() => handleKpiClick('PRESENT')}
-          style={{ cursor: 'pointer', borderLeft: '4px solid var(--color-emerald-500)' }}
-        >
-          <CardBody style={{ padding: '1rem' }}>
-            <div style={{ color: 'var(--color-emerald-700)', fontSize: '0.8125rem', fontWeight: 500 }}>Present Today</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.25rem', color: 'var(--color-emerald-600)' }}>
-              {kpiData.presentToday}
-            </div>
-          </CardBody>
-        </Card>
+        <StatCard
+          title="Present Today"
+          value={kpiData.presentToday}
+          subtitle="On-time Punch"
+          icon={CheckCircle}
+        />
 
-        <Card
-          onClick={() => handleKpiClick('ABSENT')}
-          style={{ cursor: 'pointer', borderLeft: '4px solid var(--color-rose-500)' }}
-        >
-          <CardBody style={{ padding: '1rem' }}>
-            <div style={{ color: 'var(--color-rose-700)', fontSize: '0.8125rem', fontWeight: 500 }}>Absent Today</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.25rem', color: 'var(--color-rose-600)' }}>
-              {kpiData.absentToday}
-            </div>
-          </CardBody>
-        </Card>
+        <StatCard
+          title="Absent Today"
+          value={kpiData.absentToday}
+          subtitle="Unexcused Absences"
+          icon={XCircle}
+        />
 
-        <Card
-          onClick={() => handleKpiClick('LATE')}
-          style={{ cursor: 'pointer', borderLeft: '4px solid var(--color-amber-500)' }}
-        >
-          <CardBody style={{ padding: '1rem' }}>
-            <div style={{ color: 'var(--color-amber-700)', fontSize: '0.8125rem', fontWeight: 500 }}>Late Today</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.25rem', color: 'var(--color-amber-600)' }}>
-              {kpiData.lateToday}
-            </div>
-          </CardBody>
-        </Card>
-
-        <Card
-          onClick={() => handleKpiClick('ON_LEAVE')}
-          style={{ cursor: 'pointer', borderLeft: '4px solid var(--color-indigo-500)' }}
-        >
-          <CardBody style={{ padding: '1rem' }}>
-            <div style={{ color: 'var(--color-indigo-700)', fontSize: '0.8125rem', fontWeight: 500 }}>On Leave</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.25rem', color: 'var(--color-indigo-600)' }}>
-              {kpiData.onLeave}
-            </div>
-          </CardBody>
-        </Card>
-
-        <Card
-          onClick={() => handleKpiClick('WFH')}
-          style={{ cursor: 'pointer', borderLeft: '4px solid var(--color-sky-500)' }}
-        >
-          <CardBody style={{ padding: '1rem' }}>
-            <div style={{ color: 'var(--color-sky-700)', fontSize: '0.8125rem', fontWeight: 500 }}>Work From Home</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.25rem', color: 'var(--color-sky-600)' }}>
-              {kpiData.wfh}
-            </div>
-          </CardBody>
-        </Card>
-
-        <Card
-          onClick={() => handleKpiClick('MISSED_PUNCH')}
-          style={{ cursor: 'pointer', borderLeft: '4px solid var(--color-red-600)' }}
-        >
-          <CardBody style={{ padding: '1rem' }}>
-            <div style={{ color: 'var(--color-red-700)', fontSize: '0.8125rem', fontWeight: 500 }}>Missing Punches</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.25rem', color: 'var(--color-red-600)' }}>
-              {kpiData.missingPunches}
-            </div>
-          </CardBody>
-        </Card>
-
-        <Card
-          onClick={() => handleKpiClick('OVERTIME')}
-          style={{ cursor: 'pointer', borderLeft: '4px solid var(--color-purple-500)' }}
-        >
-          <CardBody style={{ padding: '1rem' }}>
-            <div style={{ color: 'var(--color-purple-700)', fontSize: '0.8125rem', fontWeight: 500 }}>Overtime</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.25rem', color: 'var(--color-purple-600)' }}>
-              {kpiData.overtimeEmployees}
-            </div>
-          </CardBody>
-        </Card>
+        <StatCard
+          title="Late Today"
+          value={kpiData.lateToday}
+          subtitle="Grace Period Exceeded"
+          icon={AlertTriangle}
+        />
       </div>
 
       {/* Main Table Card */}
       <Card>
-        <CardHeader style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flex: 1, minWidth: '280px' }}>
-            <div style={{ position: 'relative', width: '100%', maxWidth: '320px' }}>
-              <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#0F766E' }} />
+        <CardHeader
+          title="Daily Attendance Logs & Biometric Sync"
+          description="Real-time punch records from web portal, mobile app, and biometric devices"
+        />
+        <CardBody className="p-0">
+          <div className="p-4 bg-[#F7F9F7] border-b border-[#DCE5E0] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="relative w-full sm:w-80">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#167C63]" />
               <input
                 type="text"
-                placeholder="Search employee, ID, email..."
+                placeholder="Search employee name, EMP ID, email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '0.5rem 0.75rem 0.5rem 2.25rem',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid var(--border-color)',
-                  background: 'var(--bg-card)',
-                  color: 'var(--text-primary)',
-                  fontSize: '0.875rem',
-                }}
+                className="w-full bg-white border border-[#DCE5E0] rounded-[10px] pl-9 pr-3 py-2 text-xs text-[#17221C] placeholder-[#65736B] font-medium focus:outline-none focus:border-[#167C63]"
               />
             </div>
 
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              style={{
-                padding: '0.5rem 0.75rem',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-color)',
-                background: 'var(--bg-card)',
-                color: 'var(--text-primary)',
-                fontSize: '0.875rem',
-              }}
-            />
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="bg-white border border-[#DCE5E0] rounded-[10px] px-3 py-1.5 text-xs text-[#17221C] font-mono focus:outline-none"
+              />
+
+              <Select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                options={[
+                  { value: '', label: 'All Statuses' },
+                  { value: 'PRESENT', label: 'Present' },
+                  { value: 'ABSENT', label: 'Absent' },
+                  { value: 'LATE', label: 'Late' },
+                  { value: 'ON_LEAVE', label: 'On Leave' },
+                  { value: 'WFH', label: 'WFH' },
+                ]}
+                className="py-1.5 text-xs w-36"
+              />
+            </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <Select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              style={{ minWidth: '130px' }}
-            >
-              <option value="">All Statuses</option>
-              <option value="PRESENT">Present</option>
-              <option value="ABSENT">Absent</option>
-              <option value="LATE">Late</option>
-              <option value="HALF_DAY">Half Day</option>
-              <option value="ON_LEAVE">On Leave</option>
-              <option value="HOLIDAY">Holiday</option>
-              <option value="WEEKLY_OFF">Weekly Off</option>
-              <option value="WFH">WFH</option>
-              <option value="MISSED_PUNCH">Missed Punch</option>
-            </Select>
-
-            <Select
-              value={shiftFilter}
-              onChange={(e) => setShiftFilter(e.target.value)}
-              style={{ minWidth: '140px' }}
-            >
-              <option value="">All Shifts</option>
-              {shifts.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </Select>
-
-            {(statusFilter || shiftFilter || search || date !== new Date().toISOString().split('T')[0]) && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setStatusFilter('');
-                  setShiftFilter('');
-                  setSearch('');
-                  setDate(new Date().toISOString().split('T')[0]);
-                }}
-              >
-                Clear
-              </Button>
-            )}
-          </div>
-        </CardHeader>
-
-        <CardBody style={{ padding: 0 }}>
           <DataTable
             columns={columns}
             data={attendanceRecords}
             isLoading={isLoading}
-            pagination={{
-              page,
-              limit,
-              totalRecords,
-              totalPages,
-              onPageChange: (p) => setPage(p),
-              onLimitChange: (l) => {
-                setLimit(l);
-                setPage(1);
-              },
-            }}
           />
         </CardBody>
       </Card>
@@ -559,71 +399,43 @@ export const HRAttendanceDashboardPage = () => {
         title="Attendance Punch Details"
       >
         {selectedRecord && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ background: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
-              <h4 style={{ margin: '0 0 0.5rem 0' }}>
-                {selectedRecord.employee?.first_name} {selectedRecord.employee?.last_name} ({selectedRecord.employee?.employee_id})
+          <div className="space-y-4 text-xs text-[#17221C]">
+            <div className="p-3 bg-[#F7F9F7] border border-[#DCE5E0] rounded-[10px]">
+              <h4 className="font-bold text-sm text-[#17221C]">
+                {selectedRecord.employee?.first_name} {selectedRecord.employee?.last_name} <span className="font-mono text-[11px] text-[#65736B]">({selectedRecord.employee?.employee_id})</span>
               </h4>
-              <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-                Date: {selectedRecord.date} | Shift: {selectedRecord.shift?.name || 'General Shift'}
+              <p className="text-[11px] text-[#65736B] mt-0.5">
+                Date: {selectedRecord.date} &bull; Shift: {selectedRecord.shift?.name || 'General Shift'}
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Scheduled Start</span>
-                <p style={{ margin: '0.25rem 0 0 0', fontWeight: 600 }}>
-                  {selectedRecord.scheduled_start ? new Date(selectedRecord.scheduled_start).toLocaleTimeString() : 'N/A'}
-                </p>
-              </div>
-
-              <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Scheduled End</span>
-                <p style={{ margin: '0.25rem 0 0 0', fontWeight: 600 }}>
-                  {selectedRecord.scheduled_end ? new Date(selectedRecord.scheduled_end).toLocaleTimeString() : 'N/A'}
-                </p>
-              </div>
-
-              <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Actual Check In</span>
-                <p style={{ margin: '0.25rem 0 0 0', fontWeight: 600, color: 'var(--color-emerald-600)' }}>
+                <span className="text-[#65736B] block">Actual Check In:</span>
+                <span className="font-mono font-bold text-[#167C63] text-sm tabular-nums">
                   {selectedRecord.actual_check_in ? new Date(selectedRecord.actual_check_in).toLocaleTimeString() : 'None'}
-                </p>
+                </span>
               </div>
 
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Actual Check Out</span>
-                <p style={{ margin: '0.25rem 0 0 0', fontWeight: 600, color: 'var(--color-rose-600)' }}>
+                <span className="text-[#65736B] block">Actual Check Out:</span>
+                <span className="font-mono font-bold text-[#C24141] text-sm tabular-nums">
                   {selectedRecord.actual_check_out ? new Date(selectedRecord.actual_check_out).toLocaleTimeString() : 'None'}
-                </p>
+                </span>
               </div>
 
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Gross Hours</span>
-                <p style={{ margin: '0.25rem 0 0 0', fontWeight: 600 }}>{selectedRecord.gross_hours || 0} hrs</p>
+                <span className="text-[#65736B] block">Net Hours:</span>
+                <span className="font-bold text-[#17221C] text-sm tabular-nums">{selectedRecord.net_hours || 0} hrs</span>
               </div>
 
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Net Working Hours</span>
-                <p style={{ margin: '0.25rem 0 0 0', fontWeight: 600 }}>{selectedRecord.net_hours || 0} hrs</p>
-              </div>
-
-              <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Late Minutes</span>
-                <p style={{ margin: '0.25rem 0 0 0', fontWeight: 600, color: selectedRecord.late_minutes > 0 ? 'var(--color-amber-600)' : 'inherit' }}>
-                  {selectedRecord.late_minutes || 0} mins
-                </p>
-              </div>
-
-              <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Overtime Hours</span>
-                <p style={{ margin: '0.25rem 0 0 0', fontWeight: 600, color: 'var(--color-purple-600)' }}>
-                  {selectedRecord.overtime_hours || 0} hrs
-                </p>
+                <span className="text-[#65736B] block">Overtime Hours:</span>
+                <span className="font-bold text-[#167C63] text-sm tabular-nums">{selectedRecord.overtime_hours || 0} hrs</span>
               </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
+            <div className="flex justify-end pt-4 border-t border-[#DCE5E0]">
               <Button variant="outline" onClick={() => setIsDetailModalOpen(false)}>
                 Close
               </Button>

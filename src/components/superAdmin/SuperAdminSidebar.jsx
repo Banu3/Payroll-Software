@@ -57,21 +57,21 @@ export const SuperAdminSidebar = () => {
   ];
 
   return (
-    <aside className="w-64 bg-[#111827] border-r border-[#1F2937] flex flex-col shrink-0 h-full text-[#CBD5E1] select-none z-30">
+    <aside className="w-64 bg-white border-r border-[#DCE5E0] flex flex-col shrink-0 h-full text-[#17221C] select-none z-30">
       {/* Super Admin Brand Header */}
-      <div className="p-4 border-b border-[#1F2937] flex items-center gap-3 shrink-0">
-        <div className="w-9 h-9 rounded-xl bg-[#0F766E] flex items-center justify-center font-bold text-white shadow-xs text-xs tracking-wider">
+      <div className="p-4 border-b border-[#DCE5E0] flex items-center gap-3 shrink-0">
+        <div className="w-9 h-9 rounded-[10px] bg-[#167C63] flex items-center justify-center font-bold text-white shadow-xs text-xs tracking-wider">
           SA
         </div>
         <div className="flex flex-col">
-          <span className="text-xs font-bold text-white tracking-tight">Super Admin Portal</span>
-          <span className="text-[10px] text-[#2DD4BF] font-mono font-semibold uppercase tracking-wider">MULTI-TENANT HQ</span>
+          <span className="text-xs font-bold text-[#17221C] tracking-tight">Super Admin Portal</span>
+          <span className="text-[10px] text-[#167C63] font-mono font-semibold uppercase tracking-wider">MULTI-TENANT HQ</span>
         </div>
       </div>
 
       {/* Navigation */}
       <nav ref={navRef} onScroll={handleScroll} className="flex-1 p-3 space-y-1 overflow-y-auto">
-        <div className="px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-[#64748B]">
+        <div className="px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-[#65736B]">
           Super Admin Console
         </div>
 
@@ -84,16 +84,16 @@ export const SuperAdminSidebar = () => {
               ref={isItemActive ? activeLinkRef : null}
               className={({ isActive }) =>
                 clsx(
-                  "flex items-center gap-3 px-3 py-2 rounded-md text-xs transition-colors relative",
+                  "flex items-center gap-3 px-3 py-2 rounded-[9px] text-xs transition-colors relative font-medium",
                   isActive
-                    ? "bg-[#1F2937] text-white font-medium border-l-2 border-[#0F766E]"
-                    : "text-[#CBD5E1] hover:text-white hover:bg-[#1F2937]"
+                    ? "bg-[#E5F4EE] text-[#167C63] border-l-2 border-[#167C63]"
+                    : "text-[#526158] hover:text-[#17221C] hover:bg-[#F0F6F3]"
                 )
               }
             >
               {({ isActive }) => (
                 <>
-                  <item.icon className={clsx("w-4 h-4 shrink-0", isActive ? "text-[#2DD4BF]" : "text-[#94A3B8]")} />
+                  <item.icon className={clsx("w-4 h-4 shrink-0", isActive ? "text-[#167C63]" : "text-[#65736B]")} />
                   <span className="truncate">{item.label}</span>
                 </>
               )}
@@ -103,10 +103,10 @@ export const SuperAdminSidebar = () => {
       </nav>
 
       {/* Footer Info */}
-      <div className="p-3 border-t border-[#1F2937] bg-[#0B0F19] text-[11px] text-[#64748B] flex items-center justify-between shrink-0">
+      <div className="p-3 border-t border-[#DCE5E0] bg-[#F7F9F7] text-[11px] text-[#65736B] flex items-center justify-between shrink-0">
         <span>System Admin Mode</span>
-        <span className="inline-flex items-center gap-1.5 text-[#15803D] font-mono">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" /> ROOT
+        <span className="inline-flex items-center gap-1.5 text-[#167C63] font-mono font-semibold">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#167C63]" /> ROOT
         </span>
       </div>
     </aside>

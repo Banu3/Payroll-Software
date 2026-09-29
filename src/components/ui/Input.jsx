@@ -17,14 +17,14 @@ export const Input = React.forwardRef(({
   return (
     <div className="w-full space-y-1.5">
       {label && (
-        <label htmlFor={inputId} className="block text-xs font-bold text-[#1E293B]">
-          {label} {isRequired && <span className="text-[#B91C1C]">*</span>}
+        <label htmlFor={inputId} className="block text-xs font-bold text-[#12201A]">
+          {label} {isRequired && <span className="text-[#C24141]">*</span>}
         </label>
       )}
-      <div className="relative rounded-lg shadow-xs">
+      <div className="relative rounded-[10px]">
         {Icon && (
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#334155]">
-            <Icon className="w-4 h-4 text-[#0F766E]" />
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#5A6A61]">
+            <Icon className="w-4 h-4 text-[#167C63]" />
           </div>
         )}
         <input
@@ -32,16 +32,16 @@ export const Input = React.forwardRef(({
           id={inputId}
           type={type}
           className={clsx(
-            "w-full h-11 rounded-lg bg-white border border-[#64748B] text-[#0F172A] text-sm placeholder-[#334155] font-medium transition-all focus:outline-none focus:border-[#0F766E] focus:ring-2 focus:ring-[#0F766E]/15 disabled:opacity-50 disabled:bg-[#F5F6F3]",
-            Icon ? "pl-9 pr-3 py-2" : "px-3 py-2",
-            error && "border-[#B91C1C] focus:border-[#B91C1C] focus:ring-[#B91C1C]/10",
+            "w-full h-11 rounded-[10px] bg-white border border-[#BCCBC3] text-[#12201A] text-sm placeholder-[#5A6A61] font-medium transition-all focus:outline-none focus:border-[#167C63] focus:ring-3 focus:ring-[#167C63]/15 disabled:opacity-50 disabled:bg-[#F3F7F5]",
+            Icon ? "pl-9 pr-3.5" : "px-3.5",
+            error && "border-[#C24141] focus:border-[#C24141] focus:ring-[#C24141]/15",
             className
           )}
           {...props}
         />
       </div>
-      {error && <p className="text-xs text-[#B91C1C] font-semibold">{error}</p>}
-      {helperText && !error && <p className="text-xs text-[#475569]">{helperText}</p>}
+      {error && <p className="text-xs text-[#C24141] font-semibold">{error}</p>}
+      {helperText && !error && <p className="text-xs text-[#5A6A61]">{helperText}</p>}
     </div>
   );
 });

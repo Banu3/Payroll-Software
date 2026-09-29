@@ -11,7 +11,7 @@ export const AppLayout = ({ children }) => {
   const isSuperAdminRoute = location.pathname.startsWith('/super-admin');
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#EFEAE1] text-[#0F172A] font-sans antialiased">
+    <div className="flex h-screen w-screen overflow-hidden bg-[#F7F9F7] text-[#17221C] font-sans antialiased">
       {isSuperAdminRoute ? <SuperAdminSidebar /> : <Sidebar />}
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         <Header />

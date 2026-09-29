@@ -14,29 +14,29 @@ export const Select = React.forwardRef(({
   const selectId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
 
   return (
-    <div className={clsx("space-y-1", containerClassName)}>
+    <div className={clsx("space-y-1.5", containerClassName)}>
       {label && (
-        <label htmlFor={selectId} className="block text-xs font-bold text-[#1E293B]">
-          {label} {isRequired && <span className="text-[#B91C1C]">*</span>}
+        <label htmlFor={selectId} className="block text-xs font-bold text-[#12201A]">
+          {label} {isRequired && <span className="text-[#C24141]">*</span>}
         </label>
       )}
       <select
         ref={ref}
         id={selectId}
         className={clsx(
-          "w-full h-10 rounded-xl bg-white border border-[#64748B] px-3 py-1.5 text-[#0F172A] text-xs font-bold focus:outline-none focus:border-[#0F766E] focus:ring-1 focus:ring-[#0F766E] transition-all disabled:opacity-50 shadow-xs cursor-pointer",
-          error && "border-[#B91C1C] focus:border-[#B91C1C] focus:ring-[#B91C1C]/10",
+          "w-full h-11 rounded-[10px] bg-white border border-[#BCCBC3] px-3.5 text-[#12201A] text-xs md:text-sm font-semibold focus:outline-none focus:border-[#167C63] focus:ring-3 focus:ring-[#167C63]/15 transition-all disabled:opacity-50 cursor-pointer",
+          error && "border-[#C24141] focus:border-[#C24141] focus:ring-[#C24141]/15",
           className
         )}
         {...props}
       >
         {options.map((opt) => (
-          <option key={opt.value} value={opt.value} disabled={opt.disabled} className="bg-white text-[#0F172A] py-1 font-medium">
+          <option key={opt.value} value={opt.value} disabled={opt.disabled} className="bg-white text-[#12201A] py-1 font-medium">
             {opt.label}
           </option>
         ))}
       </select>
-      {error && <p className="text-xs text-[#B91C1C] font-semibold">{error}</p>}
+      {error && <p className="text-xs text-[#C24141] font-semibold">{error}</p>}
     </div>
   );
 });

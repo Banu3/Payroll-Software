@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Badge } from '../../components/ui/Badge';
 import { Card, CardHeader, CardBody } from '../../components/ui/Card';
+import { StatCard } from '../../components/ui/StatCard';
 import { Button } from '../../components/ui/Button';
 import { DataTable } from '../../components/ui/DataTable';
 import { useAuth } from '../../context/AuthContext';
@@ -55,34 +56,26 @@ export const ManagerDashboard = () => {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-600 font-medium">
-            <span>Direct Reports</span>
-            <Users className="w-4 h-4 text-amber-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 mt-2">6 Team Members</div>
-          <div className="text-[11px] text-emerald-700 mt-1 font-mono font-semibold">3 Present Today</div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-600 font-medium">
-            <span>Pending Leave Requests</span>
-            <Calendar className="w-4 h-4 text-teal-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 mt-2">
-            {leaveRequests.filter((r) => r.status === 'PENDING').length} Requests
-          </div>
-          <div className="text-[11px] text-amber-700 mt-1 font-mono font-semibold">Requires Manager Review</div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-600 font-medium">
-            <span>Team Attendance Rate</span>
-            <Clock className="w-4 h-4 text-emerald-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 mt-2">98.4%</div>
-          <div className="text-[11px] text-emerald-700 mt-1 font-mono font-semibold">Current Month</div>
-        </Card>
+        <StatCard
+          title="Direct Reports"
+          value="6 Members"
+          subtitle="3 Present Today"
+          icon={Users}
+        />
+        <StatCard
+          title="Pending Leave Requests"
+          value={`${leaveRequests.filter((r) => r.status === 'PENDING').length} Requests`}
+          subtitle="Requires Manager Review"
+          icon={Calendar}
+        />
+        <StatCard
+          title="Team Attendance Rate"
+          value="98.4%"
+          subtitle="Current Month"
+          icon={Clock}
+          trend="+1.2%"
+          trendType="up"
+        />
       </div>
 
       {/* Leave Approvals Table */}
@@ -94,10 +87,10 @@ export const ManagerDashboard = () => {
         <CardBody className="p-0">
           <DataTable
             columns={[
-              { header: 'Employee', accessor: 'employee', render: (r) => <span className="font-semibold text-slate-900">{r.employee}</span> },
-              { header: 'Leave Category', accessor: 'type', render: (r) => <span className="text-slate-800 font-medium">{r.type}</span> },
-              { header: 'Dates Requested', accessor: 'dates', render: (r) => <span className="text-slate-700">{r.dates}</span> },
-              { header: 'Total Days', accessor: 'days', render: (r) => <span className="text-slate-800 font-semibold">{r.days}</span> },
+              { header: 'Employee', accessor: 'employee', render: (r) => <span className="font-semibold text-[#17221C]">{r.employee}</span> },
+              { header: 'Leave Category', accessor: 'type', render: (r) => <span className="text-[#526158] font-medium">{r.type}</span> },
+              { header: 'Dates Requested', accessor: 'dates', render: (r) => <span className="text-[#65736B]">{r.dates}</span> },
+              { header: 'Total Days', accessor: 'days', render: (r) => <span className="text-[#17221C] font-semibold tabular-nums">{r.days}</span> },
               { header: 'Status', accessor: 'status', render: (r) => <Badge variant={r.status === 'APPROVED' ? 'success' : r.status === 'REJECTED' ? 'danger' : 'warning'}>{r.status}</Badge> },
               {
                 header: 'Action',
@@ -106,32 +99,26 @@ export const ManagerDashboard = () => {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleApprove(r.id)}
-                      style={{ color: '#0F172A', backgroundColor: r.status === 'APPROVED' ? '#0F766E' : '#E6F4F1', borderColor: '#0F766E' }}
-                      className={`h-8 px-3 rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 transition-all cursor-pointer border ${
+                      className={`h-8 px-3 rounded-[9px] text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 border ${
                         r.status === 'APPROVED'
-                          ? 'bg-[#0F766E] text-white border-[#0F766E]'
-                          : 'bg-[#E6F4F1] border-[#0F766E] hover:bg-[#D1ECE7] text-[#0F172A]'
+                          ? 'bg-[#167C63] text-white border-[#167C63]'
+                          : 'bg-[#E5F4EE] border-[#BCE3D4] hover:bg-[#D4EFE4] text-[#167C63]'
                       }`}
                     >
-                      <Check className={`w-3.5 h-3.5 shrink-0 ${r.status === 'APPROVED' ? 'text-white' : 'text-[#0F766E]'}`} />
-                      <span style={{ color: r.status === 'APPROVED' ? '#FFFFFF' : '#0F172A', fontWeight: 700 }}>
-                        {r.status === 'APPROVED' ? 'Approved' : 'Approve'}
-                      </span>
+                      <Check className="w-3.5 h-3.5 shrink-0" />
+                      <span>{r.status === 'APPROVED' ? 'Approved' : 'Approve'}</span>
                     </button>
 
                     <button
                       onClick={() => handleReject(r.id)}
-                      style={{ color: '#0F172A', backgroundColor: r.status === 'REJECTED' ? '#E11D48' : '#FFF1F2', borderColor: '#F43F5E' }}
-                      className={`h-8 px-3 rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 transition-all cursor-pointer border ${
+                      className={`h-8 px-3 rounded-[9px] text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 border ${
                         r.status === 'REJECTED'
-                          ? 'bg-rose-600 text-white border-rose-700'
-                          : 'bg-rose-50 border-rose-300 hover:bg-rose-100 text-[#0F172A]'
+                          ? 'bg-[#C24141] text-white border-[#C24141]'
+                          : 'bg-[#FFF1F1] border-[#F7C6C6] hover:bg-[#FDE2E2] text-[#C24141]'
                       }`}
                     >
-                      <X className={`w-3.5 h-3.5 shrink-0 ${r.status === 'REJECTED' ? 'text-white' : 'text-rose-600'}`} />
-                      <span style={{ color: r.status === 'REJECTED' ? '#FFFFFF' : '#0F172A', fontWeight: 700 }}>
-                        {r.status === 'REJECTED' ? 'Rejected' : 'Reject'}
-                      </span>
+                      <X className="w-3.5 h-3.5 shrink-0" />
+                      <span>{r.status === 'REJECTED' ? 'Rejected' : 'Reject'}</span>
                     </button>
                   </div>
                 ),

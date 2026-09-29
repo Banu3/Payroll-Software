@@ -2,6 +2,7 @@ import React from 'react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Badge } from '../../components/ui/Badge';
 import { Card, CardHeader, CardBody } from '../../components/ui/Card';
+import { StatCard } from '../../components/ui/StatCard';
 import { Button } from '../../components/ui/Button';
 import { useAuth } from '../../context/AuthContext';
 import { Download, FileText, CalendarDays, DollarSign, Clock, ShieldCheck } from 'lucide-react';
@@ -17,7 +18,7 @@ export const EmployeeDashboard = () => {
       <PageHeader
         title={`Welcome back, ${fullName}`}
         description={`Employee Self-Service Portal — ${company?.name || 'Enterprise'}`}
-        badge={<Badge variant="default">EMPLOYEE PORTAL</Badge>}
+        badge={<Badge variant="primary">EMPLOYEE PORTAL</Badge>}
         action={
           <Button variant="primary" size="sm" icon={Download}>
             Download Latest Payslip
@@ -26,32 +27,24 @@ export const EmployeeDashboard = () => {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-700 font-medium">
-            <span>Current Net Pay</span>
-            <DollarSign className="w-4 h-4 text-emerald-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 mt-2">{formatCurrency(48500)}</div>
-          <div className="text-[11px] text-emerald-700 mt-1 font-mono font-semibold">Disbursed Aug 31, 2026</div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-700 font-medium">
-            <span>Remaining Leave Balance</span>
-            <CalendarDays className="w-4 h-4 text-blue-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 mt-2">14 Days</div>
-          <div className="text-[11px] text-slate-700 mt-1 font-mono font-medium">Paid Time Off (PTO)</div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-700 font-medium">
-            <span>Hours Logged This Cycle</span>
-            <Clock className="w-4 h-4 text-amber-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 mt-2">152.0 hrs</div>
-          <div className="text-[11px] text-emerald-700 mt-1 font-mono font-semibold">100% On-Time Attendance</div>
-        </Card>
+        <StatCard
+          title="Current Net Pay"
+          value={formatCurrency(48500)}
+          subtitle="Disbursed Aug 31, 2026"
+          icon={DollarSign}
+        />
+        <StatCard
+          title="Remaining Leave Balance"
+          value="14 Days"
+          subtitle="Paid Time Off (PTO)"
+          icon={CalendarDays}
+        />
+        <StatCard
+          title="Hours Logged This Cycle"
+          value="152.0 hrs"
+          subtitle="100% On-Time Attendance"
+          icon={Clock}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -67,16 +60,16 @@ export const EmployeeDashboard = () => {
               { period: 'July 2026', amount: formatCurrency(48500), date: '2026-07-31', status: 'PAID' },
               { period: 'June 2026', amount: formatCurrency(48500), date: '2026-06-30', status: 'PAID' },
             ].map((ps, i) => (
-              <div key={i} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between text-xs">
+              <div key={i} className="p-3 bg-[#F7F9F7] border border-[#DCE5E0] rounded-[10px] flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2.5">
-                  <FileText className="w-4 h-4 text-teal-600" />
+                  <FileText className="w-4 h-4 text-[#167C63]" />
                   <div>
-                    <span className="font-semibold text-slate-900">{ps.period}</span>
-                    <span className="block text-[10px] text-slate-700 font-mono">Paid on {ps.date}</span>
+                    <span className="font-semibold text-[#17221C]">{ps.period}</span>
+                    <span className="block text-[10px] text-[#65736B] font-mono">Paid on {ps.date}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="font-bold text-slate-900">{ps.amount}</span>
+                  <span className="font-bold text-[#17221C] tabular-nums">{ps.amount}</span>
                   <Button variant="outline" size="sm" icon={Download}>
                     PDF
                   </Button>
@@ -93,20 +86,20 @@ export const EmployeeDashboard = () => {
             description="Tenant isolation and identity verification parameters"
           />
           <CardBody className="space-y-3 text-xs">
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2.5">
+            <div className="p-3 bg-[#F7F9F7] border border-[#DCE5E0] rounded-[10px] space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-slate-700 font-medium">Assigned Role:</span>
-                <Badge variant="default">EMPLOYEE</Badge>
+                <span className="text-[#526158] font-medium">Assigned Role:</span>
+                <Badge variant="primary">EMPLOYEE</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-700 font-medium">Tenant Isolation:</span>
-                <span className="text-emerald-700 font-mono font-semibold flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5" /> SECURE (RLS Active)
+                <span className="text-[#526158] font-medium">Tenant Isolation:</span>
+                <span className="text-[#167C63] font-mono font-semibold flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#167C63]" /> SECURE (RLS Active)
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-700 font-medium">Two-Factor Authentication:</span>
-                <span className="text-slate-800 font-semibold">Disabled (Recommended)</span>
+                <span className="text-[#526158] font-medium">Two-Factor Authentication:</span>
+                <span className="text-[#17221C] font-semibold">Disabled (Recommended)</span>
               </div>
             </div>
           </CardBody>

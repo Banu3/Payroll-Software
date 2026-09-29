@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import LeaveSubNav from '../../../components/layout/LeaveSubNav';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { Card, CardHeader, CardBody } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
@@ -87,6 +88,8 @@ export const LeaveBalancesPage = () => {
           </Button>
         }
       />
+
+      <LeaveSubNav />
 
       <Card>
         <CardHeader>

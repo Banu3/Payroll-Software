@@ -1098,7 +1098,97 @@ export function App() {
                 element={
                   <PermissionRoute permission="integrations.view">
                     <AppLayout>
-                      <IntegrationCenterPage />
+                      <IntegrationCenterPage defaultTab="OVERVIEW" />
+                    </AppLayout>
+                  </PermissionRoute>
+                }
+              />
+              <Route
+                path="/integrations/overview"
+                element={
+                  <PermissionRoute permission="integrations.view">
+                    <AppLayout>
+                      <IntegrationCenterPage defaultTab="OVERVIEW" />
+                    </AppLayout>
+                  </PermissionRoute>
+                }
+              />
+              <Route
+                path="/integrations/biometric"
+                element={
+                  <PermissionRoute permission="integrations.view">
+                    <AppLayout>
+                      <IntegrationCenterPage defaultTab="BIOMETRIC" />
+                    </AppLayout>
+                  </PermissionRoute>
+                }
+              />
+              <Route
+                path="/hr/settings/biometric"
+                element={
+                  <PermissionRoute permission="integrations.view">
+                    <AppLayout>
+                      <IntegrationCenterPage defaultTab="BIOMETRIC" />
+                    </AppLayout>
+                  </PermissionRoute>
+                }
+              />
+              <Route
+                path="/integrations/whatsapp"
+                element={
+                  <PermissionRoute permission="integrations.view">
+                    <AppLayout>
+                      <IntegrationCenterPage defaultTab="WHATSAPP" />
+                    </AppLayout>
+                  </PermissionRoute>
+                }
+              />
+              <Route
+                path="/hr/settings/whatsapp"
+                element={
+                  <PermissionRoute permission="integrations.view">
+                    <AppLayout>
+                      <IntegrationCenterPage defaultTab="WHATSAPP" />
+                    </AppLayout>
+                  </PermissionRoute>
+                }
+              />
+              <Route
+                path="/integrations/email"
+                element={
+                  <PermissionRoute permission="integrations.view">
+                    <AppLayout>
+                      <IntegrationCenterPage defaultTab="EMAIL" />
+                    </AppLayout>
+                  </PermissionRoute>
+                }
+              />
+              <Route
+                path="/integrations/storage"
+                element={
+                  <PermissionRoute permission="integrations.view">
+                    <AppLayout>
+                      <IntegrationCenterPage defaultTab="STORAGE" />
+                    </AppLayout>
+                  </PermissionRoute>
+                }
+              />
+              <Route
+                path="/integrations/accounting"
+                element={
+                  <PermissionRoute permission="integrations.view">
+                    <AppLayout>
+                      <IntegrationCenterPage defaultTab="ACCOUNTING" />
+                    </AppLayout>
+                  </PermissionRoute>
+                }
+              />
+              <Route
+                path="/integrations/connectors"
+                element={
+                  <PermissionRoute permission="integrations.view">
+                    <AppLayout>
+                      <IntegrationCenterPage defaultTab="CONNECTORS" />
                     </AppLayout>
                   </PermissionRoute>
                 }
@@ -1108,7 +1198,7 @@ export function App() {
                 element={
                   <PermissionRoute permission="webhooks.manage">
                     <AppLayout>
-                      <IntegrationCenterPage />
+                      <IntegrationCenterPage defaultTab="WEBHOOKS" />
                     </AppLayout>
                   </PermissionRoute>
                 }
@@ -1118,7 +1208,7 @@ export function App() {
                 element={
                   <PermissionRoute permission="api_keys.manage">
                     <AppLayout>
-                      <IntegrationCenterPage />
+                      <IntegrationCenterPage defaultTab="API_KEYS" />
                     </AppLayout>
                   </PermissionRoute>
                 }

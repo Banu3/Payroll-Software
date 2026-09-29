@@ -3,15 +3,15 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import {
   Sparkles,
   Play,
-  CheckCircle2,
-  AlertTriangle,
-  FileSpreadsheet,
   Clock,
-  Send,
-  Loader2,
-  Users
+  Loader2
 } from 'lucide-react';
 import api from '../../../lib/axios';
+import PageHeader from '../../../components/ui/PageHeader';
+import Card from '../../../components/ui/Card';
+import Button from '../../../components/ui/Button';
+import Badge from '../../../components/ui/Badge';
+import Select from '../../../components/ui/Select';
 
 export default function BulkPayslipGenerationPage() {
   const [selectedRunId, setSelectedRunId] = useState('');
@@ -61,27 +61,23 @@ export default function BulkPayslipGenerationPage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
-          <Sparkles className="w-6 h-6 text-blue-400" /> Bulk Payslip Generation Engine
-        </h1>
-        <p className="text-sm text-slate-400">
-          Execute asynchronous background generation of official payslips for all finalized employees.
-        </p>
-      </div>
+      <PageHeader
+        title="Bulk Payslip Generation Engine"
+        subtitle="Execute asynchronous background generation of official payslips for all finalized employees."
+        icon={Sparkles}
+      />
 
       {/* Form Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-6">
+      <Card className="p-6 space-y-6">
         <div>
-          <label className="block text-xs font-semibold text-slate-400 mb-2">Select Finalized Payroll Run</label>
+          <label className="block text-xs font-semibold text-muted mb-2">Select Finalized Payroll Run</label>
           {runsLoading ? (
-            <div className="text-xs text-slate-500">Loading finalized runs...</div>
+            <div className="text-xs text-muted">Loading finalized runs...</div>
           ) : (
-            <select
+            <Select
               value={selectedRunId}
               onChange={(e) => setSelectedRunId(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-blue-500 font-mono"
+              className="font-mono"
             >
               <option value="">Select Payroll Run...</option>
               {runs?.map((r) => (
@@ -89,85 +85,77 @@ export default function BulkPayslipGenerationPage() {
                   Run #{r.run_number || r.id.slice(0, 8)} • Period: {r.payroll_period?.month_year || 'N/A'} • ({r.total_employees || 0} employees) [{r.status}]
                 </option>
               ))}
-            </select>
+            </Select>
           )}
         </div>
 
-        <div className="flex items-center gap-3 p-4 bg-slate-950/60 border border-slate-800 rounded-lg">
+        <div className="flex items-center gap-3 p-4 bg-subtle border border-default rounded-lg">
           <input
             type="checkbox"
             id="autoEmail"
             checked={sendEmailImmediately}
             onChange={(e) => setSendEmailImmediately(e.target.checked)}
-            className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-0"
+            className="w-4 h-4 rounded border-strong text-brand focus:ring-brand"
           />
-          <label htmlFor="autoEmail" className="text-xs text-slate-300 font-medium cursor-pointer">
+          <label htmlFor="autoEmail" className="text-xs text-heading font-medium cursor-pointer">
             Automatically trigger email delivery to employee inbox upon generation
           </label>
         </div>
 
-        <button
+        <Button
           onClick={() => bulkGenMutation.mutate()}
           disabled={!selectedRunId || bulkGenMutation.isPending}
-          className="w-full py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-bold uppercase tracking-wider rounded-lg flex items-center justify-center gap-2"
+          loading={bulkGenMutation.isPending}
+          icon={Play}
+          className="w-full justify-center py-3"
         >
-          {bulkGenMutation.isPending ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Play className="w-4 h-4 fill-white" />
-          )}
           Initialize Bulk Background Job
-        </button>
-      </div>
+        </Button>
+      </Card>
 
       {/* Real-time Job Progress Tracker */}
       {job && (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+        <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-              <Clock className="w-4 h-4 text-blue-400" /> Background Job Tracker (ID: {job.id?.slice(0, 8)})
+            <h2 className="text-xs font-bold text-heading uppercase tracking-wider flex items-center gap-2">
+              <Clock className="w-4 h-4 text-brand" /> Background Job Tracker (ID: {job.id?.slice(0, 8)})
             </h2>
-            <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
-              job.status === 'COMPLETED'
-                ? 'bg-emerald-950 text-emerald-400 border-emerald-800'
-                : job.status === 'PROCESSING'
-                ? 'bg-blue-950 text-blue-400 border-blue-800 animate-pulse'
-                : 'bg-amber-950 text-amber-400 border-amber-800'
-            }`}>
+            <Badge variant={job.status === 'COMPLETED' ? 'success' : job.status === 'PROCESSING' ? 'brand' : 'warning'}>
               {job.status}
-            </span>
+            </Badge>
           </div>
 
           {/* Progress Bar */}
           <div className="space-y-1">
-            <div className="flex justify-between text-xs text-slate-400 font-mono">
+            <div className="flex justify-between text-xs text-muted font-mono">
               <span>Progress: {job.processed_count} / {job.total_employees} employees</span>
               <span>{Math.round(((job.processed_count || 0) / (job.total_employees || 1)) * 100)}%</span>
             </div>
-            <div className="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+            <div className="w-full h-2.5 bg-subtle rounded-full overflow-hidden border border-default">
               <div
-                className="h-full bg-blue-500 transition-all duration-300"
+                className="h-full bg-brand transition-all duration-300 rounded-full"
                 style={{ width: `${Math.min(100, Math.round(((job.processed_count || 0) / (job.total_employees || 1)) * 100))}%` }}
               />
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-3 text-center text-xs font-mono pt-2">
-            <div className="p-3 bg-slate-950 border border-slate-800 rounded-lg">
-              <span className="text-slate-500 text-[10px] block">Total Included</span>
-              <span className="font-bold text-slate-200 text-sm">{job.total_employees}</span>
+            <div className="p-3 bg-subtle border border-default rounded-lg">
+              <span className="text-muted text-[10px] block">Total Included</span>
+              <span className="font-bold text-heading text-sm">{job.total_employees}</span>
             </div>
-            <div className="p-3 bg-slate-950 border border-slate-800 rounded-lg">
-              <span className="text-slate-500 text-[10px] block">Generated</span>
-              <span className="font-bold text-emerald-400 text-sm">{job.success_count}</span>
+            <div className="p-3 bg-subtle border border-default rounded-lg">
+              <span className="text-muted text-[10px] block">Generated</span>
+              <span className="font-bold text-emerald-700 text-sm">{job.success_count}</span>
             </div>
-            <div className="p-3 bg-slate-950 border border-slate-800 rounded-lg">
-              <span className="text-slate-500 text-[10px] block">Failed</span>
-              <span className="font-bold text-red-400 text-sm">{job.failed_count}</span>
+            <div className="p-3 bg-subtle border border-default rounded-lg">
+              <span className="text-muted text-[10px] block">Failed</span>
+              <span className="font-bold text-rose-700 text-sm">{job.failed_count}</span>
             </div>
           </div>
-        </div>
+        </Card>
       )}
     </div>
   );
 }
+

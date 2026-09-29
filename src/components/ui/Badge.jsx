@@ -3,21 +3,28 @@ import clsx from 'clsx';
 
 export const Badge = ({ children, variant = 'default', className }) => {
   const variants = {
-    default: 'bg-slate-100 text-slate-900 border-slate-400 font-bold',
-    secondary: 'bg-slate-100 text-slate-800 border-slate-300 font-semibold',
-    primary: 'bg-teal-100 text-teal-900 border-teal-400 font-bold',
-    success: 'bg-emerald-100 text-emerald-900 border-emerald-400 font-bold',
-    warning: 'bg-amber-100 text-amber-950 border-amber-400 font-bold',
-    danger: 'bg-rose-100 text-rose-950 border-rose-400 font-bold',
-    info: 'bg-blue-100 text-blue-900 border-blue-400 font-bold',
-    purple: 'bg-purple-100 text-purple-900 border-purple-400 font-bold',
+    default: 'bg-[#F3F7F5] text-[#12201A] border-[#CBD8D1]',
+    secondary: 'bg-[#F3F7F5] text-[#5A6A61] border-[#CBD8D1]',
+    neutral: 'bg-[#EEF0EE] text-[#526158] border-[#CBD8D1]',
+    primary: 'bg-[#E5F4EE] text-[#167C63] border-[#CFE6DC]',
+    success: 'bg-[#E5F4EE] text-[#167C63] border-[#CFE6DC]',
+    approved: 'bg-[#E5F4EE] text-[#167C63] border-[#CFE6DC]',
+    warning: 'bg-[#FFF7E5] text-[#9A6700] border-[#FFE9B3]',
+    pending: 'bg-[#FFF7E5] text-[#9A6700] border-[#FFE9B3]',
+    danger: 'bg-[#FFF1F1] text-[#C24141] border-[#F8C4C4]',
+    rejected: 'bg-[#FFF1F1] text-[#C24141] border-[#F8C4C4]',
+    error: 'bg-[#FFF1F1] text-[#C24141] border-[#F8C4C4]',
+    info: 'bg-[#EEF6FC] text-[#3674A5] border-[#D1E6F7]',
+    processing: 'bg-[#EEF6FC] text-[#3674A5] border-[#D1E6F7]',
+    purple: 'bg-[#EEF6FC] text-[#3674A5] border-[#D1E6F7]',
+    locked: 'bg-[#EEF0EE] text-[#526158] border-[#CBD8D1]',
   };
 
   return (
     <span
       className={clsx(
-        "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold border tracking-wider uppercase shadow-2xs",
-        variants[variant],
+        "inline-flex items-center justify-center gap-1.5 px-3 h-6 rounded-full text-xs font-semibold border uppercase tracking-wider whitespace-nowrap select-none",
+        variants[variant] || variants.default,
         className
       )}
     >

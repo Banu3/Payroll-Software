@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Badge } from '../../components/ui/Badge';
 import { Card, CardHeader, CardBody } from '../../components/ui/Card';
+import { StatCard } from '../../components/ui/StatCard';
 import { Button } from '../../components/ui/Button';
 import { DataTable } from '../../components/ui/DataTable';
 import { useAuth } from '../../context/AuthContext';
@@ -13,7 +14,9 @@ import {
   TrendingUp,
   Play,
   CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  UserPlus,
+  Clock
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { formatCurrency } from '../../services/financialCalculationService';
@@ -98,55 +101,44 @@ export const HRDashboard = () => {
       />
 
       {statusMessage && (
-        <div className="p-4 rounded-xl bg-blue-100/90 border border-blue-500 text-blue-950 font-bold text-xs flex items-center gap-2 shadow-2xs">
-          <CheckCircle2 className="w-4 h-4 text-blue-800 shrink-0 font-bold" />
-          <span className="text-blue-950 font-bold">{statusMessage}</span>
+        <div className="p-4 rounded-[10px] bg-[#E5F4EE] border border-[#BCE3D4] text-[#167C63] font-semibold text-xs flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-[#167C63] shrink-0" />
+          <span>{statusMessage}</span>
         </div>
       )}
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-700 font-medium">
-            <span>Company Active Employees</span>
-            <Users className="w-4 h-4 text-teal-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 mt-2">{payrollData?.totalEmployees || 48}</div>
-          <div className="text-[11px] text-emerald-700 mt-1 font-mono font-semibold">1 Onboarding Pending</div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-700 font-medium">
-            <span>Gross Monthly Payroll</span>
-            <DollarSign className="w-4 h-4 text-emerald-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 mt-2">
-            {formatCurrency(payrollData?.grossPayrollAmount || 875000)}
-          </div>
-          <div className="text-[11px] text-slate-700 mt-1 font-mono font-medium">Cycle: {payrollData?.currentCycle || 'Sept 2026'}</div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-700 font-medium">
-            <span>Tax & Benefit Deductions</span>
-            <TrendingUp className="w-4 h-4 text-amber-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 mt-2">
-            {formatCurrency((payrollData?.taxDeductions || 34300) + (payrollData?.benefitDeductions || 12450))}
-          </div>
-          <div className="text-[11px] text-amber-700 mt-1 font-mono font-semibold">Automated Withholding</div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-700 font-medium">
-            <span>Net Disbursement</span>
-            <CalendarCheck className="w-4 h-4 text-teal-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 mt-2">
-            {formatCurrency(payrollData?.netDisbursementAmount || 828250)}
-          </div>
-          <div className="text-[11px] text-emerald-700 mt-1 font-mono font-semibold">Due: {payrollData?.paymentDueDate || '2026-09-30'}</div>
-        </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <StatCard
+          title="Total Employees"
+          value={payrollData?.totalEmployees || 128}
+          subtitle="Company Wide"
+          icon={Users}
+        />
+        <StatCard
+          title="Present Today"
+          value={payrollData?.presentToday || 116}
+          subtitle="Active Attendance"
+          icon={CheckCircle2}
+        />
+        <StatCard
+          title="On Leave"
+          value={payrollData?.onLeave || 8}
+          subtitle="Approved Leaves"
+          icon={CalendarCheck}
+        />
+        <StatCard
+          title="New Joiners"
+          value={payrollData?.newJoiners || 4}
+          subtitle="Onboarding"
+          icon={UserPlus}
+        />
+        <StatCard
+          title="Payroll Pending"
+          value={payrollData?.payrollPending || 12}
+          subtitle="Awaiting Approval"
+          icon={Clock}
+        />
       </div>
 
       {/* Employees Table */}
@@ -158,10 +150,10 @@ export const HRDashboard = () => {
         <CardBody className="p-0">
           <DataTable
             columns={[
-              { header: 'Employee Code', accessor: 'code', render: (e) => <span className="font-mono text-slate-800 font-semibold">{e.code}</span> },
-              { header: 'Full Name', accessor: 'name', render: (e) => <span className="font-medium text-slate-900">{e.name}</span> },
-              { header: 'Job Title', accessor: 'title', render: (e) => <span className="text-slate-800">{e.title}</span> },
-              { header: 'Department', accessor: 'department', render: (e) => <span className="text-slate-800">{e.department}</span> },
+              { header: 'Employee Code', accessor: 'code', render: (e) => <span className="font-mono text-[#17221C] font-semibold">{e.code}</span> },
+              { header: 'Full Name', accessor: 'name', render: (e) => <span className="font-medium text-[#17221C]">{e.name}</span> },
+              { header: 'Job Title', accessor: 'title', render: (e) => <span className="text-[#526158]">{e.title}</span> },
+              { header: 'Department', accessor: 'department', render: (e) => <span className="text-[#526158]">{e.department}</span> },
               { header: 'Status', accessor: 'status', render: (e) => <Badge variant={e.status === 'ACTIVE' ? 'success' : 'warning'}>{e.status}</Badge> },
             ]}
             data={employees}

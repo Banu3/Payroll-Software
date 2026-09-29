@@ -13,20 +13,23 @@ export const Button = React.forwardRef(({
   type = 'button',
   ...props
 }, ref) => {
-  const baseStyles = "inline-flex items-center justify-center font-medium transition-all duration-150 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0F766E] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none";
+  const baseStyles = "inline-flex items-center justify-center font-semibold transition-all duration-150 rounded-[9px] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#167C63] disabled:opacity-50 disabled:cursor-not-allowed select-none whitespace-nowrap";
 
   const variants = {
-    primary: "bg-[#0F766E] hover:bg-[#115E59] text-white shadow-xs border border-[#0F766E]",
-    secondary: "bg-white hover:bg-[#F5F6F3] text-[#111827] border border-[#E5E7EB] shadow-xs",
-    outline: "bg-transparent hover:bg-[#F5F6F3] text-[#111827] border border-[#E5E7EB]",
-    ghost: "bg-transparent hover:bg-[#E5E7EB] text-[#374151] hover:text-[#111827]",
-    danger: "bg-[#B91C1C] hover:bg-[#991B1B] text-white shadow-xs border border-[#B91C1C]",
+    primary: "bg-[#167C63] hover:bg-[#11664F] active:bg-[#0E5240] text-white shadow-xs border border-[#167C63]",
+    secondary: "bg-white hover:bg-[#F0F6F3] active:bg-[#E5F4EE] active:text-[#167C63] text-[#12201A] border border-[#BCCBC3] shadow-2xs",
+    outline: "bg-white hover:bg-[#F0F6F3] active:bg-[#E5F4EE] active:text-[#167C63] text-[#12201A] border border-[#BCCBC3] shadow-2xs",
+    ghost: "bg-transparent hover:bg-[#F0F6F3] active:bg-[#E5F4EE] text-[#33413A] hover:text-[#12201A]",
+    danger: "bg-[#C24141] hover:bg-[#A93333] text-white shadow-xs border border-[#C24141]",
+    "soft-red": "bg-[#FFF1F1] hover:bg-[#FDE2E2] text-[#C24141] border border-[#F8C4C4]",
+    success: "bg-[#167C63] hover:bg-[#11664F] text-white shadow-xs border border-[#167C63]",
   };
 
   const sizes = {
+    xs: "px-2.5 py-1 text-xs gap-1",
     sm: "px-3 py-1.5 text-xs gap-1.5",
-    md: "px-4 py-2 text-sm gap-2",
-    lg: "px-5 py-2.5 text-base gap-2.5",
+    md: "px-4 py-2 text-xs md:text-sm gap-2",
+    lg: "px-5 py-2.5 text-sm md:text-base gap-2.5",
   };
 
   return (
@@ -38,9 +41,9 @@ export const Button = React.forwardRef(({
       {...props}
     >
       {isLoading ? (
-        <Loader2 className="w-4 h-4 animate-spin text-current" />
+        <Loader2 className="w-4 h-4 animate-spin text-current shrink-0" />
       ) : Icon ? (
-        <Icon className="w-4 h-4" />
+        <Icon className="w-4 h-4 shrink-0" />
       ) : null}
       <span>{children}</span>
     </button>

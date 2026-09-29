@@ -5,13 +5,16 @@ import {
   Play,
   Save,
   Download,
-  Filter,
-  CheckCircle2,
-  FileSpreadsheet,
   Loader2
 } from 'lucide-react';
 import api from '../../lib/axios';
 import { formatCurrency } from '../../services/financialCalculationService';
+import { PageHeader } from '../../components/ui/PageHeader';
+import { Card, CardHeader, CardBody } from '../../components/ui/Card';
+import { Badge } from '../../components/ui/Badge';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Select } from '../../components/ui/Select';
 
 const DATA_SOURCES = [
   { id: 'EMPLOYEES', name: 'Employees Directory', fields: ['first_name', 'last_name', 'employee_code', 'email', 'status', 'joining_date'] },
@@ -87,136 +90,133 @@ export default function ReportBuilderPage() {
   const activeSourceObj = DATA_SOURCES.find((d) => d.id === dataSource);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6 animate-fade-in text-[#12201A]">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
-            <SlidersHorizontal className="w-6 h-6 text-blue-400" /> Custom Report Builder
-          </h1>
-          <p className="text-sm text-slate-400">
-            Build, preview, save, and export safe parameterized reports without raw SQL risks.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => saveMutation.mutate()}
-            disabled={saveMutation.isPending}
-            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700 flex items-center gap-2"
-          >
-            {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 text-emerald-400" />} Save Report
-          </button>
-          <button
-            onClick={() => exportMutation.mutate()}
-            disabled={exportMutation.isPending}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg flex items-center gap-2"
-          >
-            {exportMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />} Export CSV
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title="Custom Report Builder"
+        description="Build, preview, save, and export safe parameterized reports without raw SQL risks."
+        badge={<Badge variant="primary">REPORT BUILDER</Badge>}
+        action={
+          <div className="flex items-center gap-2">
+            <Button
+              variant="secondary"
+              icon={Save}
+              isLoading={saveMutation.isPending}
+              onClick={() => saveMutation.mutate()}
+            >
+              Save Report
+            </Button>
+            <Button
+              variant="primary"
+              icon={Download}
+              isLoading={exportMutation.isPending}
+              onClick={() => exportMutation.mutate()}
+            >
+              Export CSV
+            </Button>
+          </div>
+        }
+      />
 
       {/* Builder Configuration Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Step 1: Select Data Source & Name */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-          <h2 className="text-xs font-bold text-slate-200 uppercase tracking-wider">1. Report Name & Data Source</h2>
-          <div>
-            <label className="block text-slate-400 text-xs mb-1">Report Title</label>
-            <input
-              type="text"
+        <Card>
+          <CardHeader title="1. Report Name & Data Source" description="Define dataset and report title" />
+          <CardBody className="space-y-4">
+            <Input
+              label="Report Title"
               value={reportName}
               onChange={(e) => setReportName(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 rounded p-2 text-xs text-slate-100 focus:outline-none"
             />
-          </div>
 
-          <div>
-            <label className="block text-slate-400 text-xs mb-1">Data Source</label>
-            <select
+            <Select
+              label="Data Source"
               value={dataSource}
               onChange={(e) => {
                 setDataSource(e.target.value);
                 setSelectedFields([]);
               }}
-              className="w-full bg-slate-950 border border-slate-700 rounded p-2 text-xs text-slate-100 focus:outline-none font-semibold"
-            >
-              {DATA_SOURCES.map((d) => (
-                <option key={d.id} value={d.id}>{d.name}</option>
-              ))}
-            </select>
-          </div>
-        </div>
+              options={DATA_SOURCES.map((d) => ({ value: d.id, label: d.name }))}
+            />
+          </CardBody>
+        </Card>
 
         {/* Step 2: Select Fields */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4 md:col-span-2">
-          <h2 className="text-xs font-bold text-slate-200 uppercase tracking-wider">2. Choose Output Fields</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {activeSourceObj?.fields.map((f) => {
-              const isChecked = selectedFields.includes(f);
-              return (
-                <label key={f} className={`p-2.5 rounded-lg border cursor-pointer text-xs transition ${
-                  isChecked ? 'bg-blue-600/15 border-blue-500 text-blue-300' : 'bg-slate-950 border-slate-800 text-slate-400'
-                }`}>
-                  <input
-                    type="checkbox"
-                    className="hidden"
-                    checked={isChecked}
-                    onChange={() => {
-                      if (isChecked) setSelectedFields(selectedFields.filter((item) => item !== f));
-                      else setSelectedFields([...selectedFields, f]);
-                    }}
-                  />
-                  <span className="font-mono">{f}</span>
-                </label>
-              );
-            })}
-          </div>
+        <Card className="md:col-span-2">
+          <CardHeader title="2. Choose Output Fields" description="Select columns for final report table" />
+          <CardBody className="space-y-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
+              {activeSourceObj?.fields.map((f) => {
+                const isChecked = selectedFields.includes(f);
+                return (
+                  <label key={f} className={`p-3 rounded-[10px] border cursor-pointer text-xs transition select-none flex items-center gap-2 ${
+                    isChecked
+                      ? 'bg-[#E5F4EE] border-[#CFE6DC] text-[#167C63] font-semibold'
+                      : 'bg-[#F3F7F5] border-[#CBD8D1] text-[#33413A] hover:bg-[#F0F6F3]'
+                  }`}>
+                    <input
+                      type="checkbox"
+                      className="accent-[#167C63] w-3.5 h-3.5"
+                      checked={isChecked}
+                      onChange={() => {
+                        if (isChecked) setSelectedFields(selectedFields.filter((item) => item !== f));
+                        else setSelectedFields([...selectedFields, f]);
+                      }}
+                    />
+                    <span className="font-mono text-[11px] truncate">{f}</span>
+                  </label>
+                );
+              })}
+            </div>
 
-          <div className="pt-2 flex justify-end">
-            <button
-              onClick={() => executeMutation.mutate()}
-              disabled={executeMutation.isPending}
-              className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg flex items-center gap-2"
-            >
-              {executeMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-white" />} Execute Query Preview
-            </button>
-          </div>
-        </div>
+            <div className="pt-2 flex justify-end">
+              <Button
+                variant="primary"
+                icon={Play}
+                isLoading={executeMutation.isPending}
+                onClick={() => executeMutation.mutate()}
+              >
+                Execute Query Preview
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
       </div>
 
       {/* Query Preview Table */}
       {previewData && (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-          <h2 className="text-xs font-bold text-slate-200 uppercase tracking-wider">Query Preview Results ({previewData.length} records)</h2>
-          {previewData.length === 0 ? (
-            <div className="p-8 text-center text-slate-500 text-xs">No records matched report parameters.</div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-300">
-                <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold tracking-wider border-b border-slate-800">
-                  <tr>
-                    {Object.keys(previewData[0]).slice(0, 8).map((col) => (
-                      <th key={col} className="p-3">{col}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800/60 font-mono">
-                  {previewData.slice(0, 10).map((row, idx) => (
-                    <tr key={idx} className="hover:bg-slate-800/40 transition">
-                      {Object.values(row).slice(0, 8).map((val, cIdx) => (
-                        <td key={cIdx} className="p-3">
-                          {typeof val === 'number' ? formatCurrency(val) : String(val ?? '')}
-                        </td>
+        <Card>
+          <CardHeader title={`Query Preview Results (${previewData.length} records)`} description="First 10 records preview" />
+          <CardBody className="p-0">
+            {previewData.length === 0 ? (
+              <div className="p-8 text-center text-[#5A6A61] text-xs">No records matched report parameters.</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs text-[#12201A]">
+                  <thead className="bg-[#F3F7F5] text-[#5A6A61] uppercase text-[11px] font-semibold tracking-wider border-b border-[#BCCBC3]">
+                    <tr>
+                      {Object.keys(previewData[0]).slice(0, 8).map((col) => (
+                        <th key={col} className="px-4 py-3">{col}</th>
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+                  </thead>
+                  <tbody className="divide-y divide-[#E1E9E4] font-mono">
+                    {previewData.slice(0, 10).map((row, idx) => (
+                      <tr key={idx} className="hover:bg-[#F4F8F5] transition h-11">
+                        {Object.values(row).slice(0, 8).map((val, cIdx) => (
+                          <td key={cIdx} className="px-4 py-2.5">
+                            {typeof val === 'number' ? formatCurrency(val) : String(val ?? '')}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardBody>
+        </Card>
       )}
     </div>
   );

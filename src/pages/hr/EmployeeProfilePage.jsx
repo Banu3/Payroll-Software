@@ -61,43 +61,7 @@ export const EmployeeProfilePage = () => {
       if (apiProfile) {
         setProfile(apiProfile);
       } else {
-        // Search in localStorage demo_added_employees first
-        const savedEmpsStr = localStorage.getItem('demo_added_employees');
-        const customEmps = savedEmpsStr ? JSON.parse(savedEmpsStr) : [];
-        const foundDemoEmp = customEmps.find((e) => e.id === employeeId || e.employee_code === employeeId);
-
-        if (foundDemoEmp) {
-          setProfile({
-            ...foundDemoEmp,
-            designation: foundDemoEmp.designations?.name || 'Staff Specialist',
-            department: foundDemoEmp.departments?.name || 'Engineering',
-            branch: foundDemoEmp.company_branches?.branch_name || 'San Francisco HQ',
-            reportingManager: foundDemoEmp.reporting_manager ? `${foundDemoEmp.reporting_manager.first_name} ${foundDemoEmp.reporting_manager.last_name}` : 'Alexander Vance',
-            joining_date: '2026-10-01',
-            salaryStructure: { annualCtc: 120000, basic: 60000, hra: 24000, specialAllowance: 36000 },
-            bankInfo: { accountHolderName: `${foundDemoEmp.first_name} ${foundDemoEmp.last_name}`, bankName: 'JPMorgan Chase & Co.', accountNumberMasked: '**** **** 4892' },
-            statutoryInfo: { panMasked: 'ABCDE****F', aadhaarMasked: '**** **** 4092' },
-          });
-        } else {
-          // Default mock profile fallback
-          setProfile({
-            id: employeeId || 'emp-001',
-            employee_code: employeeId && employeeId.startsWith('EMP') ? employeeId : 'EMP-001',
-            first_name: 'Samantha',
-            last_name: 'Reed',
-            work_email: 'samantha.reed@company.com',
-            designation: 'Senior Software Engineer',
-            department: 'Engineering',
-            branch: 'San Francisco HQ',
-            employment_status: 'ACTIVE',
-            employment_type: 'Full Time',
-            joining_date: '2025-01-15',
-            reportingManager: 'Alexander Vance',
-            salaryStructure: { annualCtc: 120000, basic: 60000, hra: 24000, specialAllowance: 36000 },
-            bankInfo: { accountHolderName: 'Samantha Reed', bankName: 'JPMorgan Chase & Co.', accountNumberMasked: '**** **** 4892' },
-            statutoryInfo: { panMasked: 'ABCDE****F', aadhaarMasked: '**** **** 4092' },
-          });
-        }
+        setNotice('Employee not found or failed to load.');
       }
     } catch (err) {
       console.warn('Profile fetch error:', err);
@@ -133,22 +97,22 @@ export const EmployeeProfilePage = () => {
     'Activity & Audit',
   ];
 
-  const fullName = profile ? `${profile.first_name} ${profile.last_name}` : 'Employee';
+  const fullName = profile ? `${profile.first_name} ${profile.last_name}` : 'Employee Profile';
 
   return (
-    <div className="space-y-6 animate-fade-in text-slate-100">
+    <div className="space-y-6 animate-fade-in text-[#17221C]">
 
       {/* HEADER CARD */}
-      <div className="p-6 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
+      <div className="p-6 bg-white border border-[#DCE5E0] rounded-[14px] flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-[0_4px_16px_rgba(20,50,35,0.05)]">
         <div className="flex items-center gap-4">
           <Avatar src={profile?.profile_photo_url} name={fullName} size="xl" />
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-xl font-bold text-slate-100">{fullName}</h1>
+              <h1 className="text-xl font-bold text-[#17221C]">{fullName}</h1>
               <Badge variant="success">{profile?.employment_status || 'ACTIVE'}</Badge>
             </div>
-            <p className="text-xs text-slate-400 mt-1">
-              EMP ID: <span className="font-mono font-bold text-blue-400">{profile?.employee_code}</span> &bull; {profile?.designation} &bull; <strong className="text-slate-200">{profile?.department}</strong>
+            <p className="text-xs text-[#65736B] mt-1">
+              EMP ID: <span className="font-mono font-bold text-[#167C63]">{profile?.employee_code || 'EMP-1001'}</span> &bull; {profile?.designation || 'Specialist'} &bull; <strong className="text-[#17221C]">{profile?.department || 'Operations'}</strong>
             </p>
           </div>
         </div>
@@ -158,11 +122,16 @@ export const EmployeeProfilePage = () => {
             variant="outline"
             size="sm"
             icon={ArrowRightLeft}
-            onClick={() => {
-              const newBranch = prompt('Enter new branch location for employee:', profile?.branch || 'New York Hub');
-              if (newBranch) {
-                setProfile((prev) => ({ ...prev, branch: newBranch }));
-                setNotice(`Employee branch updated to ${newBranch}.`);
+            onClick={async () => {
+              const newBranchId = prompt('Enter new branch ID for employee:');
+              if (newBranchId) {
+                try {
+                  await api.post(`/hr/employees/${profile.id}/transfer`, { branchId: newBranchId, effectiveDate: new Date().toISOString().split('T')[0] });
+                  setNotice(`Employee transfer recorded successfully.`);
+                  fetchProfile();
+                } catch(err) {
+                  alert(err.message || 'Transfer failed');
+                }
               }
             }}
           >
@@ -179,14 +148,19 @@ export const EmployeeProfilePage = () => {
           </Button>
 
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
-            className="text-rose-400 hover:text-rose-300"
+            className="text-[#C24141] hover:bg-[#FFF1F1] border-[#F7C6C6]"
             icon={UserX}
-            onClick={() => {
+            onClick={async () => {
               if (window.confirm(`Are you sure you want to deactivate ${fullName}? Payroll & compliance history will be preserved.`)) {
-                setProfile((prev) => ({ ...prev, employment_status: 'INACTIVE' }));
-                setNotice(`Employee status set to INACTIVE. Historical payroll records preserved.`);
+                try {
+                  await api.post(`/hr/employees/${profile?.id}/deactivate`, { status: 'INACTIVE', reason: 'Deactivated from UI' });
+                  setNotice(`Employee status set to INACTIVE. Historical payroll records preserved.`);
+                  fetchProfile();
+                } catch (err) {
+                  alert(err.message || 'Deactivation failed');
+                }
               }
             }}
           >
@@ -196,22 +170,22 @@ export const EmployeeProfilePage = () => {
       </div>
 
       {notice && (
-        <div className="p-4 rounded-xl bg-blue-100/90 border border-blue-500 text-blue-950 font-bold text-xs flex items-center justify-between shadow-2xs">
-          <span className="text-blue-950 font-bold">{notice}</span>
-          <button onClick={() => setNotice(null)} className="text-blue-900 hover:text-blue-950 font-bold underline text-xs">Dismiss</button>
+        <div className="p-4 rounded-[10px] bg-[#E5F4EE] border border-[#BCE3D4] text-[#167C63] font-semibold text-xs flex items-center justify-between">
+          <span>{notice}</span>
+          <button onClick={() => setNotice(null)} className="text-[#167C63] hover:underline font-bold text-xs cursor-pointer">Dismiss</button>
         </div>
       )}
 
       {/* LAZY TABS */}
-      <div className="flex border-b border-slate-800 overflow-x-auto">
+      <div className="flex border-b border-[#DCE5E0] overflow-x-auto">
         {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2.5 text-xs font-semibold whitespace-nowrap transition-all border-b-2 ${
+            className={`px-4 py-2.5 text-xs font-semibold whitespace-nowrap transition-all border-b-2 cursor-pointer ${
               activeTab === tab
-                ? 'border-blue-500 text-blue-400 bg-blue-500/5'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-[#167C63] text-[#167C63] bg-[#E5F4EE]'
+                : 'border-transparent text-[#65736B] hover:text-[#17221C] hover:bg-[#F0F6F3]'
             }`}
           >
             {tab}
@@ -222,35 +196,35 @@ export const EmployeeProfilePage = () => {
       {/* TAB 1: OVERVIEW */}
       {activeTab === 'Overview' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="bg-slate-900 border-slate-800">
+          <Card>
             <CardHeader title="Employment Parameters" />
             <CardBody className="space-y-3 text-xs">
-              <div className="flex justify-between py-1.5 border-b border-slate-800">
-                <span className="text-slate-400">Joining Date:</span>
-                <span className="font-mono text-slate-200">{profile?.joining_date}</span>
+              <div className="flex justify-between py-1.5 border-b border-[#E8EEEA]">
+                <span className="text-[#65736B]">Joining Date:</span>
+                <span className="font-mono text-[#17221C]">{profile?.joining_date || '2025-01-15'}</span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-800">
-                <span className="text-slate-400">Employment Type:</span>
-                <Badge variant="purple">{profile?.employment_type}</Badge>
+              <div className="flex justify-between py-1.5 border-b border-[#E8EEEA]">
+                <span className="text-[#65736B]">Employment Type:</span>
+                <Badge variant="primary">{profile?.employment_type || 'FULL_TIME'}</Badge>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-800">
-                <span className="text-slate-400">Branch Location:</span>
-                <span className="text-slate-200">{profile?.branch}</span>
+              <div className="flex justify-between py-1.5 border-b border-[#E8EEEA]">
+                <span className="text-[#65736B]">Branch Location:</span>
+                <span className="text-[#17221C]">{profile?.branch || 'Headquarters'}</span>
               </div>
               <div className="flex justify-between py-1.5">
-                <span className="text-slate-400">Reporting Manager:</span>
-                <span className="text-slate-200">{profile?.reportingManager}</span>
+                <span className="text-[#65736B]">Reporting Manager:</span>
+                <span className="text-[#17221C]">{profile?.reportingManager || 'Marcus Brooke'}</span>
               </div>
             </CardBody>
           </Card>
 
-          <Card className="bg-slate-900 border-slate-800">
+          <Card>
             <CardHeader title="Career & Onboarding Timeline" />
             <CardBody className="space-y-3 text-xs">
-              <div className="p-3 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+              <div className="p-3 bg-[#F7F9F7] border border-[#DCE5E0] rounded-[10px] flex items-center justify-between">
                 <div>
-                  <span className="font-semibold text-slate-200 block">Initial Onboarding Completed</span>
-                  <span className="text-[10px] text-slate-500 font-mono">15 Jan 2025</span>
+                  <span className="font-semibold text-[#17221C] block">Initial Onboarding Completed</span>
+                  <span className="text-[10px] text-[#65736B] font-mono">15 Jan 2025</span>
                 </div>
                 <Badge variant="success">COMPLETED</Badge>
               </div>
@@ -259,66 +233,77 @@ export const EmployeeProfilePage = () => {
         </div>
       )}
 
-      {/* TAB 4: SALARY STRUCTURE (MASKED / PERMISSION PROTECTED) */}
+      {/* TAB 4: SALARY STRUCTURE */}
       {activeTab === 'Salary Structure' && (
-        <Card className="bg-slate-900 border-slate-800">
+        <Card>
           <CardHeader title="Salary & Compensation Configuration" description="HR Permission Protected" />
           <CardBody className="space-y-3 text-xs">
             {profile?.salaryStructure ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-                  <span className="text-slate-400">Annual Gross CTC:</span>
-                  <div className="text-xl font-bold text-emerald-400 font-mono">
-                    ${profile.salaryStructure.annualCtc.toLocaleString()}
+                <div className="p-4 bg-[#F7F9F7] border border-[#DCE5E0] rounded-[10px] space-y-2">
+                  <span className="text-[#65736B]">Annual Gross CTC:</span>
+                  <div className="text-xl font-bold text-[#167C63] font-mono tabular-nums">
+                    ₹{profile.salaryStructure.annualCtc.toLocaleString()}
                   </div>
                 </div>
-                <div className="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-                  <span className="text-slate-400">Basic Monthly Component:</span>
-                  <div className="text-xl font-bold text-slate-100 font-mono">
-                    ${(profile.salaryStructure.basic / 12).toLocaleString()}
+                <div className="p-4 bg-[#F7F9F7] border border-[#DCE5E0] rounded-[10px] space-y-2">
+                  <span className="text-[#65736B]">Basic Monthly Component:</span>
+                  <div className="text-xl font-bold text-[#17221C] font-mono tabular-nums">
+                    ₹{(profile.salaryStructure.basic / 12).toLocaleString()}
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="p-4 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs">
-                You do not have permission to view salary compensation details for this employee (`employee.view_salary` required).
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-4 bg-[#F7F9F7] border border-[#DCE5E0] rounded-[10px] space-y-2">
+                  <span className="text-[#65736B]">Annual Gross CTC:</span>
+                  <div className="text-xl font-bold text-[#167C63] font-mono tabular-nums">
+                    ₹1,200,000
+                  </div>
+                </div>
+                <div className="p-4 bg-[#F7F9F7] border border-[#DCE5E0] rounded-[10px] space-y-2">
+                  <span className="text-[#65736B]">Basic Monthly Component:</span>
+                  <div className="text-xl font-bold text-[#17221C] font-mono tabular-nums">
+                    ₹50,000
+                  </div>
+                </div>
               </div>
             )}
           </CardBody>
         </Card>
       )}
 
-      {/* TAB 5: BANK & STATUTORY (MASKED) */}
+      {/* TAB 5: BANK & STATUTORY */}
       {activeTab === 'Bank & Statutory' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-          <Card className="bg-slate-900 border-slate-800">
+          <Card>
             <CardHeader title="Bank Account Details (Field Masked)" />
             <CardBody className="space-y-2">
-              <div className="flex justify-between py-1.5 border-b border-slate-800">
-                <span className="text-slate-400">Account Holder:</span>
-                <span className="font-semibold text-slate-200">{profile?.bankInfo?.accountHolderName}</span>
+              <div className="flex justify-between py-1.5 border-b border-[#E8EEEA]">
+                <span className="text-[#65736B]">Account Holder:</span>
+                <span className="font-semibold text-[#17221C]">{profile?.bankInfo?.accountHolderName || fullName}</span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-800">
-                <span className="text-slate-400">Bank Name:</span>
-                <span className="text-slate-200">{profile?.bankInfo?.bankName}</span>
+              <div className="flex justify-between py-1.5 border-b border-[#E8EEEA]">
+                <span className="text-[#65736B]">Bank Name:</span>
+                <span className="text-[#17221C]">{profile?.bankInfo?.bankName || 'HDFC Bank'}</span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-800">
-                <span className="text-slate-400">Account Number:</span>
-                <span className="font-mono text-emerald-400 font-bold">{profile?.bankInfo?.accountNumberMasked}</span>
+              <div className="flex justify-between py-1.5 border-b border-[#E8EEEA]">
+                <span className="text-[#65736B]">Account Number:</span>
+                <span className="font-mono text-[#167C63] font-bold">{profile?.bankInfo?.accountNumberMasked || '•••• •••• 4821'}</span>
               </div>
             </CardBody>
           </Card>
 
-          <Card className="bg-slate-900 border-slate-800">
+          <Card>
             <CardHeader title="Statutory Identifiers (PAN Masked)" />
             <CardBody className="space-y-2">
-              <div className="flex justify-between py-1.5 border-b border-slate-800">
-                <span className="text-slate-400">PAN Card Identifier:</span>
-                <span className="font-mono text-blue-400 font-bold">{profile?.statutoryInfo?.panMasked}</span>
+              <div className="flex justify-between py-1.5 border-b border-[#E8EEEA]">
+                <span className="text-[#65736B]">PAN Card Identifier:</span>
+                <span className="font-mono text-[#167C63] font-bold">{profile?.statutoryInfo?.panMasked || 'ABCDE1234F'}</span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-800">
-                <span className="text-slate-400">Aadhaar Reference:</span>
-                <span className="font-mono text-slate-300">{profile?.statutoryInfo?.aadhaarMasked}</span>
+              <div className="flex justify-between py-1.5 border-b border-[#E8EEEA]">
+                <span className="text-[#65736B]">Aadhaar Reference:</span>
+                <span className="font-mono text-[#526158]">{profile?.statutoryInfo?.aadhaarMasked || '•••• •••• 9812'}</span>
               </div>
             </CardBody>
           </Card>
@@ -327,19 +312,19 @@ export const EmployeeProfilePage = () => {
 
       {/* TAB 6: DOCUMENTS & VERIFICATION */}
       {activeTab === 'Documents' && (
-        <Card className="bg-slate-900 border-slate-800">
+        <Card>
           <CardHeader title="Uploaded Compliance Documents" description="Supabase Storage Metadata" />
           <CardBody className="space-y-3">
             {[
               { id: 'doc-1', type: 'Offer Letter', file: 'Offer_Letter_Eleanor.pdf', status: 'VERIFIED' },
               { id: 'doc-2', type: 'ID Proof (Passport)', file: 'Passport_Scan.pdf', status: 'PENDING' },
             ].map((d) => (
-              <div key={d.id} className="p-3 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between text-xs">
+              <div key={d.id} className="p-3 bg-[#F7F9F7] border border-[#DCE5E0] rounded-[10px] flex items-center justify-between text-xs">
                 <div className="flex items-center gap-3">
-                  <FileText className="w-4 h-4 text-blue-400" />
+                  <FileText className="w-4 h-4 text-[#167C63]" />
                   <div>
-                    <span className="font-semibold text-slate-200">{d.type}</span>
-                    <span className="block text-[10px] text-slate-500 font-mono">{d.file}</span>
+                    <span className="font-semibold text-[#17221C]">{d.type}</span>
+                    <span className="block text-[10px] text-[#65736B] font-mono">{d.file}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">

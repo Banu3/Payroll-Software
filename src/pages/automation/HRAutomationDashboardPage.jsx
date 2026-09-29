@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  Zap,
-  Plus,
-  CheckCircle2,
-  AlertTriangle,
-  Clock,
-  Play,
-  Settings,
-  Layers,
-  CheckSquare,
-  Loader2
-} from 'lucide-react';
+import { Zap, Plus, Loader2 } from 'lucide-react';
 import api from '../../lib/axios';
+import { PageHeader } from '../../components/ui/PageHeader';
+import { Card, CardHeader, CardBody } from '../../components/ui/Card';
+import { StatCard } from '../../components/ui/StatCard';
+import { Badge } from '../../components/ui/Badge';
+import { Button } from '../../components/ui/Button';
+import { Modal, ModalBody, ModalFooter } from '../../components/ui/Modal';
+import { Input } from '../../components/ui/Input';
+import { Select } from '../../components/ui/Select';
 
 export default function HRAutomationDashboardPage() {
   const queryClient = useQueryClient();
@@ -27,7 +24,7 @@ export default function HRAutomationDashboardPage() {
     status: 'ACTIVE'
   });
 
-  // Fetch Dashboard Metrics with fallback mock data
+  // Fetch Dashboard Metrics with fallback data
   const { data: dashboardData, isLoading } = useQuery({
     queryKey: ['automation-dashboard'],
     queryFn: async () => {
@@ -119,128 +116,123 @@ export default function HRAutomationDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="p-12 text-center text-slate-400 flex items-center justify-center gap-2">
-        <Loader2 className="w-5 h-5 animate-spin text-blue-400" /> Loading HR automation engine...
+      <div className="p-12 text-center text-[#5A6A61] flex items-center justify-center gap-2">
+        <Loader2 className="w-5 h-5 animate-spin text-[#167C63]" /> Loading HR automation engine...
       </div>
     );
   }
 
-  const { summary = {}, recentRuns = [] } = dashboardData || {};
+  const { summary = {} } = dashboardData || {};
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6 animate-fade-in text-[#12201A]">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
-            <Zap className="w-6 h-6 text-amber-400" /> Enterprise HR Automation Engine
-          </h1>
-          <p className="text-sm text-slate-400">
-            Automate onboarding workflows, payroll readiness checks, document renewal tasks, and system alerts.
-          </p>
-        </div>
-
-        <button
-          onClick={() => setShowModal(true)}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" /> Create Automation Rule
-        </button>
-      </div>
+      <PageHeader
+        title="Enterprise HR Automation Engine"
+        description="Automate onboarding workflows, payroll readiness checks, document renewal tasks, and system alerts."
+        badge={<Badge variant="primary">HR AUTOMATION</Badge>}
+        action={
+          <Button variant="primary" icon={Plus} onClick={() => setShowModal(true)}>
+            Create Automation Rule
+          </Button>
+        }
+      />
 
       {/* KPI Summary */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-          <span className="text-xs text-slate-400 font-semibold block mb-1">Active Rules</span>
-          <span className="text-2xl font-bold text-emerald-400">{summary.activeRules || 0}</span>
-        </div>
-        <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-          <span className="text-xs text-slate-400 font-semibold block mb-1">Pending HR Tasks</span>
-          <span className="text-2xl font-bold text-amber-400">{summary.pendingTasks || 0}</span>
-        </div>
-        <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-          <span className="text-xs text-slate-400 font-semibold block mb-1">Recent Executions</span>
-          <span className="text-2xl font-bold text-blue-400">{summary.recentRunCount || 0}</span>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+        <StatCard
+          title="Active Rules"
+          value={summary.activeRules || 0}
+          subtitle="System Workflow Triggers"
+          icon={Zap}
+          status="success"
+          accent={true}
+        />
+        <StatCard
+          title="Pending HR Tasks"
+          value={summary.pendingTasks || 0}
+          subtitle="Requires HR Action"
+          icon={Zap}
+          status="warning"
+          accent={true}
+        />
+        <StatCard
+          title="Recent Executions"
+          value={summary.recentRunCount || 0}
+          subtitle="Processed System Events"
+          icon={Zap}
+          status="default"
+          accent={true}
+        />
       </div>
 
       {/* Active Automation Rules */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-        <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider">Configured Automation Rules</h2>
-
-        {!rules || rules.length === 0 ? (
-          <div className="p-8 text-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-lg">
-            No active automation rules configured yet.
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {rules.map((r) => (
-              <div key={r.id} className="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-bold text-slate-100 text-xs">{r.name}</h3>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">
-                    {r.status}
-                  </span>
+      <Card>
+        <CardHeader title="Configured Automation Rules" description="Active workforce event triggers and automated actions" />
+        <CardBody>
+          {!rules || rules.length === 0 ? (
+            <div className="p-8 text-center text-[#5A6A61] text-xs border border-dashed border-[#BCCBC3] rounded-[12px] bg-[#F3F7F5]">
+              No active automation rules configured yet.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {rules.map((r) => (
+                <div key={r.id} className="p-4 bg-[#F3F7F5] border border-[#CBD8D1] rounded-[12px] space-y-2 hover:border-[#167C63] transition-all">
+                  <div className="flex justify-between items-center gap-2">
+                    <h3 className="font-bold text-[#12201A] text-xs">{r.name}</h3>
+                    <Badge variant={r.status === 'ACTIVE' ? 'success' : 'secondary'}>{r.status}</Badge>
+                  </div>
+                  <p className="text-xs text-[#5A6A61] leading-relaxed">{r.description || 'Automated rule action'}</p>
+                  <div className="text-[11px] font-mono text-[#5A6A61] pt-1">
+                    Trigger Event: <span className="text-[#167C63] font-semibold">{r.trigger_event}</span>
+                  </div>
                 </div>
-                <p className="text-xs text-slate-400">{r.description || 'Automated rule action'}</p>
-                <div className="text-[11px] font-mono text-slate-500 pt-1">
-                  Trigger: <span className="text-blue-400">{r.trigger_event}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
+          )}
+        </CardBody>
+      </Card>
 
       {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-md w-full space-y-4">
-            <h2 className="text-lg font-bold text-slate-100">Create Automation Rule</h2>
-            <div className="space-y-3 text-xs">
-              <div>
-                <label className="block text-slate-400 mb-1">Rule Name</label>
-                <input
-                  type="text"
-                  value={ruleForm.name}
-                  onChange={(e) => setRuleForm({ ...ruleForm, name: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-700 rounded p-2 text-slate-100"
-                />
-              </div>
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title="Create Automation Rule"
+        description="Configure event triggers and automated system tasks"
+      >
+        <ModalBody>
+          <Input
+            label="Rule Name"
+            value={ruleForm.name}
+            onChange={(e) => setRuleForm({ ...ruleForm, name: e.target.value })}
+            isRequired
+          />
 
-              <div>
-                <label className="block text-slate-400 mb-1">Trigger Event</label>
-                <select
-                  value={ruleForm.triggerEvent}
-                  onChange={(e) => setRuleForm({ ...ruleForm, triggerEvent: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-700 rounded p-2 text-slate-100"
-                >
-                  <option value="document.expiring">Document Expiring (30 Days)</option>
-                  <option value="payroll.validation_failed">Payroll Validation Failed</option>
-                  <option value="payment.failed">Payment Transaction Failed</option>
-                  <option value="employee.created">New Employee Created</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
-              <button
-                onClick={() => setShowModal(false)}
-                className="px-3 py-1.5 bg-slate-800 text-slate-300 text-xs font-semibold rounded-lg"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => createRuleMutation.mutate()}
-                disabled={createRuleMutation.isPending}
-                className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5"
-              >
-                {createRuleMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null} Save Rule
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          <Select
+            label="Trigger Event"
+            value={ruleForm.triggerEvent}
+            onChange={(e) => setRuleForm({ ...ruleForm, triggerEvent: e.target.value })}
+            options={[
+              { value: 'document.expiring', label: 'Document Expiring (30 Days)' },
+              { value: 'payroll.validation_failed', label: 'Payroll Validation Failed' },
+              { value: 'payment.failed', label: 'Payment Transaction Failed' },
+              { value: 'employee.created', label: 'New Employee Created' }
+            ]}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => createRuleMutation.mutate()}
+            isLoading={createRuleMutation.isPending}
+          >
+            Save Rule
+          </Button>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 }

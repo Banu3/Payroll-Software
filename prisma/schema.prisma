@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Branch {
+  id         String   @id @default(cuid())
+  name       String
+  code       String   @unique
+  address    String?
+  city       String?
+  state      String?
+  postalCode String?
+  phone      String?
+  email      String?
+  status     String   @default("ACTIVE")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model BiometricDevice {
+  id         String   @id @default(cuid())
+  name       String
+  type       String
+  ipAddress  String
+  port       String
+  deviceId   String   @unique
+  branch     String
+  status     String   @default("INACTIVE")
+  lastSync   DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model BiometricSyncLog {
+  id         String   @id @default(cuid())
+  deviceId   String
+  status     String
+  message    String?
+  syncedAt   DateTime @default(now())
+}
+
+model ApprovalWorkflow {
+  id         String   @id @default(cuid())
+  entityType String
+  name       String
+  createdAt  DateTime @default(now())
+}
+
+model ApprovalStep {
+  id         String   @id @default(cuid())
+  workflowId String
+  stepOrder  Int
+  role       String
+  createdAt  DateTime @default(now())
+}
+
+model ApprovalRequest {
+  id         String   @id @default(cuid())
+  entityType String
+  entityId   String
+  requester  String
+  status     String   @default("PENDING")
+  createdAt  DateTime @default(now())
+  approvedAt DateTime?
+  rejectedAt DateTime?
+}
+
+model ApprovalAction {
+  id         String   @id @default(cuid())
+  requestId  String
+  approver   String
+  step       Int
+  status     String
+  comments   String?
+  createdAt  DateTime @default(now())
+}
+
+model ProfessionalTaxRule {
+  id           String   @id @default(cuid())
+  state        String
+  effectiveFrom DateTime
+  effectiveTo   DateTime?
+  salarySlab   String
+  taxAmount    Float
+  status       String   @default("ACTIVE")
+  createdAt    DateTime @default(now())
+}
+
+model PayrollSetting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model WhatsAppSetting {
+  id                 String   @id @default(cuid())
+  provider           String
+  apiBaseUrl         String?
+  apiKey             String?
+  phoneNumberId      String?
+  businessAccountId  String?
+  templateName       String?
+  enabled            Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model WhatsAppMessageLog {
+  id         String   @id @default(cuid())
+  payslipId  String
+  phone      String
+  status     String   @default("QUEUED")
+  sentAt     DateTime?
+  createdAt  DateTime @default(now())
+}

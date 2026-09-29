@@ -32,37 +32,45 @@ router.get('/dashboard', requirePermission('employee.view_team', 'employee.creat
 
     const { count: pendingLeaveRequests } = await supabaseAdmin.from('leave_requests').select('*', { count: 'exact', head: true }).eq('company_id', companyId).eq('status', 'PENDING');
 
+    const today = new Date().toISOString().split('T')[0];
+    const { count: employeesOnLeave } = await supabaseAdmin.from('leave_requests')
+      .select('*', { count: 'exact', head: true })
+      .eq('company_id', companyId)
+      .eq('status', 'APPROVED')
+      .lte('start_date', today)
+      .gte('end_date', today);
+
+    // Get real counts for analytics or return empty arrays
+    const { data: deptData } = await supabaseAdmin.from('departments').select('id, name').eq('company_id', companyId);
+    let departmentDistribution = [];
+    if (deptData) {
+      for (const dept of deptData) {
+        const { count } = await supabaseAdmin.from('employees').select('*', { count: 'exact', head: true }).eq('company_id', companyId).eq('department_id', dept.id);
+        if (count > 0) departmentDistribution.push({ name: dept.name, count });
+      }
+    }
+
+    const { count: pendingRequestsCount } = await supabaseAdmin.from('approval_requests')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'PENDING'); // Ideally filtered by company, but approval_requests doesn't have company_id in schema?
+
     return res.status(200).json({
       success: true,
       data: {
-        totalEmployees: totalEmployees || 48,
-        activeEmployees: activeEmployees || 45,
-        newJoiners: newJoiners || 3,
-        employeesOnLeave: 2,
-        pendingLeaveRequests: pendingLeaveRequests || 4,
-        missingDocumentsCount: 3,
-        missingBankDetailsCount: 1,
-        upcomingBirthdaysCount: 2,
-        upcomingAnniversariesCount: 1,
+        totalEmployees: totalEmployees || 0,
+        activeEmployees: activeEmployees || 0,
+        newJoiners: newJoiners || 0,
+        employeesOnLeave: employeesOnLeave || 0,
+        pendingLeaveRequests: pendingLeaveRequests || 0,
+        missingDocumentsCount: 0,
+        missingBankDetailsCount: 0,
+        upcomingBirthdaysCount: 0,
+        upcomingAnniversariesCount: 0,
         analytics: {
-          employeeGrowth: [
-            { month: 'Apr', count: 38 },
-            { month: 'May', count: 40 },
-            { month: 'Jun', count: 42 },
-            { month: 'Jul', count: 44 },
-            { month: 'Aug', count: 46 },
-            { month: 'Sep', count: 48 },
-          ],
-          departmentDistribution: [
-            { name: 'Engineering', count: 18 },
-            { name: 'Finance & HR', count: 10 },
-            { name: 'Operations', count: 12 },
-            { name: 'Sales & Mktg', count: 8 },
-          ],
+          employeeGrowth: [],
+          departmentDistribution: departmentDistribution,
           employmentStatus: [
-            { name: 'Active', count: 45, color: '#10b981' },
-            { name: 'On Notice', count: 2, color: '#f59e0b' },
-            { name: 'Onboard Draft', count: 1, color: '#3b82f6' },
+            { name: 'Active', count: activeEmployees || 0, color: '#10b981' }
           ],
         },
       },
@@ -110,70 +118,7 @@ router.get('/employees', requirePermission('employee.view_team', 'employee.creat
 
     const { data: employees, count, error } = await query;
 
-    const fallbackEmployees = [
-      {
-        id: 'emp-101',
-        employee_code: 'EMP-0001',
-        first_name: 'Eleanor',
-        last_name: 'Sterling',
-        work_email: 'hradmin@company.com',
-        phone: '+1 (555) 234-5678',
-        joining_date: '2025-01-15',
-        employment_type: 'Full Time',
-        employment_status: 'ACTIVE',
-        departments: { name: 'People Operations' },
-        company_branches: { branch_name: 'San Francisco HQ' },
-        designations: { name: 'Global HR Director' },
-        reporting_manager: { first_name: 'Alexander', last_name: 'Vance' },
-      },
-      {
-        id: 'emp-102',
-        employee_code: 'EMP-0002',
-        first_name: 'Marcus',
-        last_name: 'Brooke',
-        work_email: 'manager@company.com',
-        phone: '+1 (555) 345-6789',
-        joining_date: '2025-03-01',
-        employment_type: 'Full Time',
-        employment_status: 'ACTIVE',
-        departments: { name: 'Software Engineering' },
-        company_branches: { branch_name: 'San Francisco HQ' },
-        designations: { name: 'Engineering Team Lead' },
-        reporting_manager: { first_name: 'Eleanor', last_name: 'Sterling' },
-      },
-      {
-        id: 'emp-103',
-        employee_code: 'EMP-0003',
-        first_name: 'Sarah',
-        last_name: 'Jenkins',
-        work_email: 'employee@company.com',
-        phone: '+1 (555) 456-7890',
-        joining_date: '2025-05-10',
-        employment_type: 'Full Time',
-        employment_status: 'ACTIVE',
-        departments: { name: 'Finance & Payroll' },
-        company_branches: { branch_name: 'New York Financial Hub' },
-        designations: { name: 'Senior Financial Analyst' },
-        reporting_manager: { first_name: 'Marcus', last_name: 'Brooke' },
-      },
-      {
-        id: 'emp-104',
-        employee_code: 'EMP-0004',
-        first_name: 'David',
-        last_name: 'Miller',
-        work_email: 'newemployee@company.com',
-        phone: '+1 (555) 567-8901',
-        joining_date: '2026-09-15',
-        employment_type: 'Full Time',
-        employment_status: 'ACTIVE',
-        departments: { name: 'Operations' },
-        company_branches: { branch_name: 'San Francisco HQ' },
-        designations: { name: 'Associate Operations Analyst' },
-        reporting_manager: { first_name: 'Marcus', last_name: 'Brooke' },
-      },
-    ];
-
-    const resultList = employees && employees.length > 0 ? employees : fallbackEmployees;
+    const resultList = employees || [];
 
     return res.status(200).json({
       success: true,
@@ -182,8 +127,8 @@ router.get('/employees', requirePermission('employee.view_team', 'employee.creat
         pagination: {
           page,
           limit,
-          total: count || fallbackEmployees.length,
-          totalPages: Math.ceil((count || fallbackEmployees.length) / limit),
+          total: count || 0,
+          totalPages: Math.ceil((count || 0) / limit),
         },
       },
       requestId: req.requestId,
@@ -238,45 +183,49 @@ router.get('/employees/:id', requirePermission('employee.view_team', 'employee.c
       .eq('id', employeeId)
       .single();
 
-    const mockProfile = {
-      id: employeeId,
-      employee_code: emp?.employee_code || 'EMP-0001',
-      first_name: emp?.first_name || 'Eleanor',
-      last_name: emp?.last_name || 'Sterling',
-      work_email: emp?.work_email || 'hradmin@company.com',
-      personal_email: emp?.personal_email || 'eleanor.sterling@personal.com',
-      phone: emp?.phone || '+1 (555) 234-5678',
-      dob: emp?.dob || '1990-04-12',
-      gender: emp?.gender || 'Female',
-      joining_date: emp?.joining_date || '2025-01-15',
-      employment_type: emp?.employment_type || 'Full Time',
-      employment_status: emp?.employment_status || 'ACTIVE',
-      department: emp?.departments?.name || 'People Operations',
-      branch: emp?.company_branches?.branch_name || 'San Francisco HQ',
-      designation: emp?.designations?.name || 'Global HR Director',
-      reportingManager: emp?.reporting_manager ? `${emp.reporting_manager.first_name} ${emp.reporting_manager.last_name}` : 'Alexander Vance',
-      bankInfo: {
-        accountHolderName: 'Eleanor Sterling',
-        bankName: 'JPMorgan Chase & Co.',
-        accountNumberMasked: 'XXXX XXXX 4892', // Field-level security
-        ifscCode: 'CHASUS33',
-      },
-      statutoryInfo: {
-        panMasked: 'XXXXX4092X', // Field-level security
-        aadhaarMasked: 'XXXX XXXX 9912',
-        taxRegime: 'New Regime',
-      },
-      salaryStructure: req.user.permissions.includes('employee.view_salary') ? {
-        annualCtc: 145000.00,
-        basic: 72500.00,
-        hra: 29000.00,
-        specialAllowance: 43500.00,
+    if (!emp) {
+      return res.status(404).json({ success: false, message: 'Employee not found' });
+    }
+
+    const { data: bankInfo } = await supabaseAdmin.from('employee_bank_accounts').select('*').eq('employee_id', employeeId).single();
+    const { data: statutoryInfo } = await supabaseAdmin.from('employee_statutory_details').select('*').eq('employee_id', employeeId).single();
+    
+    let salaryStructure = null;
+    if (req.user.permissions.includes('employee.view_salary')) {
+      const { data: salary } = await supabaseAdmin.from('employee_salary_structures').select('*').eq('employee_id', employeeId).order('effective_date', { ascending: false }).limit(1).single();
+      if (salary) {
+        salaryStructure = {
+          annualCtc: salary.annual_ctc,
+          basic: salary.basic,
+          hra: salary.hra,
+          specialAllowance: salary.special_allowance
+        };
+      }
+    }
+
+    const formattedProfile = {
+      ...emp,
+      department: emp.departments?.name,
+      branch: emp.company_branches?.branch_name,
+      designation: emp.designations?.name,
+      reportingManager: emp.reporting_manager ? `${emp.reporting_manager.first_name} ${emp.reporting_manager.last_name}` : null,
+      bankInfo: bankInfo ? {
+        accountHolderName: bankInfo.account_holder_name,
+        bankName: bankInfo.bank_name,
+        accountNumberMasked: bankInfo.account_number_masked,
+        ifscCode: bankInfo.ifsc_code
       } : null,
+      statutoryInfo: statutoryInfo ? {
+        panMasked: statutoryInfo.pan_masked,
+        aadhaarMasked: statutoryInfo.aadhaar_masked,
+        taxRegime: statutoryInfo.tax_regime
+      } : null,
+      salaryStructure
     };
 
     return res.status(200).json({
       success: true,
-      data: mockProfile,
+      data: formattedProfile,
       requestId: req.requestId,
     });
   } catch (error) {
@@ -445,14 +394,22 @@ router.post('/employees/import', requirePermission('employee.create'), async (re
  * GET /api/hr/requests
  */
 router.get('/requests', requirePermission('employee.edit'), async (req, res) => {
-  return res.status(200).json({
-    success: true,
-    data: [
-      { id: 'req-1', employee: 'Sarah Jenkins', request_type: 'BANK_CHANGE', details: 'Update to Chase Bank XXXX 9912', status: 'PENDING', created_at: new Date().toISOString() },
-      { id: 'req-2', employee: 'David Miller', request_type: 'ADDRESS_CHANGE', details: 'Update residential address', status: 'PENDING', created_at: new Date().toISOString() },
-    ],
-    requestId: req.requestId,
-  });
+  try {
+    const { data: requests, error } = await supabaseAdmin
+      .from('approval_requests')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    return res.status(200).json({
+      success: true,
+      data: requests || [],
+      requestId: req.requestId,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Failed to fetch requests' });
+  }
 });
 
 export default router;

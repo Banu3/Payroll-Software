@@ -15,14 +15,23 @@ export async function validatePrePayrollRun(companyId, monthYear, branchId = nul
   // Fetch target employees
   let empQuery = supabaseAdmin
     .from('employees')
-    .select('id, first_name, last_name, employee_id, bank_account_number, pan_number, employment_status, joining_date')
+    .select(`
+      id, first_name, last_name, employee_code, employment_status, joining_date,
+      bank:employee_bank_accounts(account_number_masked),
+      statutory:employee_statutory_details(pan_masked)
+    `)
     .eq('company_id', companyId)
     .eq('employment_status', 'ACTIVE');
 
   if (branchId) empQuery = empQuery.eq('branch_id', branchId);
   if (departmentId) empQuery = empQuery.eq('department_id', departmentId);
 
-  const { data: employees } = await empQuery;
+  const { data: employees, error: empErr } = await empQuery;
+  
+  if (empErr) {
+    blockingErrors.push({ code: 'DB_ERROR', message: empErr.message });
+    return { isReady: false, blockingErrors, warnings, passedChecks };
+  }
 
   if (!employees || employees.length === 0) {
     blockingErrors.push({
@@ -53,23 +62,23 @@ export async function validatePrePayrollRun(companyId, monthYear, branchId = nul
       blockingErrors.push({
         employeeId: emp.id,
         code: 'MISSING_SALARY_STRUCTURE',
-        message: `Employee ${emp.first_name} ${emp.last_name} (${emp.employee_id}) has no active salary structure/CTC assigned`,
+        message: `Employee ${emp.first_name} ${emp.last_name} (${emp.employee_code}) has no active salary structure/CTC assigned`,
       });
     }
 
-    if (!emp.bank_account_number) {
+    if (!emp.bank || emp.bank.length === 0) {
       warnings.push({
         employeeId: emp.id,
         code: 'MISSING_BANK_ACCOUNT',
-        message: `Employee ${emp.first_name} ${emp.last_name} (${emp.employee_id}) is missing bank account details`,
+        message: `Employee ${emp.first_name} ${emp.last_name} (${emp.employee_code}) is missing bank account details`,
       });
     }
 
-    if (!emp.pan_number) {
+    if (!emp.statutory || emp.statutory.length === 0) {
       warnings.push({
         employeeId: emp.id,
         code: 'MISSING_PAN_NUMBER',
-        message: `Employee ${emp.first_name} ${emp.last_name} (${emp.employee_id}) is missing PAN details for tax deduction`,
+        message: `Employee ${emp.first_name} ${emp.last_name} (${emp.employee_code}) is missing PAN details for tax deduction`,
       });
     }
   }

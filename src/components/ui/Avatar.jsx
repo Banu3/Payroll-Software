@@ -19,7 +19,7 @@ export const Avatar = ({ src, name = 'User', size = 'md', className }) => {
   return (
     <div
       className={clsx(
-        "relative rounded-full flex items-center justify-center font-semibold bg-slate-800 text-slate-200 border border-slate-700/80 shrink-0 overflow-hidden select-none shadow-sm",
+        "relative rounded-full flex items-center justify-center font-bold bg-[#E5F4EE] text-[#167C63] border border-[#CFE6DC] shrink-0 overflow-hidden select-none shadow-2xs",
         sizes[size],
         className
       )}

@@ -2,6 +2,7 @@ import React from 'react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Badge } from '../../components/ui/Badge';
 import { Card, CardHeader, CardBody } from '../../components/ui/Card';
+import { StatCard } from '../../components/ui/StatCard';
 import { Button } from '../../components/ui/Button';
 import { DataTable } from '../../components/ui/DataTable';
 import { useAuth } from '../../context/AuthContext';
@@ -36,7 +37,7 @@ export const SuperAdminDashboard = () => {
       <PageHeader
         title="Super Admin Master Portal"
         description="Global Multi-Tenant Administration & Enterprise Infrastructure Control"
-        badge={<Badge variant="purple">SUPER ADMIN ACCESS</Badge>}
+        badge={<Badge variant="info">SUPER ADMIN ACCESS</Badge>}
         action={
           <Button variant="primary" size="sm" icon={Plus}>
             Provision New Tenant
@@ -46,45 +47,38 @@ export const SuperAdminDashboard = () => {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-4 bg-slate-900 border-slate-800">
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>Total Tenant Companies</span>
-            <Building2 className="w-4 h-4 text-purple-400" />
-          </div>
-          <div className="text-2xl font-bold text-slate-100 mt-2">12</div>
-          <div className="text-[11px] text-emerald-400 mt-1 font-mono">+2 new this month</div>
-        </Card>
-
-        <Card className="p-4 bg-slate-900 border-slate-800">
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>Total Provisioned Users</span>
-            <Users className="w-4 h-4 text-blue-400" />
-          </div>
-          <div className="text-2xl font-bold text-slate-100 mt-2">1,480</div>
-          <div className="text-[11px] text-slate-400 mt-1 font-mono">Across all tenants</div>
-        </Card>
-
-        <Card className="p-4 bg-slate-900 border-slate-800">
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>System Roles & Perms</span>
-            <Key className="w-4 h-4 text-amber-400" />
-          </div>
-          <div className="text-2xl font-bold text-slate-100 mt-2">4 Roles / 28 Perms</div>
-          <div className="text-[11px] text-emerald-400 mt-1 font-mono">Central RBAC Active</div>
-        </Card>
-
-        <Card className="p-4 bg-slate-900 border-slate-800">
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>Tenant Isolation</span>
-            <Lock className="w-4 h-4 text-emerald-400" />
-          </div>
-          <div className="text-2xl font-bold text-slate-100 mt-2">100% Enforced</div>
-          <div className="text-[11px] text-emerald-400 mt-1 font-mono">RLS Enabled</div>
-        </Card>
+        <StatCard
+          title="Total Tenant Companies"
+          value="12"
+          subtitle="+2 new this month"
+          icon={Building2}
+          trend="+16%"
+          trendType="up"
+        />
+        <StatCard
+          title="Total Provisioned Users"
+          value="1,480"
+          subtitle="Across all tenants"
+          icon={Users}
+        />
+        <StatCard
+          title="System Roles & Perms"
+          value="4 / 28"
+          subtitle="Central RBAC Active"
+          icon={Key}
+        />
+        <StatCard
+          title="Tenant Isolation"
+          value="100%"
+          subtitle="RLS Enforced"
+          icon={Lock}
+          trend="Secure"
+          trendType="up"
+        />
       </div>
 
       {/* Tenants Table */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card>
         <CardHeader
           title="Active System Tenants"
           description="Global enterprise companies managed under multi-tenant architecture"
@@ -92,11 +86,11 @@ export const SuperAdminDashboard = () => {
         <CardBody className="p-0">
           <DataTable
             columns={[
-              { header: 'Tenant Code', accessor: 'code', render: (t) => <span className="font-mono text-blue-400 font-bold">{t.code}</span> },
-              { header: 'Company Name', accessor: 'name', render: (t) => <span className="font-medium text-slate-100">{t.name}</span> },
-              { header: 'Active Users', accessor: 'users' },
+              { header: 'Tenant Code', accessor: 'code', render: (t) => <span className="font-mono text-[#167C63] font-bold">{t.code}</span> },
+              { header: 'Company Name', accessor: 'name', render: (t) => <span className="font-medium text-[#17221C]">{t.name}</span> },
+              { header: 'Active Users', accessor: 'users', render: (t) => <span className="tabular-nums text-[#526158]">{t.users}</span> },
               { header: 'Status', accessor: 'status', render: (t) => <Badge variant={t.status === 'ACTIVE' ? 'success' : 'warning'}>{t.status}</Badge> },
-              { header: 'Created Date', accessor: 'created' },
+              { header: 'Created Date', accessor: 'created', render: (t) => <span className="font-mono text-[#65736B]">{t.created}</span> },
             ]}
             data={tenants}
           />

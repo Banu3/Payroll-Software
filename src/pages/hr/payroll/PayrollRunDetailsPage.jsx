@@ -8,32 +8,32 @@ import {
   Lock,
   Play,
   FileSpreadsheet,
-  AlertTriangle,
   Send,
-  XCircle,
-  Clock,
   Eye,
-  RefreshCw,
   Search,
-  Filter,
   Layers,
-  ChevronRight,
   ShieldCheck,
-  Building,
   Loader2
 } from 'lucide-react';
 import api from '../../../lib/axios';
 import { formatCurrency } from '../../../services/financialCalculationService';
+import PageHeader from '../../../components/ui/PageHeader';
+import Card from '../../../components/ui/Card';
+import StatCard from '../../../components/ui/StatCard';
+import Badge from '../../../components/ui/Badge';
+import Button from '../../../components/ui/Button';
+import Input from '../../../components/ui/Input';
+import Modal from '../../../components/ui/Modal';
+import DataTable from '../../../components/ui/DataTable';
 
 export default function PayrollRunDetailsPage() {
   const { runId } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const [activeTab, setActiveTab] = useState('SUMMARY'); // SUMMARY, EMPLOYEES, VALIDATION, APPROVALS
+  const [activeTab, setActiveTab] = useState('SUMMARY'); // SUMMARY, EMPLOYEES, APPROVALS
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-
   const [runStatusState, setRunStatusState] = useState(null);
 
   // Fetch Payroll Run Details & Employee Summaries
@@ -241,15 +241,15 @@ export default function PayrollRunDetailsPage() {
 
   if (isLoading) {
     return (
-      <div className="p-12 text-center text-slate-400 flex items-center justify-center gap-2">
-        <Loader2 className="w-5 h-5 animate-spin text-blue-400" /> Loading payroll details...
+      <div className="p-12 text-center text-muted flex items-center justify-center gap-2">
+        <Loader2 className="w-5 h-5 animate-spin text-brand" /> Loading payroll details...
       </div>
     );
   }
 
   if (!runDetails || !runDetails.run) {
     return (
-      <div className="p-8 text-center text-slate-400">
+      <div className="p-8 text-center text-muted">
         Payroll run not found.
       </div>
     );
@@ -263,123 +263,168 @@ export default function PayrollRunDetailsPage() {
     return fullName.includes(searchTerm.toLowerCase()) || code.includes(searchTerm.toLowerCase());
   });
 
-  const getStatusBadge = (status) => {
-    const map = {
-      DRAFT: { label: 'Draft', cls: 'bg-slate-800 text-slate-300 border-slate-700' },
-      PROCESSING: { label: 'Processing', cls: 'bg-blue-950/60 text-blue-400 border-blue-800 animate-pulse' },
-      REVIEW: { label: 'In Review', cls: 'bg-purple-950/60 text-purple-400 border-purple-800' },
-      APPROVAL_PENDING: { label: 'Pending Approval', cls: 'bg-amber-950/60 text-amber-400 border-amber-800' },
-      APPROVED: { label: 'Approved', cls: 'bg-emerald-950/60 text-emerald-400 border-emerald-800' },
-      FINALIZED: { label: 'Finalized & Locked', cls: 'bg-cyan-950/60 text-cyan-400 border-cyan-800' },
-      LOCKED: { label: 'Locked', cls: 'bg-slate-900 text-slate-400 border-slate-700' }
-    };
-    const cfg = map[status] || { label: status, cls: 'bg-slate-800 text-slate-300 border-slate-700' };
-    return (
-      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${cfg.cls}`}>
-        {cfg.label}
-      </span>
-    );
+  const getBadgeVariant = (status) => {
+    switch (status) {
+      case 'FINALIZED':
+      case 'APPROVED':
+        return 'success';
+      case 'APPROVAL_PENDING':
+      case 'REVIEW':
+        return 'warning';
+      case 'PROCESSING':
+        return 'brand';
+      default:
+        return 'neutral';
+    }
   };
+
+  const columns = [
+    {
+      header: 'Employee',
+      accessor: (emp) => (
+        <div>
+          <span className="font-semibold text-heading block">{emp.employee?.first_name} {emp.employee?.last_name}</span>
+          <span className="text-[10px] text-muted font-mono">{emp.employee?.employee_code}</span>
+        </div>
+      )
+    },
+    {
+      header: 'Department',
+      accessor: (emp) => <span className="text-body">{emp.employee?.department?.name || 'N/A'}</span>
+    },
+    {
+      header: 'Paid / LOP',
+      accessor: (emp) => (
+        <span className="font-mono text-body">
+          {emp.paid_days} / <span className="text-rose-700 font-semibold">{emp.lop_days} LOP</span>
+        </span>
+      )
+    },
+    {
+      header: 'Gross',
+      accessor: (emp) => <span className="font-mono font-semibold text-emerald-700">{formatCurrency(emp.gross_earnings)}</span>
+    },
+    {
+      header: 'PF',
+      accessor: (emp) => <span className="font-mono text-muted">{formatCurrency(emp.pf_employee)}</span>
+    },
+    {
+      header: 'ESI',
+      accessor: (emp) => <span className="font-mono text-muted">{formatCurrency(emp.esi_employee)}</span>
+    },
+    {
+      header: 'PT',
+      accessor: (emp) => <span className="font-mono text-muted">{formatCurrency(emp.pt_amount)}</span>
+    },
+    {
+      header: 'TDS',
+      accessor: (emp) => <span className="font-mono text-muted">{formatCurrency(emp.tds_amount)}</span>
+    },
+    {
+      header: 'Deductions',
+      accessor: (emp) => <span className="font-mono font-semibold text-rose-700">{formatCurrency(emp.total_deductions)}</span>
+    },
+    {
+      header: 'Net Pay',
+      accessor: (emp) => <span className="font-mono font-bold text-brand">{formatCurrency(emp.net_salary)}</span>
+    },
+    {
+      header: 'Action',
+      accessor: (emp) => (
+        <Button variant="secondary" className="py-1 px-2.5 text-[11px]" icon={Eye} onClick={() => setSelectedEmployee(emp)}>
+          Details
+        </Button>
+      )
+    }
+  ];
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-6 rounded-xl">
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-2xl font-bold text-slate-100">
-              Payroll Run #{run.run_number || run.id?.slice(0, 8)}
-            </h1>
-            {getStatusBadge(run.status)}
+      <Card className="p-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-3 mb-1">
+              <h1 className="text-2xl font-bold text-heading">
+                Payroll Run #{run.run_number || run.id?.slice(0, 8)}
+              </h1>
+              <Badge variant={getBadgeVariant(run.status)}>
+                {run.status}
+              </Badge>
+            </div>
+            <p className="text-xs text-muted flex items-center gap-3">
+              <span>Period: <strong className="text-heading">{run.payroll_period?.month}/{run.payroll_period?.year}</strong></span>
+              <span>•</span>
+              <span>Pay Date: <strong className="text-heading">{run.pay_date || 'N/A'}</strong></span>
+            </p>
           </div>
-          <p className="text-sm text-slate-400 flex items-center gap-4">
-            <span>Period: <strong>{run.payroll_period?.month}/{run.payroll_period?.year}</strong></span>
-            <span>•</span>
-            <span>Pay Date: <strong>{run.pay_date || 'N/A'}</strong></span>
-          </p>
+
+          {/* Workflow Actions */}
+          <div className="flex items-center gap-3 flex-wrap">
+            {run.status === 'DRAFT' && (
+              <Button
+                onClick={() => recalculateMutation.mutate()}
+                loading={recalculateMutation.isPending}
+                icon={Play}
+              >
+                Run Engine Calculation
+              </Button>
+            )}
+
+            {(run.status === 'REVIEW' || run.status === 'DRAFT') && (
+              <Button
+                variant="warning"
+                onClick={() => submitApprovalMutation.mutate()}
+                loading={submitApprovalMutation.isPending}
+                icon={Send}
+              >
+                Submit for Approval
+              </Button>
+            )}
+
+            {run.status === 'APPROVAL_PENDING' && (
+              <Button
+                variant="success"
+                onClick={() => approveRunMutation.mutate()}
+                loading={approveRunMutation.isPending}
+                icon={CheckCircle2}
+              >
+                Approve Payroll Run
+              </Button>
+            )}
+
+            {run.status === 'APPROVED' && (
+              <Button
+                onClick={() => finalizeRunMutation.mutate()}
+                loading={finalizeRunMutation.isPending}
+                icon={Lock}
+              >
+                Finalize & Lock Payroll
+              </Button>
+            )}
+
+            <Button
+              variant="secondary"
+              icon={FileSpreadsheet}
+              onClick={() => navigate('/hr/payroll/register')}
+            >
+              View Register
+            </Button>
+          </div>
         </div>
-
-        {/* Workflow Actions */}
-        <div className="flex items-center gap-3 flex-wrap">
-          {run.status === 'DRAFT' && (
-            <button
-              onClick={() => recalculateMutation.mutate()}
-              disabled={recalculateMutation.isPending}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-semibold rounded-lg flex items-center gap-2"
-            >
-              {recalculateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-white" />}
-              Run Engine Calculation
-            </button>
-          )}
-
-          {(run.status === 'REVIEW' || run.status === 'DRAFT') && (
-            <button
-              onClick={() => submitApprovalMutation.mutate()}
-              disabled={submitApprovalMutation.isPending}
-              className="px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white text-xs font-semibold rounded-lg flex items-center gap-2"
-            >
-              {submitApprovalMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-              Submit for Approval
-            </button>
-          )}
-
-          {run.status === 'APPROVAL_PENDING' && (
-            <button
-              onClick={() => approveRunMutation.mutate()}
-              disabled={approveRunMutation.isPending}
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs font-semibold rounded-lg flex items-center gap-2"
-            >
-              {approveRunMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-              Approve Payroll Run
-            </button>
-          )}
-
-          {run.status === 'APPROVED' && (
-            <button
-              onClick={() => finalizeRunMutation.mutate()}
-              disabled={finalizeRunMutation.isPending}
-              className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-semibold rounded-lg flex items-center gap-2"
-            >
-              {finalizeRunMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-              Finalize & Lock Payroll
-            </button>
-          )}
-
-          <button
-            onClick={() => navigate('/hr/payroll/register')}
-            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700 flex items-center gap-2"
-          >
-            <FileSpreadsheet className="w-4 h-4 text-emerald-400" /> View Register
-          </button>
-        </div>
-      </div>
+      </Card>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-          <div className="text-xs text-slate-400 font-semibold mb-1">Total Employees</div>
-          <div className="text-2xl font-bold text-slate-100">{run.total_employees || employees.length}</div>
-        </div>
-        <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-          <div className="text-xs text-slate-400 font-semibold mb-1">Gross Payroll</div>
-          <div className="text-2xl font-bold text-emerald-400">{formatCurrency(run.total_gross)}</div>
-        </div>
-        <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-          <div className="text-xs text-slate-400 font-semibold mb-1">Total Deductions</div>
-          <div className="text-2xl font-bold text-red-400">{formatCurrency(run.total_deductions)}</div>
-        </div>
-        <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-          <div className="text-xs text-slate-400 font-semibold mb-1">Employer Cost</div>
-          <div className="text-2xl font-bold text-purple-400">{formatCurrency(run.total_employer_cost)}</div>
-        </div>
-        <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-          <div className="text-xs text-slate-400 font-semibold mb-1">Net Disbursement</div>
-          <div className="text-2xl font-bold text-blue-400">{formatCurrency(run.total_net)}</div>
-        </div>
+        <StatCard title="Total Employees" value={run.total_employees || employees.length} icon={Users} />
+        <StatCard title="Gross Payroll" value={formatCurrency(run.total_gross)} status="success" icon={DollarSign} />
+        <StatCard title="Total Deductions" value={formatCurrency(run.total_deductions)} status="danger" />
+        <StatCard title="Employer Cost" value={formatCurrency(run.total_employer_cost)} status="warning" />
+        <StatCard title="Net Disbursement" value={formatCurrency(run.total_net)} status="success" />
       </div>
 
       {/* Navigation Tabs */}
-      <div className="border-b border-slate-800 flex items-center gap-6">
+      <div className="border-b border-default flex items-center gap-6">
         {[
           { id: 'SUMMARY', label: 'Overview & Summary', icon: Layers },
           { id: 'EMPLOYEES', label: `Employee Breakdown (${employees.length})`, icon: Users },
@@ -390,8 +435,8 @@ export default function PayrollRunDetailsPage() {
             onClick={() => setActiveTab(tab.id)}
             className={`pb-3 text-xs font-bold flex items-center gap-2 border-b-2 transition ${
               activeTab === tab.id
-                ? 'border-blue-500 text-blue-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-brand text-brand'
+                : 'border-transparent text-muted hover:text-heading'
             }`}
           >
             <tab.icon className="w-4 h-4" /> {tab.label}
@@ -402,67 +447,67 @@ export default function PayrollRunDetailsPage() {
       {/* Tab 1: SUMMARY */}
       {activeTab === 'SUMMARY' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider">Payroll Aggregates</h3>
+          <Card className="p-5 space-y-4">
+            <h3 className="text-xs font-bold text-heading uppercase tracking-wider">Payroll Aggregates</h3>
             <div className="space-y-3 text-xs">
-              <div className="flex justify-between py-2 border-b border-slate-800">
-                <span className="text-slate-400">Total Gross Earnings</span>
-                <span className="font-mono text-emerald-400 font-bold">{formatCurrency(run.total_gross)}</span>
+              <div className="flex justify-between py-2 border-b border-default">
+                <span className="text-muted font-medium">Total Gross Earnings</span>
+                <span className="font-mono text-emerald-700 font-bold">{formatCurrency(run.total_gross)}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-slate-800">
-                <span className="text-slate-400">Employee PF Deductions</span>
-                <span className="font-mono text-red-400 font-bold">{formatCurrency(run.total_pf)}</span>
+              <div className="flex justify-between py-2 border-b border-default">
+                <span className="text-muted font-medium">Employee PF Deductions</span>
+                <span className="font-mono text-rose-700 font-bold">{formatCurrency(run.total_pf)}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-slate-800">
-                <span className="text-slate-400">Employee ESI Deductions</span>
-                <span className="font-mono text-red-400 font-bold">{formatCurrency(run.total_esi)}</span>
+              <div className="flex justify-between py-2 border-b border-default">
+                <span className="text-muted font-medium">Employee ESI Deductions</span>
+                <span className="font-mono text-rose-700 font-bold">{formatCurrency(run.total_esi)}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-slate-800">
-                <span className="text-slate-400">Professional Tax (PT)</span>
-                <span className="font-mono text-red-400 font-bold">{formatCurrency(run.total_pt)}</span>
+              <div className="flex justify-between py-2 border-b border-default">
+                <span className="text-muted font-medium">Professional Tax (PT)</span>
+                <span className="font-mono text-rose-700 font-bold">{formatCurrency(run.total_pt)}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-slate-800">
-                <span className="text-slate-400">Income Tax (TDS)</span>
-                <span className="font-mono text-red-400 font-bold">{formatCurrency(run.total_tds)}</span>
+              <div className="flex justify-between py-2 border-b border-default">
+                <span className="text-muted font-medium">Income Tax (TDS)</span>
+                <span className="font-mono text-rose-700 font-bold">{formatCurrency(run.total_tds)}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-slate-800">
-                <span className="text-slate-400">Overtime Disbursement</span>
-                <span className="font-mono text-amber-400 font-bold">{formatCurrency(run.total_overtime)}</span>
+              <div className="flex justify-between py-2 border-b border-default">
+                <span className="text-muted font-medium">Overtime Disbursement</span>
+                <span className="font-mono text-amber-700 font-bold">{formatCurrency(run.total_overtime)}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-slate-800">
-                <span className="text-slate-400">LOP Salary Deductions</span>
-                <span className="font-mono text-slate-300 font-bold">{formatCurrency(run.total_lop)}</span>
+              <div className="flex justify-between py-2 border-b border-default">
+                <span className="text-muted font-medium">LOP Salary Deductions</span>
+                <span className="font-mono text-body font-bold">{formatCurrency(run.total_lop)}</span>
               </div>
               <div className="flex justify-between py-2 pt-3 font-bold text-sm">
-                <span className="text-slate-100">Net Payable Amount</span>
-                <span className="font-mono text-blue-400">{formatCurrency(run.total_net)}</span>
+                <span className="text-heading">Net Payable Amount</span>
+                <span className="font-mono text-brand">{formatCurrency(run.total_net)}</span>
               </div>
             </div>
-          </div>
+          </Card>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider">Run Execution Audit</h3>
+          <Card className="p-5 space-y-4">
+            <h3 className="text-xs font-bold text-heading uppercase tracking-wider">Run Execution Audit</h3>
             <div className="space-y-3 text-xs">
-              <div className="flex justify-between py-2 border-b border-slate-800">
-                <span className="text-slate-400">Calculation Engine Version</span>
-                <span className="font-mono text-slate-200 font-semibold">{run.calculation_engine_version || '2.4.0-Enterprise'}</span>
+              <div className="flex justify-between py-2 border-b border-default">
+                <span className="text-muted font-medium">Calculation Engine Version</span>
+                <span className="font-mono text-heading font-semibold">{run.calculation_engine_version || '2.4.0-Enterprise'}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-slate-800">
-                <span className="text-slate-400">Created At</span>
-                <span className="text-slate-300">{new Date(run.created_at).toLocaleString()}</span>
+              <div className="flex justify-between py-2 border-b border-default">
+                <span className="text-muted font-medium">Created At</span>
+                <span className="text-body font-medium">{new Date(run.created_at).toLocaleString()}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-slate-800">
-                <span className="text-slate-400">Finalized At</span>
-                <span className="text-slate-300">{run.finalized_at ? new Date(run.finalized_at).toLocaleString() : 'Not Finalized'}</span>
+              <div className="flex justify-between py-2 border-b border-default">
+                <span className="text-muted font-medium">Finalized At</span>
+                <span className="text-body font-medium">{run.finalized_at ? new Date(run.finalized_at).toLocaleString() : 'Not Finalized'}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-slate-800">
-                <span className="text-slate-400">Immutability Lock</span>
-                <span className={`font-semibold ${run.is_locked ? 'text-cyan-400' : 'text-slate-400'}`}>
+              <div className="flex justify-between py-2 border-b border-default">
+                <span className="text-muted font-medium">Immutability Lock</span>
+                <span className={`font-semibold ${run.is_locked ? 'text-brand font-bold' : 'text-muted'}`}>
                   {run.is_locked ? 'LOCKED & IMMUTABLE' : 'UNLOCKED'}
                 </span>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
       )}
 
@@ -471,182 +516,131 @@ export default function PayrollRunDetailsPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-4">
             <div className="relative flex-1 max-w-md">
-              <Search className="w-4 h-4 text-teal-700 absolute left-3 top-3" />
-              <input
+              <Search className="w-4 h-4 text-muted absolute left-3 top-3" />
+              <Input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search employee name or code..."
-                className="w-full bg-white border border-[#64748B] rounded-lg pl-9 pr-4 py-2 text-sm text-[#0F172A] placeholder-[#334155] font-semibold focus:outline-none focus:border-teal-600"
+                className="pl-9"
               />
             </div>
           </div>
 
-          <div className="bg-white border border-[#64748B] rounded-xl overflow-x-auto shadow-xs">
-            <table className="w-full text-left text-xs text-[#0F172A]">
-              <thead className="bg-[#F1F5F9] text-[#1E293B] uppercase text-[10px] font-bold tracking-wider border-b border-[#94A3B8]">
-                <tr>
-                  <th className="p-3">Employee</th>
-                  <th className="p-3">Department</th>
-                  <th className="p-3">Paid / LOP Days</th>
-                  <th className="p-3">Gross</th>
-                  <th className="p-3">PF</th>
-                  <th className="p-3">ESI</th>
-                  <th className="p-3">PT</th>
-                  <th className="p-3">TDS</th>
-                  <th className="p-3">Deductions</th>
-                  <th className="p-3">Net Pay</th>
-                  <th className="p-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
-                {filteredEmployees.map((emp) => (
-                  <tr key={emp.id} className="hover:bg-slate-800/40 transition">
-                    <td className="p-3 font-sans font-semibold text-slate-100">
-                      {emp.employee?.first_name} {emp.employee?.last_name}
-                      <span className="block text-[10px] text-slate-500 font-mono">{emp.employee?.employee_code}</span>
-                    </td>
-                    <td className="p-3 font-sans text-slate-400">{emp.employee?.department?.name || 'N/A'}</td>
-                    <td className="p-3 text-slate-300">
-                      {emp.paid_days} / <span className="text-red-400">{emp.lop_days} LOP</span>
-                    </td>
-                    <td className="p-3 text-emerald-400 font-bold">{formatCurrency(emp.gross_earnings)}</td>
-                    <td className="p-3 text-slate-400">{formatCurrency(emp.pf_employee)}</td>
-                    <td className="p-3 text-slate-400">{formatCurrency(emp.esi_employee)}</td>
-                    <td className="p-3 text-slate-400">{formatCurrency(emp.pt_amount)}</td>
-                    <td className="p-3 text-slate-400">{formatCurrency(emp.tds_amount)}</td>
-                    <td className="p-3 text-red-400">{formatCurrency(emp.total_deductions)}</td>
-                    <td className="p-3 text-blue-400 font-bold text-sm">{formatCurrency(emp.net_salary)}</td>
-                    <td className="p-3 text-right font-sans">
-                      <button
-                        onClick={() => setSelectedEmployee(emp)}
-                        className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-semibold rounded flex items-center gap-1 ml-auto"
-                      >
-                        <Eye className="w-3.5 h-3.5 text-blue-400" /> Details
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable
+            columns={columns}
+            data={filteredEmployees}
+            emptyMessage="No employees found for this search filter."
+          />
         </div>
       )}
 
       {/* Tab 3: APPROVALS */}
       {activeTab === 'APPROVALS' && (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-          <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider">Maker-Checker Approval Trail</h3>
-          <p className="text-xs text-slate-400">Every authorization step is logged and immutable for compliance auditing.</p>
+        <Card className="p-5 space-y-4">
+          <h3 className="text-xs font-bold text-heading uppercase tracking-wider">Maker-Checker Approval Trail</h3>
+          <p className="text-xs text-muted">Every authorization step is logged and immutable for compliance auditing.</p>
 
-          <div className="p-4 bg-slate-950/60 border border-slate-800 rounded-lg text-xs space-y-2">
-            <div className="flex justify-between items-center text-slate-300">
+          <div className="p-4 bg-subtle border border-default rounded-lg text-xs space-y-2">
+            <div className="flex justify-between items-center text-heading font-medium">
               <span>Payroll Status: <strong>{run.status}</strong></span>
               <span>Finalized Lock: <strong>{run.is_locked ? 'YES' : 'NO'}</strong></span>
             </div>
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Modal for Employee Payroll Breakdown Drawer */}
       {selectedEmployee && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-2xl w-full max-h-[85vh] overflow-y-auto space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <div>
-                <h2 className="text-lg font-bold text-slate-100">
-                  {selectedEmployee.employee?.first_name} {selectedEmployee.employee?.last_name}
-                </h2>
-                <p className="text-xs text-slate-400 font-mono">
-                  Code: {selectedEmployee.employee?.employee_code} • {selectedEmployee.employee?.department?.name || 'Staff'}
-                </p>
-              </div>
-              <button
-                onClick={() => setSelectedEmployee(null)}
-                className="text-slate-400 hover:text-slate-200 text-sm font-bold"
-              >
-                ✕ Close
-              </button>
-            </div>
+        <Modal
+          isOpen={!!selectedEmployee}
+          onClose={() => setSelectedEmployee(null)}
+          title={`${selectedEmployee.employee?.first_name} ${selectedEmployee.employee?.last_name}`}
+        >
+          <div className="space-y-5">
+            <p className="text-xs text-muted font-mono">
+              Code: {selectedEmployee.employee?.employee_code} • {selectedEmployee.employee?.department?.name || 'Staff'}
+            </p>
 
             {/* Attendance & Days Summary */}
             <div className="grid grid-cols-4 gap-3 text-center">
-              <div className="p-2.5 bg-slate-950 border border-slate-800 rounded-lg">
-                <span className="text-[10px] text-slate-400 block">Calendar Days</span>
-                <span className="text-sm font-bold text-slate-200">{selectedEmployee.calendar_days}</span>
+              <div className="p-2.5 bg-subtle border border-default rounded-lg">
+                <span className="text-[10px] text-muted block">Calendar Days</span>
+                <span className="text-sm font-bold text-heading">{selectedEmployee.calendar_days}</span>
               </div>
-              <div className="p-2.5 bg-slate-950 border border-slate-800 rounded-lg">
-                <span className="text-[10px] text-slate-400 block">Paid Days</span>
-                <span className="text-sm font-bold text-emerald-400">{selectedEmployee.paid_days}</span>
+              <div className="p-2.5 bg-subtle border border-default rounded-lg">
+                <span className="text-[10px] text-muted block">Paid Days</span>
+                <span className="text-sm font-bold text-emerald-700">{selectedEmployee.paid_days}</span>
               </div>
-              <div className="p-2.5 bg-slate-950 border border-slate-800 rounded-lg">
-                <span className="text-[10px] text-slate-400 block">LOP Days</span>
-                <span className="text-sm font-bold text-red-400">{selectedEmployee.lop_days}</span>
+              <div className="p-2.5 bg-subtle border border-default rounded-lg">
+                <span className="text-[10px] text-muted block">LOP Days</span>
+                <span className="text-sm font-bold text-rose-700">{selectedEmployee.lop_days}</span>
               </div>
-              <div className="p-2.5 bg-slate-950 border border-slate-800 rounded-lg">
-                <span className="text-[10px] text-slate-400 block">OT Hours</span>
-                <span className="text-sm font-bold text-amber-400">{selectedEmployee.overtime_hours} hrs</span>
+              <div className="p-2.5 bg-subtle border border-default rounded-lg">
+                <span className="text-[10px] text-muted block">OT Hours</span>
+                <span className="text-sm font-bold text-amber-700">{selectedEmployee.overtime_hours} hrs</span>
               </div>
             </div>
 
             {/* Detailed Component Snapshots */}
             <div className="space-y-4">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Line Component Breakdown</h3>
-              <div className="bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-2 text-xs font-mono">
-                <div className="flex justify-between py-1 border-b border-slate-800">
-                  <span className="font-sans text-slate-300">Basic Salary</span>
-                  <span className="text-emerald-400 font-bold">{formatCurrency(selectedEmployee.basic_amount)}</span>
+              <h3 className="text-xs font-bold text-heading uppercase tracking-wider">Line Component Breakdown</h3>
+              <div className="bg-subtle border border-default rounded-lg p-3 space-y-2 text-xs font-mono">
+                <div className="flex justify-between py-1 border-b border-default">
+                  <span className="font-sans text-muted">Basic Salary</span>
+                  <span className="text-emerald-700 font-bold">{formatCurrency(selectedEmployee.basic_amount)}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-800">
-                  <span className="font-sans text-slate-300">House Rent Allowance (HRA)</span>
-                  <span className="text-emerald-400 font-bold">{formatCurrency(selectedEmployee.hra_amount)}</span>
+                <div className="flex justify-between py-1 border-b border-default">
+                  <span className="font-sans text-muted">House Rent Allowance (HRA)</span>
+                  <span className="text-emerald-700 font-bold">{formatCurrency(selectedEmployee.hra_amount)}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-800">
-                  <span className="font-sans text-slate-300">Special & Other Allowances</span>
-                  <span className="text-emerald-400 font-bold">{formatCurrency(selectedEmployee.allowances_amount)}</span>
+                <div className="flex justify-between py-1 border-b border-default">
+                  <span className="font-sans text-muted">Special & Other Allowances</span>
+                  <span className="text-emerald-700 font-bold">{formatCurrency(selectedEmployee.allowances_amount)}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-800">
-                  <span className="font-sans text-slate-300">Overtime Earning</span>
-                  <span className="text-emerald-400 font-bold">{formatCurrency(selectedEmployee.overtime_amount)}</span>
+                <div className="flex justify-between py-1 border-b border-default">
+                  <span className="font-sans text-muted">Overtime Earning</span>
+                  <span className="text-emerald-700 font-bold">{formatCurrency(selectedEmployee.overtime_amount)}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-800 font-sans text-emerald-400 font-bold">
+                <div className="flex justify-between py-1 border-b border-default font-sans text-emerald-700 font-bold">
                   <span>Gross Earnings</span>
                   <span>{formatCurrency(selectedEmployee.gross_earnings)}</span>
                 </div>
               </div>
 
-              <div className="bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-2 text-xs font-mono">
-                <div className="flex justify-between py-1 border-b border-slate-800">
-                  <span className="font-sans text-slate-300">Employee PF</span>
-                  <span className="text-red-400">{formatCurrency(selectedEmployee.pf_employee)}</span>
+              <div className="bg-subtle border border-default rounded-lg p-3 space-y-2 text-xs font-mono">
+                <div className="flex justify-between py-1 border-b border-default">
+                  <span className="font-sans text-muted">Employee PF</span>
+                  <span className="text-rose-700 font-semibold">{formatCurrency(selectedEmployee.pf_employee)}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-800">
-                  <span className="font-sans text-slate-300">Employee ESI</span>
-                  <span className="text-red-400">{formatCurrency(selectedEmployee.esi_employee)}</span>
+                <div className="flex justify-between py-1 border-b border-default">
+                  <span className="font-sans text-muted">Employee ESI</span>
+                  <span className="text-rose-700 font-semibold">{formatCurrency(selectedEmployee.esi_employee)}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-800">
-                  <span className="font-sans text-slate-300">Professional Tax (PT)</span>
-                  <span className="text-red-400">{formatCurrency(selectedEmployee.pt_amount)}</span>
+                <div className="flex justify-between py-1 border-b border-default">
+                  <span className="font-sans text-muted">Professional Tax (PT)</span>
+                  <span className="text-rose-700 font-semibold">{formatCurrency(selectedEmployee.pt_amount)}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-800">
-                  <span className="font-sans text-slate-300">Income Tax (TDS)</span>
-                  <span className="text-red-400">{formatCurrency(selectedEmployee.tds_amount)}</span>
+                <div className="flex justify-between py-1 border-b border-default">
+                  <span className="font-sans text-muted">Income Tax (TDS)</span>
+                  <span className="text-rose-700 font-semibold">{formatCurrency(selectedEmployee.tds_amount)}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-800 font-sans text-red-400 font-bold">
+                <div className="flex justify-between py-1 border-b border-default font-sans text-rose-700 font-bold">
                   <span>Total Deductions</span>
                   <span>{formatCurrency(selectedEmployee.total_deductions)}</span>
                 </div>
               </div>
 
               {/* Net Pay */}
-              <div className="p-4 bg-blue-950/40 border border-blue-800/50 rounded-xl flex items-center justify-between">
-                <span className="text-sm font-bold text-slate-200">Net Take Home Pay</span>
-                <span className="text-xl font-bold font-mono text-blue-400">₹{Number(selectedEmployee.net_salary || 0).toLocaleString()}</span>
+              <div className="p-4 bg-subtle border border-default rounded-xl flex items-center justify-between">
+                <span className="text-xs font-bold text-heading">Net Take Home Pay</span>
+                <span className="text-lg font-bold font-mono text-brand">₹{Number(selectedEmployee.net_salary || 0).toLocaleString()}</span>
               </div>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );
 }
+
